@@ -13,45 +13,56 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'cloud Kitchen',
       theme: ThemeData(
-          primarySwatch: Colors.pink,
-          accentColor: Colors.orange,
-          textTheme: ThemeData.light().textTheme.copyWith(
-                title: TextStyle(
-                  fontFamily: 'OpenSans',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-                button: TextStyle(color: Colors.white),
-              )),
-      home: FutureBuilder(
-        future: Firebase.initializeApp(),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasError) {
+        primarySwatch: Colors.pink,
+        accentColor: Colors.orange,
+        textTheme: ThemeData.light().textTheme.copyWith(
+              title: TextStyle(
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              button: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+      ),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (ctx, user) {
+          if (user.connectionState == ConnectionState.waiting) {
             return Center(
-              child: Text('Something went wrong'),
+              child: CircularProgressIndicator(),
             );
           }
-
-          if (snapshot.connectionState == ConnectionState.done) {
-            return StreamBuilder(
-              stream: FirebaseAuth.instance.authStateChanges(),
-              builder: (ctx, user) {
-                if (user.connectionState == ConnectionState.waiting) {
+          if (user == null) {
+            return FutureBuilder(
+              future: Firebase.initializeApp(),
+              builder: (ctx, snapshot) {
+                if (snapshot.hasError) {
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: Text('Something went wrong'),
                   );
                 }
-                if (user == null) {
+                if (snapshot.connectionState == ConnectionState.done) {
                   return AuthScreen();
-                } else {
+                }
+              },
+            );
+          } else {
+            return FutureBuilder(
+              future: Firebase.initializeApp(),
+              builder: (ctx, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Something went wrong'),
+                  );
+                }
+                if (snapshot.connectionState == ConnectionState.done) {
                   return StarterPage();
                 }
               },
             );
           }
-          return Center(
-            child: CircularProgressIndicator(),
-          );
         },
       ),
       routes: {

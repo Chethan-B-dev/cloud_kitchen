@@ -1,7 +1,9 @@
 import 'package:cloud_kitchen/widgets/all_restaurants.dart';
+import 'package:cloud_kitchen/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/new_restaurants.dart';
+import 'package:flutter/services.dart';
 
 class RestaurantOverview extends StatelessWidget {
   const RestaurantOverview({Key key}) : super(key: key);
@@ -16,6 +18,7 @@ class RestaurantOverview extends StatelessWidget {
 
     final mediaQuery = MediaQuery.of(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: appBar,
       body: Container(
         decoration: BoxDecoration(
@@ -47,6 +50,7 @@ class RestaurantOverview extends StatelessWidget {
           ],
         ),
       ),
+      drawer: AppDrawer(),
     );
   }
 }
