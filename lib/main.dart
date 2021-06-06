@@ -13,9 +13,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'cloud Kitchen',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
-        accentColor: Colors.orange,
-      ),
+          primarySwatch: Colors.pink,
+          accentColor: Colors.orange,
+          textTheme: ThemeData.light().textTheme.copyWith(
+                title: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+                button: TextStyle(color: Colors.white),
+              )),
       home: FutureBuilder(
         future: Firebase.initializeApp(),
         builder: (ctx, snapshot) {
