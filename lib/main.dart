@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import './screens/auth_screen.dart';
+import './screens/starter_page.dart';
+import './screens/restaurant_overview_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -35,9 +37,7 @@ class MyApp extends StatelessWidget {
                 if (user == null) {
                   return AuthScreen();
                 } else {
-                  return Center(
-                    child: Text('user is signed in'),
-                  );
+                  return StarterPage();
                 }
               },
             );
@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         AuthScreen.routeName: (ctx) => AuthScreen(),
+        RestaurantOverview.routeName: (ctx) => RestaurantOverview(),
       },
     );
   }
