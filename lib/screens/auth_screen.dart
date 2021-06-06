@@ -1,7 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import '../models/http_exception.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -11,8 +11,6 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
-    // transformConfig.translate(-10.0);
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       body: Stack(
@@ -86,11 +84,16 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard>
     with SingleTickerProviderStateMixin {
+  final _auth = FirebaseAuth.instance;
+
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   Map<String, String> _authData = {
     'email': '',
     'password': '',
+    'username': '',
+    'phone': '',
+    'address': ''
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
@@ -150,37 +153,60 @@ class _AuthCardState extends State<AuthCard>
   }
 
   Future<void> _submit() async {
+    UserCredential authResult;
+
     if (!_formKey.currentState.validate()) {
-      // Invalid!
       return;
     }
+
     _formKey.currentState.save();
+
     setState(() {
       _isLoading = true;
     });
+
     try {
       if (_authMode == AuthMode.Login) {
-        // Log user in
-        print("login");
+        authResult = await _auth.signInWithEmailAndPassword(
+          email: _authData['email'],
+          password: _authData['password'],
+        );
       } else {
-        // Sign user up
-        print("register");
+        authResult = await _auth.createUserWithEmailAndPassword(
+          email: _authData['email'],
+          password: _authData['password'],
+        );
+
+        print(_authData.toString());
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(authResult.user.uid)
+            .set({
+          'email': _authData['email'],
+          'username': _authData['username'],
+          'phone': _authData['phone'],
+          'address': _authData['address'],
+        });
       }
-    } on HttpException catch (error) {
-      var errorMessage = 'Authentication failed';
-      if (error.toString().contains('EMAIL_EXISTS')) {
-        errorMessage = 'This email address is already in use.';
-      } else if (error.toString().contains('INVALID_EMAIL')) {
-        errorMessage = 'This is not a valid email address';
-      } else if (error.toString().contains('WEAK_PASSWORD')) {
-        errorMessage = 'This password is too weak.';
-      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
-        errorMessage = 'Could not find a user with that email.';
-      } else if (error.toString().contains('INVALID_PASSWORD')) {
-        errorMessage = 'Invalid password.';
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        _showErrorDialog('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        _showErrorDialog('The account already exists for that email.');
       }
-      _showErrorDialog(errorMessage);
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, pelase check your credentials!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      _showErrorDialog(message);
+      setState(() {
+        _isLoading = false;
+      });
     } catch (error) {
+      print(error);
       const errorMessage =
           'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMessage);
@@ -231,9 +257,13 @@ class _AuthCardState extends State<AuthCard>
                   decoration: InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
-                    if (value.isEmpty || !value.contains('@')) {
+                    bool emailValid = RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(value);
+                    if (value.isEmpty || !value.contains('@') || !emailValid) {
                       return 'Invalid email!';
                     }
+                    return null;
                   },
                   onSaved: (value) {
                     _authData['email'] = value;
@@ -244,9 +274,10 @@ class _AuthCardState extends State<AuthCard>
                   obscureText: true,
                   controller: _passwordController,
                   validator: (value) {
-                    if (value.isEmpty || value.length < 5) {
+                    if (value.isEmpty) {
                       return 'Password is too short!';
                     }
+                    return null;
                   },
                   onSaved: (value) {
                     _authData['password'] = value;
@@ -274,9 +305,103 @@ class _AuthCardState extends State<AuthCard>
                                     value.isNotEmpty) {
                                   return 'Passwords do not match!';
                                 }
+                                return null;
                               }
                             : null,
                       ),
+                    ),
+                  ),
+                ),
+                AnimatedContainer(
+                  constraints: BoxConstraints(
+                    minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                    maxHeight: _authMode == AuthMode.Signup ? 120 : 0,
+                  ),
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                  child: FadeTransition(
+                    opacity: _opacityAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: TextFormField(
+                          enabled: _authMode == AuthMode.Signup,
+                          decoration: InputDecoration(labelText: 'Username'),
+                          keyboardType: TextInputType.text,
+                          validator: _authMode == AuthMode.Signup
+                              ? (value) {
+                                  if (value.isEmpty || value.length < 4) {
+                                    return 'Please enter valid Username!';
+                                  }
+                                  return null;
+                                }
+                              : null,
+                          onSaved: (value) {
+                            _authData['username'] = value;
+                          }),
+                    ),
+                  ),
+                ),
+                AnimatedContainer(
+                  constraints: BoxConstraints(
+                    minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                    maxHeight: _authMode == AuthMode.Signup ? 120 : 0,
+                  ),
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                  child: FadeTransition(
+                    opacity: _opacityAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: TextFormField(
+                          enabled: _authMode == AuthMode.Signup,
+                          decoration:
+                              InputDecoration(labelText: 'Phone Number'),
+                          keyboardType: TextInputType.number,
+                          validator: _authMode == AuthMode.Signup
+                              ? (value) {
+                                  bool numberValid =
+                                      RegExp(r"^[0-9]+$").hasMatch(value);
+                                  if (value.isEmpty ||
+                                      value.length != 10 ||
+                                      !numberValid) {
+                                    return 'Please enter valid phone number!';
+                                  }
+                                  return null;
+                                }
+                              : null,
+                          onSaved: (value) {
+                            _authData['phone'] = value;
+                          }),
+                    ),
+                  ),
+                ),
+                AnimatedContainer(
+                  constraints: BoxConstraints(
+                    minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                    maxHeight: _authMode == AuthMode.Signup ? 120 : 0,
+                  ),
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                  child: FadeTransition(
+                    opacity: _opacityAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: TextFormField(
+                          enabled: _authMode == AuthMode.Signup,
+                          decoration: InputDecoration(labelText: 'Address'),
+                          keyboardType: TextInputType.text,
+                          validator: _authMode == AuthMode.Signup
+                              ? (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please enter your address';
+                                  }
+                                  return null;
+                                  // TODO: enter big address greater than 10 letters
+                                }
+                              : null,
+                          onSaved: (value) {
+                            _authData['address'] = value;
+                          }),
                     ),
                   ),
                 ),

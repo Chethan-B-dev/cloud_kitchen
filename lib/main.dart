@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import './screens/auth_screen.dart';
 
@@ -7,13 +9,47 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'cloud Kitchen',
       theme: ThemeData(
         primarySwatch: Colors.pink,
         accentColor: Colors.orange,
       ),
-      home: AuthScreen(),
-      routes: {AuthScreen.routeName: (ctx) => AuthScreen()},
+      home: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (ctx, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Something went wrong'),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            return StreamBuilder(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (ctx, user) {
+                if (user.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (user == null) {
+                  return AuthScreen();
+                } else {
+                  return Center(
+                    child: Text('user is signed in'),
+                  );
+                }
+              },
+            );
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
+      routes: {
+        AuthScreen.routeName: (ctx) => AuthScreen(),
+      },
     );
   }
 }
