@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import './screens/auth_screen.dart';
-import './screens/starter_page.dart';
+//import './screens/starter_page.dart';
 import './screens/restaurant_overview_screen.dart';
 import './screens/restaurant_detail_screen.dart';
 import './screens/cart_screen.dart';
@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.pink,
             accentColor: Colors.black,
+            errorColor: Colors.red,
             textTheme: ThemeData.light().textTheme.copyWith(
                   title: TextStyle(
                     fontFamily: 'OpenSans',
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
             AuthScreen.routeName: (ctx) => AuthScreen(),
             RestaurantOverview.routeName: (ctx) => RestaurantOverview(),
             RestaurantDetail.routeName: (ctx) => RestaurantDetail(),
-            FoodOrderPage.routeName: (ctx) => FoodOrderPage(),
+            CartScreen.routeName: (ctx) => CartScreen(),
           },
         );
       },

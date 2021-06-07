@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class FoodOrderPage extends StatefulWidget {
+class CartScreen extends StatefulWidget {
   static String routeName = '/cart';
   @override
-  _FoodOrderPageState createState() => _FoodOrderPageState();
+  _CartScreenState createState() => _CartScreenState();
 }
 
-class _FoodOrderPageState extends State<FoodOrderPage> {
+class _CartScreenState extends State<CartScreen> {
   int counter = 3;
 
   @override

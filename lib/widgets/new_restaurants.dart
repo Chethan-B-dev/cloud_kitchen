@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class PopularFoodsWidget extends StatefulWidget {
+class NewRestaurants extends StatefulWidget {
   @override
-  _PopularFoodsWidgetState createState() => _PopularFoodsWidgetState();
+  _NewRestaurantsState createState() => _NewRestaurantsState();
 }
 
-class _PopularFoodsWidgetState extends State<PopularFoodsWidget> {
+class _NewRestaurantsState extends State<NewRestaurants> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,7 +15,7 @@ class _PopularFoodsWidgetState extends State<PopularFoodsWidget> {
         children: <Widget>[
           PopularFoodTitle(),
           Flexible(
-            child: PopularFoodItems(),
+            child: NewRestaurantItems(),
           ),
         ],
       ),
@@ -204,7 +204,7 @@ class PopularFoodTitle extends StatelessWidget {
   }
 }
 
-class PopularFoodItems extends StatelessWidget {
+class NewRestaurantItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -230,48 +230,6 @@ class PopularFoodItems extends StatelessWidget {
             rating: "4.0",
             numberOfRating: "50",
             price: "11.00",
-            slug: ""),
-        PopularFoodTiles(
-            name: "Mixed Salad",
-            imageUrl: "ic_popular_food_5",
-            rating: "4.00",
-            numberOfRating: "100",
-            price: "11.10",
-            slug: ""),
-        PopularFoodTiles(
-            name: "Red meat,Salad",
-            imageUrl: "ic_popular_food_2",
-            rating: "4.6",
-            numberOfRating: "150",
-            price: "12.00",
-            slug: ""),
-        PopularFoodTiles(
-            name: "Mixed Salad",
-            imageUrl: "ic_popular_food_5",
-            rating: "4.00",
-            numberOfRating: "100",
-            price: "11.10",
-            slug: ""),
-        PopularFoodTiles(
-            name: "Potato,Meat fry",
-            imageUrl: "ic_popular_food_6",
-            rating: "4.2",
-            numberOfRating: "70",
-            price: "23.0",
-            slug: ""),
-        PopularFoodTiles(
-            name: "Fried Egg",
-            imageUrl: "ic_popular_food_1",
-            rating: '4.9',
-            numberOfRating: '200',
-            price: '15.06',
-            slug: "fried_egg"),
-        PopularFoodTiles(
-            name: "Red meat,Salad",
-            imageUrl: "ic_popular_food_2",
-            rating: "4.6",
-            numberOfRating: "150",
-            price: "12.00",
             slug: ""),
       ],
     );

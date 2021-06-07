@@ -5,6 +5,7 @@ import '../widgets/search_bar.dart';
 import '../widgets/new_restaurants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import './restaurant_detail_screen.dart';
+import '../helpers/hex_color.dart';
 
 class RestaurantOverview extends StatelessWidget {
   const RestaurantOverview({Key key}) : super(key: key);
@@ -76,14 +77,14 @@ class RestaurantOverview extends StatelessWidget {
                       appBar.preferredSize.height -
                       mediaQuery.padding.top) *
                   0.35,
-              child: PopularFoodsWidget(),
+              child: NewRestaurants(),
             ),
             Container(
               height: (mediaQuery.size.height -
                       appBar.preferredSize.height -
                       mediaQuery.padding.top) *
                   0.55,
-              child: BestFoodWidget(),
+              child: AllRestaurants(),
             )
           ],
         ),
@@ -91,16 +92,4 @@ class RestaurantOverview extends StatelessWidget {
       drawer: AppDrawer(),
     );
   }
-}
-
-class HexColor extends Color {
-  static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
-    if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
-    }
-    return int.parse(hexColor, radix: 16);
-  }
-
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }
