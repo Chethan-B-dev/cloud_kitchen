@@ -37,11 +37,11 @@ class RestaurantOverview extends StatelessWidget {
                         Navigator.pop(context, 'Cancel');
                         await FirebaseAuth.instance.signOut();
                       },
-                      child: const Text('yes'),
+                      child: const Text('Yes'),
                     ),
                     TextButton(
                       onPressed: () => Navigator.pop(context, 'Cancel'),
-                      child: const Text('no'),
+                      child: const Text('No'),
                     ),
                   ],
                 ),
