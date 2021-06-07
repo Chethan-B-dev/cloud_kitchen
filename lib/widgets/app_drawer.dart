@@ -1,5 +1,5 @@
+import 'package:cloud_kitchen/main.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -17,24 +17,23 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.shop),
             title: Text('Become a Seller'),
             onTap: () {
-              print('shop');
+              print('become a seller');
             },
           ),
           Divider(),
           ListTile(
             leading: Icon(Icons.payment),
             title: Text('Cart'),
-            onTap: () {
-              print('orders');
+            onTap: () async {
+              print('cart');
             },
           ),
           Divider(),
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
-            onTap: () {
-              print('camee here');
-              FirebaseAuth.instance.signOut();
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
             },
           ),
         ],

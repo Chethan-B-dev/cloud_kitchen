@@ -37,10 +37,13 @@ class _StarterPageState extends State<StarterPage>
       _textVisible = false;
     });
 
-    _animationController.forward().then((f) => Navigator.pushReplacement(
-        context,
-        PageTransition(
-            type: PageTransitionType.fade, child: RestaurantOverview())));
+    // _animationController.forward().then((f) => Navigator.pushReplacement(
+    //     context,
+    //     PageTransition(
+    //         type: PageTransitionType.fade, child: RestaurantOverview())));
+    _animationController
+        .forward()
+        .then((f) => Navigator.pushReplacementNamed(context, '/restaurants'));
   }
 
   @override

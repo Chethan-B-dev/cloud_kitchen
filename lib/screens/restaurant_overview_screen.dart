@@ -3,7 +3,8 @@ import 'package:cloud_kitchen/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/new_restaurants.dart';
-import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import './restaurant_detail_screen.dart';
 
 class RestaurantOverview extends StatelessWidget {
   const RestaurantOverview({Key key}) : super(key: key);
@@ -13,7 +14,44 @@ class RestaurantOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
-      title: Text('Restaurants overview'),
+      title: Text(
+        'Restaurants overview',
+      ),
+      actions: <Widget>[
+        Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text(
+                    'Logout',
+                    style: TextStyle(
+                      color: Colors.pink,
+                    ),
+                  ),
+                  content: const Text('Are You sure you want to logout?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () async {
+                        Navigator.pop(context, 'Cancel');
+                        await FirebaseAuth.instance.signOut();
+                      },
+                      child: const Text('yes'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('no'),
+                    ),
+                  ],
+                ),
+              ),
+              child: Icon(
+                Icons.logout,
+                size: 26.0,
+              ),
+            ))
+      ],
     );
 
     final mediaQuery = MediaQuery.of(context);

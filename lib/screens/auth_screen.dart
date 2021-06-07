@@ -187,6 +187,7 @@ class _AuthCardState extends State<AuthCard>
           'username': _authData['username'],
           'phone': _authData['phone'],
           'address': _authData['address'],
+          'isSeller': false
         });
       }
     } on FirebaseAuthException catch (e) {

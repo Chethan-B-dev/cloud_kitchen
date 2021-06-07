@@ -45,7 +45,10 @@ class PopularFoodTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print('tapped');
+        Navigator.of(context).pushNamed(
+          '/details',
+          arguments: '1',
+        );
       },
       child: Card(
         color: Colors.white,

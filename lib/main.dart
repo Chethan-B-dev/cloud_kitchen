@@ -4,70 +4,50 @@ import 'package:flutter/material.dart';
 import './screens/auth_screen.dart';
 import './screens/starter_page.dart';
 import './screens/restaurant_overview_screen.dart';
+import './screens/restaurant_detail_screen.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'cloud Kitchen',
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-        accentColor: Colors.orange,
-        textTheme: ThemeData.light().textTheme.copyWith(
-              title: TextStyle(
-                fontFamily: 'OpenSans',
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-              button: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-      ),
-      home: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (ctx, user) {
-          if (user.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (user == null) {
-            return FutureBuilder(
-              future: Firebase.initializeApp(),
-              builder: (ctx, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Something went wrong'),
-                  );
-                }
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return AuthScreen();
-                }
-              },
-            );
-          } else {
-            return FutureBuilder(
-              future: Firebase.initializeApp(),
-              builder: (ctx, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Something went wrong'),
-                  );
-                }
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return StarterPage();
-                }
-              },
-            );
-          }
-        },
-      ),
-      routes: {
-        AuthScreen.routeName: (ctx) => AuthScreen(),
-        RestaurantOverview.routeName: (ctx) => RestaurantOverview(),
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return MaterialApp(
+          title: 'cloud Kitchen',
+          theme: ThemeData(
+            primarySwatch: Colors.pink,
+            accentColor: Colors.orange,
+            textTheme: ThemeData.light().textTheme.copyWith(
+                  title: TextStyle(
+                    fontFamily: 'OpenSans',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                  button: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+          ),
+          home: isLoggedIn ? RestaurantOverview() : AuthScreen(),
+          routes: {
+            AuthScreen.routeName: (ctx) => AuthScreen(),
+            RestaurantOverview.routeName: (ctx) => RestaurantOverview(),
+            RestaurantDetail.routeName: (ctx) => RestaurantDetail(),
+          },
+        );
       },
     );
   }

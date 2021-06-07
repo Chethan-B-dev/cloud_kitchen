@@ -62,7 +62,12 @@ class BestFoodTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          '/details',
+          arguments: '1',
+        );
+      },
       child: Column(
         children: <Widget>[
           Container(
