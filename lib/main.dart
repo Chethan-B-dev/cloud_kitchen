@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'cloud Kitchen',
           theme: ThemeData(
-            primarySwatch: Colors.pink,
+            primarySwatch: Colors.purple,
             accentColor: Colors.black,
             errorColor: Colors.red,
             textTheme: ThemeData.light().textTheme.copyWith(

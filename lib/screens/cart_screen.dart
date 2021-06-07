@@ -95,14 +95,16 @@ class TotalCalculationWidget extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       width: double.infinity,
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
-          color: Color(0xFFfae3e2).withOpacity(0.1),
-          spreadRadius: 1,
-          blurRadius: 1,
-          offset: Offset(0, 1),
-        ),
-      ]),
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFFfae3e2).withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 1,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
       child: Card(
         color: Colors.white,
         elevation: 8.0,
@@ -124,30 +126,33 @@ class TotalCalculationWidget extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: 5,
                 itemBuilder: (ctx, index) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          "Grilled Salmon",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xFF3a3a3b),
-                              fontWeight: FontWeight.w400),
-                          textAlign: TextAlign.left,
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            "Grilled Salmon lol",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Color(0xFF3a3a3b),
+                                fontWeight: FontWeight.w400),
+                            textAlign: TextAlign.left,
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          "\$192",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xFF3a3a3b),
-                              fontWeight: FontWeight.w400),
-                          textAlign: TextAlign.right,
+                        Expanded(
+                          child: Text(
+                            "\$192",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Color(0xFF3a3a3b),
+                                fontWeight: FontWeight.w400),
+                            textAlign: TextAlign.right,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 },
               ),

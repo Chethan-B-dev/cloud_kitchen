@@ -1,5 +1,6 @@
 import 'package:cloud_kitchen/helpers/hex_color.dart';
 import 'package:flutter/material.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 enum OrderStatusEnum { done, not_done }
 
@@ -13,6 +14,67 @@ class OrderStatus extends StatefulWidget {
 }
 
 class _OrderStatusState extends State<OrderStatus> {
+  var rating = 0.0;
+  void showNow() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)), //this right here
+            child: Container(
+              height: 250,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Rate Restaurant',
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    SmoothStarRating(
+                      rating: rating,
+                      size: 45,
+                      starCount: 5,
+                      onRated: (value) {
+                        setState(() {
+                          rating = value;
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RaisedButton.icon(
+                      textColor: Theme.of(context).primaryColor,
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed('/restaurants', arguments: rating);
+                      },
+                      icon: Icon(Icons.rate_review_sharp),
+                      label: Text(
+                        'Rate',
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +111,19 @@ class _OrderStatusState extends State<OrderStatus> {
             status: OrderStatusEnum.not_done,
           )
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: Tooltip(
+        message: "Rate Restaurant",
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 30, right: 10),
+          child: FloatingActionButton(
+            // isExtended: true,
+            child: Icon(Icons.rate_review),
+            backgroundColor: HexColor('#424242'),
+            onPressed: showNow,
+          ),
+        ),
       ),
     );
   }
