@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import '../helpers/hex_color.dart';
 
 class CartScreen extends StatefulWidget {
   static String routeName = '/cart';
@@ -27,7 +28,7 @@ class _CartScreenState extends State<CartScreen> {
           child: Text(
             "Item Carts",
             style: TextStyle(
-              color: Colors.pink,
+              color: Colors.black,
               fontWeight: FontWeight.w600,
               fontSize: 18,
             ),
@@ -67,6 +68,21 @@ class _CartScreenState extends State<CartScreen> {
             ),
             TotalCalculationWidget(),
           ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: Tooltip(
+        message: "Place Order",
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 30, right: 10),
+          child: FloatingActionButton(
+            // isExtended: true,
+            child: Icon(Icons.save),
+            backgroundColor: HexColor('#424242'),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/order-status');
+            },
+          ),
         ),
       ),
     );
@@ -306,11 +322,10 @@ class AddToCartMenu extends StatelessWidget {
           Expanded(
             child: InkWell(
               onTap: () => print('hello'),
-              child: CircleAvatar(
-                child: Container(
-                  child: Text(
-                    '2',
-                  ),
+              child: Container(
+                alignment: Alignment.center,
+                child: Text(
+                  '2',
                 ),
               ),
             ),

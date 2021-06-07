@@ -6,6 +6,7 @@ import './screens/auth_screen.dart';
 import './screens/restaurant_overview_screen.dart';
 import './screens/restaurant_detail_screen.dart';
 import './screens/cart_screen.dart';
+import './screens/order_status_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
             RestaurantOverview.routeName: (ctx) => RestaurantOverview(),
             RestaurantDetail.routeName: (ctx) => RestaurantDetail(),
             CartScreen.routeName: (ctx) => CartScreen(),
+            OrderStatus.routeName: (ctx) => OrderStatus(),
           },
         );
       },
