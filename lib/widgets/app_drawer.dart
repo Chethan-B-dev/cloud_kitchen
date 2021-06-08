@@ -1,10 +1,11 @@
-import 'package:cloud_kitchen/main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final AuthService authService = AuthService();
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -25,6 +26,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.payment),
             title: Text('Cart'),
             onTap: () {
+              print("user is ${FirebaseAuth.instance.currentUser.uid}");
               Navigator.of(context).pushNamed('/cart');
             },
           ),
@@ -33,7 +35,8 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () async {
-              await FirebaseAuth.instance.signOut();
+              await authService.signOut();
+              Navigator.popUntil(context, ModalRoute.withName("/"));
             },
           ),
         ],

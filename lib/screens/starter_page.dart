@@ -16,8 +16,10 @@ class _StarterPageState extends State<StarterPage>
 
   @override
   void initState() {
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 100));
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 100),
+    );
 
     _animation =
         Tween<double>(begin: 1.0, end: 25.0).animate(_animationController);
@@ -37,13 +39,8 @@ class _StarterPageState extends State<StarterPage>
       _textVisible = false;
     });
 
-    // _animationController.forward().then((f) => Navigator.pushReplacement(
-    //     context,
-    //     PageTransition(
-    //         type: PageTransitionType.fade, child: RestaurantOverview())));
-    _animationController
-        .forward()
-        .then((f) => Navigator.pushReplacementNamed(context, '/restaurants'));
+    _animationController.forward().then(
+        (f) => Navigator.of(context).pushReplacementNamed('/restaurants'));
   }
 
   @override
@@ -57,11 +54,15 @@ class _StarterPageState extends State<StarterPage>
                 fit: BoxFit.cover)),
         child: Container(
           decoration: BoxDecoration(
-              gradient: LinearGradient(begin: Alignment.bottomCenter, colors: [
-            Colors.black.withOpacity(.9),
-            Colors.black.withOpacity(.8),
-            Colors.black.withOpacity(.2),
-          ])),
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withOpacity(.9),
+                Colors.black.withOpacity(.8),
+                Colors.black.withOpacity(.2),
+              ],
+            ),
+          ),
           child: Padding(
             padding: EdgeInsets.all(20.0),
             child: Column(
@@ -92,24 +93,30 @@ class _StarterPageState extends State<StarterPage>
                   height: 100,
                 ),
                 ScaleTransition(
-                    scale: _animation,
-                    child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: LinearGradient(
-                                colors: [Colors.yellow, Colors.orange])),
-                        child: AnimatedOpacity(
-                          opacity: _textVisible ? 1.0 : 0.0,
-                          duration: Duration(milliseconds: 50),
-                          child: MaterialButton(
-                            onPressed: () => _onTap(),
-                            minWidth: double.infinity,
-                            child: Text(
-                              "Start",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ))),
+                  scale: _animation,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                            colors: [Colors.yellow, Colors.orange])),
+                    child: AnimatedOpacity(
+                      opacity: _textVisible ? 1.0 : 0.0,
+                      duration: Duration(milliseconds: 50),
+                      child: MaterialButton(
+                        onPressed: () {
+                          _animationController.forward().then((f) =>
+                              Navigator.of(context)
+                                  .pushReplacementNamed('/restaurants'));
+                        },
+                        minWidth: double.infinity,
+                        child: Text(
+                          "Start",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: 30,
                 ),

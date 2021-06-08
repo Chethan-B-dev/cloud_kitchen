@@ -1,6 +1,9 @@
+import 'package:cloud_kitchen/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../helpers/hex_color.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
 
 class CartScreen extends StatefulWidget {
   static String routeName = '/cart';
@@ -10,6 +13,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   int counter = 3;
+  final AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +74,7 @@ class _CartScreenState extends State<CartScreen> {
           ],
         ),
       ),
+      drawer: AppDrawer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: Tooltip(
         message: "Place Order",

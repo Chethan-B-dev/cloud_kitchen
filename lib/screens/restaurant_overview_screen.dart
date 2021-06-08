@@ -6,6 +6,7 @@ import '../widgets/new_restaurants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import './restaurant_detail_screen.dart';
 import '../helpers/hex_color.dart';
+import '../services/auth_service.dart';
 
 class RestaurantOverview extends StatelessWidget {
   const RestaurantOverview({Key key}) : super(key: key);
@@ -14,48 +15,52 @@ class RestaurantOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthService authService = AuthService();
     AppBar appBar = AppBar(
       title: Text(
         'Restaurants overview',
       ),
       actions: <Widget>[
         Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () => showDialog<String>(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-                  title: const Text(
-                    'Logout',
-                    style: TextStyle(
-                      color: Colors.pink,
-                    ),
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            onTap: () => showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: Colors.pink,
                   ),
-                  content: const Text('Are You sure you want to logout?'),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () async {
-                        Navigator.pop(context, 'Cancel');
-                        await FirebaseAuth.instance.signOut();
-                      },
-                      child: const Text('Yes'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, 'Cancel'),
-                      child: const Text('No'),
-                    ),
-                  ],
                 ),
+                content: const Text('Are You sure you want to logout?'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context, 'Cancel');
+                      await authService.signOut();
+                      Navigator.popUntil(context, ModalRoute.withName("/"));
+                    },
+                    child: const Text('Yes'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text('No'),
+                  ),
+                ],
               ),
-              child: Icon(
-                Icons.logout,
-                size: 26.0,
-              ),
-            ))
+            ),
+            child: Icon(
+              Icons.logout,
+              size: 26.0,
+            ),
+          ),
+        )
       ],
     );
 
     final mediaQuery = MediaQuery.of(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: appBar,
