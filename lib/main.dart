@@ -7,6 +7,8 @@ import './screens/restaurant_overview_screen.dart';
 import './screens/restaurant_detail_screen.dart';
 import './screens/cart_screen.dart';
 import './screens/order_status_screen.dart';
+import './screens/become_seller_screen.dart';
+import './screens/add_menu_items.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
         }
         return MaterialApp(
           title: 'cloud Kitchen',
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primarySwatch: Colors.purple,
             accentColor: Colors.black,
@@ -51,6 +54,8 @@ class MyApp extends StatelessWidget {
             RestaurantDetail.routeName: (ctx) => RestaurantDetail(),
             CartScreen.routeName: (ctx) => CartScreen(),
             OrderStatus.routeName: (ctx) => OrderStatus(),
+            BecomeSeller.routeName: (ctx) => BecomeSeller(),
+            AddMenuItems.routeName: (ctx) => AddMenuItems(),
           },
         );
       },

@@ -17,7 +17,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.shop),
             title: Text('Become a Seller'),
             onTap: () {
-              print('become a seller');
+              Navigator.of(context).pushNamed('/seller');
             },
           ),
           Divider(),

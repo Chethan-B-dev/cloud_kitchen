@@ -53,6 +53,7 @@ class _OrderStatusState extends State<OrderStatus> {
                     RaisedButton.icon(
                       textColor: Theme.of(context).primaryColor,
                       onPressed: () {
+                        print("Rating is $rating");
                         Navigator.of(context)
                             .pushNamed('/restaurants', arguments: rating);
                       },
