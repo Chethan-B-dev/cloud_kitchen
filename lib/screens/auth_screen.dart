@@ -172,7 +172,7 @@ class _AuthCardState extends State<AuthCard>
         user = await authService.signInWithEmailAndPassword(
             _authData['email'], _authData['password']);
         if (user == null) {
-          _showErrorDialog('something went wrong');
+          _showErrorDialog('Failed To Authenticate');
         }
       } else {
         user = await authService.registerWithEmailAndPassword(
@@ -183,7 +183,7 @@ class _AuthCardState extends State<AuthCard>
           _authData['address'],
         );
         if (user == null) {
-          _showErrorDialog('something went wrong');
+          _showErrorDialog('Failed To Authenticate');
         }
       }
     } catch (err) {

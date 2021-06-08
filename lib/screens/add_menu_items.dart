@@ -17,6 +17,16 @@ class _AddMenuItemsState extends State<AddMenuItems> {
         title: Text(
           'Add Menu Items',
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/food');
+            },
+            icon: Icon(
+              Icons.add,
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: Text(

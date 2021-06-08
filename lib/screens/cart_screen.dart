@@ -74,7 +74,6 @@ class _CartScreenState extends State<CartScreen> {
           ],
         ),
       ),
-      drawer: AppDrawer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: Tooltip(
         message: "Place Order",

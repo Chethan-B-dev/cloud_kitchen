@@ -14,9 +14,7 @@ class AuthService with ChangeNotifier {
 
   // auth change user stream
   Stream<UserModel> get user {
-    return _auth.authStateChanges().map((User user) {
-      return _userFromFirebaseUser(user);
-    });
+    return _auth.authStateChanges().map(_userFromFirebaseUser);
   }
 
   // sign in anon
