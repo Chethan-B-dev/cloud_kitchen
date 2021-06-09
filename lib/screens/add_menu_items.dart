@@ -16,7 +16,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Add Menu Items',
         ),
         actions: [
@@ -24,7 +24,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
             onPressed: () {
               Navigator.of(context).pushNamed('/food');
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.add,
             ),
           ),
@@ -44,7 +44,10 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                   child: InkWell(
                     onTap: () {},
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 0,
+                        horizontal: 5,
+                      ),
                       height: deviceSize.height * 0.1,
                       child: Row(
                         children: [
@@ -60,7 +63,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                             //   ),
                             // ),
                             width: deviceSize.width * 0.65,
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Column(

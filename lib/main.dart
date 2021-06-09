@@ -11,6 +11,7 @@ import './screens/order_status_screen.dart';
 import './screens/become_seller_screen.dart';
 import './screens/add_menu_items.dart';
 import './screens/add_food_item.dart';
+import './screens/check_orders.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
           BecomeSeller.routeName: (ctx) => BecomeSeller(),
           AddMenuItems.routeName: (ctx) => AddMenuItems(),
           FoodItem.routeName: (ctx) => FoodItem(),
+          CheckOrders.routeName: (ctx) => CheckOrders(),
         },
       ),
     );
