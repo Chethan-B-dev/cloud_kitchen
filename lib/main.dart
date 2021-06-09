@@ -19,6 +19,7 @@ void main() async {
   runApp(MyApp());
 }
 
+// TODO : add optimization to app by adding const
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
