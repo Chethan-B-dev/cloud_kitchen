@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -101,7 +103,7 @@ class _FoodItemState extends State<FoodItem> {
               ],
             ),
             CircleAvatar(
-              radius: 40,
+              radius: 60,
               backgroundColor: Colors.grey,
               backgroundImage:
                   _pickedImage != null ? FileImage(_pickedImage) : null,
@@ -139,6 +141,20 @@ class _FoodItemState extends State<FoodItem> {
               ),
               icon: Icon(Icons.image),
               label: Text('Add Image'),
+            ),
+            Container(
+              width: deviceSize.width,
+              padding: EdgeInsets.all(10),
+              child: TextField(
+                controller: _priceController,
+                keyboardType: TextInputType.number,
+                autocorrect: false,
+                enableSuggestions: true,
+                decoration: InputDecoration(labelText: 'Price'),
+                onChanged: (value) {
+                  print(_priceController.text);
+                },
+              ),
             ),
           ],
         ),

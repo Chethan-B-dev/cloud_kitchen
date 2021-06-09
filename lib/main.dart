@@ -66,12 +66,9 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserModel>(context);
-    print("user $user");
     if (user == null) {
-      print('came inside if');
       return AuthScreen();
     } else {
-      print('came inside else');
       return RestaurantOverview();
     }
   }
