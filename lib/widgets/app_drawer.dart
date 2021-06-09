@@ -10,7 +10,27 @@ class AppDrawer extends StatelessWidget {
       child: Column(
         children: <Widget>[
           AppBar(
-            title: Text('Cloud Kitchen'),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Chethan B',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(
+                  height: 3,
+                ),
+                Text(
+                  'chethanborigin@gmail.com',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w300,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
             automaticallyImplyLeading: false,
           ),
           Divider(),
@@ -37,6 +57,14 @@ class AppDrawer extends StatelessWidget {
             onTap: () async {
               await authService.signOut();
               Navigator.popUntil(context, ModalRoute.withName("/"));
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.delivery_dining),
+            title: Text('Check Orders'),
+            onTap: () {
+              Navigator.of(context).pushNamed('/check-orders');
             },
           ),
         ],
