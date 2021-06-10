@@ -30,6 +30,7 @@ dependencies:
   rounded_loading_button: ^2.0.5
   shared_preferences: ^2.0.6
   image_picker: ^0.8.0+3
+  firebase_storage: ^8.1.2
   firebase_core: ^1.2.1
   cupertino_icons: ^1.0.2
   cloud_firestore: ^2.2.1

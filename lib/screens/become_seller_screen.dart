@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../helpers/hex_color.dart';
 import '../services/kitchens.dart';
 import '../helpers/error.dart' as disp;
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class BecomeSeller extends StatefulWidget {
   const BecomeSeller({Key key}) : super(key: key);
@@ -15,6 +17,8 @@ class BecomeSeller extends StatefulWidget {
 class _BecomeSellerState extends State<BecomeSeller> {
   final _controller = TextEditingController();
   bool isNonVeg = false;
+  File _pickedImage;
+  final picker = ImagePicker();
 
   @override
   void dispose() {
@@ -26,6 +30,21 @@ class _BecomeSellerState extends State<BecomeSeller> {
     setState(() {
       isNonVeg = !isNonVeg;
     });
+  }
+
+  void _pickImage(String source) async {
+    final pickedFile = await picker.getImage(
+      source: source == 'Gallery' ? ImageSource.gallery : ImageSource.camera,
+      imageQuality: 50,
+      maxWidth: 150,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        _pickedImage = File(pickedFile.path);
+      });
+    } else {
+      print('No image selected.');
+    }
   }
 
   @override
@@ -97,15 +116,45 @@ class _BecomeSellerState extends State<BecomeSeller> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: Text(
-                'Seller Details',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+            CircleAvatar(
+              radius: 60,
+              backgroundColor: Colors.grey,
+              backgroundImage:
+                  _pickedImage != null ? FileImage(_pickedImage) : null,
+            ),
+            FlatButton.icon(
+              textColor: Theme.of(context).primaryColor,
+              onPressed: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text(
+                    'File Upload',
+                    style: TextStyle(
+                      color: Colors.pink,
+                    ),
+                  ),
+                  content: const Text(
+                      'Where do you want the image to be taken from?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _pickImage('Camera');
+                      },
+                      child: const Text('Camera'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _pickImage('Gallery');
+                      },
+                      child: const Text('Gallery'),
+                    ),
+                  ],
                 ),
               ),
+              icon: Icon(Icons.image),
+              label: Text('Add Image'),
             ),
             Container(
               padding: const EdgeInsets.all(10),
@@ -181,8 +230,12 @@ class _BecomeSellerState extends State<BecomeSeller> {
             backgroundColor: HexColor('#424242'),
             onPressed: () async {
               try {
-                final docId =
-                    await Kitchens().addKitchen(_controller.text, isNonVeg);
+                if (_pickedImage == null) {
+                  disp.ShowError.showError('Please pick an image', context);
+                  return;
+                }
+                final docId = await Kitchens()
+                    .addKitchen(_controller.text, isNonVeg, _pickedImage);
                 Navigator.of(context)
                     .pushNamed('/add-menu-items', arguments: docId);
               } catch (err) {

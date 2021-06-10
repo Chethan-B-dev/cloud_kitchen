@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class Kitchens with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -24,12 +26,29 @@ class Kitchens with ChangeNotifier {
     return data['isSeller'];
   }
 
-  Future addKitchen(
-    String kname,
-    bool isNonVeg,
-  ) async {
+  Future<String> get kitchenName async {
+    final kitchenData =
+        await _mainCollection.where('userId', isEqualTo: userId).get();
+    return (kitchenData.docs[0].data() as Map<String, dynamic>)['kname'];
+  }
+
+  // TODO - add background color image to circular avatar
+
+  Future<String> get kitchenId async {
+    final kitchenData =
+        await _mainCollection.where('userId', isEqualTo: userId).get();
+    return (kitchenData.docs[0].data() as Map<String, dynamic>)['kitchenId'];
+  }
+
+  Future addKitchen(String kname, bool isNonVeg, File image) async {
     try {
       Map<String, dynamic> userDetails = await sellerDetails;
+
+      final ref =
+          FirebaseStorage.instance.ref('kitchens').child("$userId" + ".jpg");
+      await ref.putFile(image);
+
+      final imageUrl = await ref.getDownloadURL();
 
       DocumentReference document = await _mainCollection.add(
         {
@@ -40,7 +59,8 @@ class Kitchens with ChangeNotifier {
           'phone': userDetails['phone'],
           'address': userDetails['address'],
           'isVeg': !isNonVeg,
-          'rating': 0.0
+          'rating': 0.0,
+          'imageUrl': imageUrl,
         },
       );
 
@@ -51,14 +71,14 @@ class Kitchens with ChangeNotifier {
         },
       );
     } on PlatformException catch (err) {
-      var message = 'An error occurred, pelase check your credentials!';
+      var message = 'An error occurred, please try again later!';
 
       if (err.message != null) {
         message = err.message;
       }
       throw (message);
     } catch (error) {
-      throw ('Could not authenticate you. Please try again later.');
+      throw (error.toString());
     }
   }
 }

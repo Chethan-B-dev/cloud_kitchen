@@ -7,5 +7,5 @@ orders---------------> id (i.e kitchenid)--------------> {id,userid,username,add
 
 legend:
 [] -------> subcollection
-* ---------> reference
+* --------> reference
 {} --------> fields inside

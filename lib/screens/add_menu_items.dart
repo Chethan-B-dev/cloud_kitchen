@@ -1,3 +1,4 @@
+import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:flutter/material.dart';
 
 class AddMenuItems extends StatefulWidget {
@@ -16,8 +17,18 @@ class _AddMenuItemsState extends State<AddMenuItems> {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Add Menu Items',
+        title: FutureBuilder(
+          future: Kitchens().kitchenName,
+          builder: (ctx, snapshot) {
+            if (snapshot.hasError) {
+              print(snapshot.error);
+              return Text('Add menu items');
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Text(snapshot.data);
+            }
+            return LinearProgressIndicator();
+          },
         ),
         actions: [
           IconButton(
