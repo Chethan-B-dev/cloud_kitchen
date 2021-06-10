@@ -1,4 +1,5 @@
 import 'package:cloud_kitchen/services/kitchens.dart';
+import 'package:cloud_kitchen/services/users.dart';
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
@@ -71,11 +72,49 @@ class _AppDrawerState extends State<AppDrawer> {
             },
           ),
           Divider(),
-          ListTile(
-            leading: Icon(Icons.delivery_dining),
-            title: Text('Check Orders'),
-            onTap: () {
-              Navigator.of(context).pushNamed('/check-orders');
+          FutureBuilder(
+            future: Kitchens().isSeller(),
+            builder: (ctx, snapshot) {
+              if (snapshot.hasError) {
+                return Container();
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container();
+              }
+              if (snapshot.data) {
+                return ListTile(
+                  leading: Icon(Icons.delivery_dining),
+                  title: Text('Check Orders'),
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/check-orders');
+                  },
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
+          Divider(),
+          FutureBuilder(
+            future: Users().hasOrdered,
+            builder: (ctx, snapshot) {
+              if (snapshot.hasError) {
+                return Container();
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container();
+              }
+              if (snapshot.data) {
+                return ListTile(
+                  leading: Icon(Icons.delivery_dining),
+                  title: Text('Order Status'),
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/check-orders');
+                  },
+                );
+              } else {
+                return Container();
+              }
             },
           ),
         ],

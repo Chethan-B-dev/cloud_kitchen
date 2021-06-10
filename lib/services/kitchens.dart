@@ -19,30 +19,44 @@ class Kitchens with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> get sellerDetails async {
-    final snapshot = await _secCollection.doc(userId).get();
-    return snapshot.data();
+    try {
+      final snapshot = await _secCollection.doc(userId).get();
+      return snapshot.data();
+    } catch (err) {
+      print(err.toString());
+      throw (err.toString());
+    }
   }
 
   Future<bool> isSeller() async {
-    final data = await sellerDetails;
-    return data['isSeller'];
+    try {
+      final data = await sellerDetails;
+      return data['isSeller'];
+    } catch (err) {
+      print(err.toString());
+      throw (err.toString());
+    }
   }
 
   Future<String> get kitchenName async {
-    final kitchenData =
-        await _mainCollection.where('userId', isEqualTo: userId).get();
-    return (kitchenData.docs[0].data() as Map<String, dynamic>)['kname'];
+    try {
+      final kitchenData =
+          await _mainCollection.where('userId', isEqualTo: userId).get();
+      return (kitchenData.docs[0].data() as Map<String, dynamic>)['kname'];
+    } catch (err) {
+      print(err.toString());
+      throw (err.toString());
+    }
   }
 
-  // TODO - add background color image to circular avatar
-
   Future<String> get kitchenId async {
-    // final kitchenData =
-    //     await sec.where('userId', isEqualTo: userId).get();
-    // return (kitchenData.docs[0].data() as Map<String, dynamic>)['kitchenId'];
-
-    final kitchenData = await _secCollection.doc(userId).get();
-    return (kitchenData.data() as Map<String, dynamic>)['kitchenId'];
+    try {
+      final kitchenData = await _secCollection.doc(userId).get();
+      return (kitchenData.data() as Map<String, dynamic>)['kitchenId'];
+    } catch (err) {
+      print(err.toString());
+      throw (err.toString());
+    }
   }
 
   Future addKitchen(String kname, bool isNonVeg, File image) async {
@@ -57,8 +71,6 @@ class Kitchens with ChangeNotifier {
 
       final imageUrl = await ref.getDownloadURL();
 
-      print(imageUrl);
-
       DocumentReference document = await _mainCollection.add(
         {
           'kname': kname,
@@ -70,7 +82,7 @@ class Kitchens with ChangeNotifier {
           'isVeg': !isNonVeg,
           'rating': 0.0,
           'imageUrl': imageUrl,
-          'createdAt': DateTime.now().toIso8601String()
+          'createdAt': DateTime.now().toIso8601String(),
         },
       );
 
@@ -80,6 +92,31 @@ class Kitchens with ChangeNotifier {
           'isSeller': true,
         },
       );
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
+
+  Future<Stream<QuerySnapshot>> get foodItems async {
+    try {
+      final kitchenid = await kitchenId;
+      return _foodCollection.doc(kitchenid).collection('items').snapshots();
+    } catch (err) {
+      throw (err.toString());
+    }
+  }
+
+  Future deleteFood(String id) async {
+    try {
+      String kitchenid = await kitchenId;
+      await _foodCollection.doc(kitchenid).collection('items').doc(id).delete();
     } on PlatformException catch (err) {
       var message = 'An error occurred, please try again later!';
 

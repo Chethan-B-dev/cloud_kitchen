@@ -7,47 +7,29 @@ class Users with ChangeNotifier {
   final CollectionReference _mainCollection =
       FirebaseFirestore.instance.collection('users');
 
-  Map<String, dynamic> _userDetails = {
-    'username': '',
-    'email': '',
-    'address': '',
-    'phone': '',
-    'isSeller': false,
-    'hasOrdere': false,
-    'kitchenId': null
-  };
-
-  Map<String, dynamic> get user {
-    return {..._userDetails};
+  Future<String> get userName async {
+    try {
+      final snapshot = await _mainCollection.doc(userId).get();
+      final result = snapshot.data() as Map<String, dynamic>;
+      return result['username'];
+    } catch (err) {
+      print(err.toString());
+      throw (err.toString());
+    }
   }
 
-  Future<void> get setDbDetails async {
-    final snapshot = await _mainCollection.doc(userId).get();
-    _userDetails = snapshot.data();
-  }
-
-  Future get userName async {
-    final snapshot = await _mainCollection.doc(userId).get();
-    final result = snapshot.data();
-    return result;
+  Future<bool> get hasOrdered async {
+    try {
+      final snapshot = await _mainCollection.doc(userId).get();
+      final result = snapshot.data() as Map<String, dynamic>;
+      return result['hasOrdered'];
+    } catch (err) {
+      print(err.toString());
+      throw (err.toString());
+    }
   }
 
   String get userId {
     return FirebaseAuth.instance.currentUser.uid;
-  }
-
-  void setFields(String username, String phone, String address, bool isSeller,
-      bool hasOrdered, String kitchenId, String email) {
-    _userDetails['username'] = username;
-    _userDetails['phone'] = phone;
-    _userDetails['address'] = address;
-    _userDetails['kitchenId'] = kitchenId;
-    _userDetails['hasOrdered'] = hasOrdered;
-    _userDetails['isSeller'] = isSeller;
-    _userDetails['email'] = email;
-  }
-
-  void setDataFields(Map<String, dynamic> data) {
-    _userDetails = data;
   }
 }

@@ -72,8 +72,8 @@ class _FoodItemState extends State<FoodItem> {
                   type: CoolAlertType.success,
                   text: "Your Food item has been added to the menu!",
                   onConfirmBtnTap: () {
-                    Navigator.of(context)
-                        .pushReplacementNamed('/add-menu-items');
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   },
                   barrierDismissible: false,
                 );
