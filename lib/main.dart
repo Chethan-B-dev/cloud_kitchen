@@ -1,4 +1,5 @@
 import 'package:cloud_kitchen/models/user.dart';
+import 'package:cloud_kitchen/services/users.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +22,19 @@ void main() async {
 
 // TODO : add optimization to app by adding const
 class MyApp extends StatelessWidget {
+  final authService = new AuthService();
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<UserModel>.value(
-      value: AuthService().user,
-      initialData: null,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => Users(),
+        ),
+        StreamProvider<UserModel>.value(
+          value: AuthService().user,
+          initialData: null,
+        ),
+      ],
       child: MaterialApp(
         title: 'Cloud Kitchen',
         home: Wrapper(),

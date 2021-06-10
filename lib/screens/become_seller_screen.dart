@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../helpers/hex_color.dart';
+import '../services/kitchens.dart';
 
 class BecomeSeller extends StatefulWidget {
   const BecomeSeller({Key key}) : super(key: key);
@@ -101,30 +102,50 @@ class _BecomeSellerState extends State<BecomeSeller> {
                       Radius.circular(40),
                     ),
                   ),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: Icon(Icons.kitchen),
-                        title: Text('name'),
-                        subtitle: Text('hello world'),
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.kitchen),
-                        title: Text('email'),
-                        subtitle: Text('hello world'),
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.kitchen),
-                        title: Text('location'),
-                        subtitle: Text(
-                            'bangaloredsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.kitchen),
-                        title: Text('phone number'),
-                        subtitle: Text('hello world'),
-                      ),
-                    ],
+                  child: FutureBuilder(
+                    future: Kitchens().sellerDetails,
+                    builder: (ctx, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(child: Text('Something Went Wrong'));
+                      }
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              leading: Icon(Icons.kitchen),
+                              title: Text('name'),
+                              subtitle: Text(
+                                snapshot.data['username'],
+                              ),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.kitchen),
+                              title: Text('email'),
+                              subtitle: Text(
+                                snapshot.data['email'],
+                              ),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.kitchen),
+                              title: Text('location'),
+                              subtitle: Text(
+                                snapshot.data['address'],
+                              ),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.kitchen),
+                              title: Text('phone number'),
+                              subtitle: Text(
+                                snapshot.data['phone'],
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
                   ),
                 ),
               ),

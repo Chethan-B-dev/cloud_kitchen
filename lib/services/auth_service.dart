@@ -3,21 +3,19 @@ import 'package:cloud_kitchen/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import '../services/users.dart';
 
 class AuthService with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
   // create user obj based on firebase user
   UserModel _userFromFirebaseUser(User user) {
     return user != null ? UserModel(id: user.uid) : null;
   }
 
-  // auth change user stream
   Stream<UserModel> get user {
     return _auth.authStateChanges().map(_userFromFirebaseUser);
   }
-
-  // sign in anon
 
   // sign in with email and password
   Future signInWithEmailAndPassword(String email, String password) async {
