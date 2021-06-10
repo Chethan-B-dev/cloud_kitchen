@@ -1,8 +1,11 @@
 import 'dart:async';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
+
+import 'package:cloud_kitchen/helpers/error.dart';
+import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:cool_alert/cool_alert.dart';
 
 class FoodItem extends StatefulWidget {
   const FoodItem({Key key}) : super(key: key);
@@ -52,8 +55,31 @@ class _FoodItemState extends State<FoodItem> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              print('clicked button');
+            onPressed: () async {
+              if (_pickedImage == null) {
+                ShowError.showError('Please pick an image', context);
+                return;
+              }
+              try {
+                await Kitchens().addFood(
+                  _nameController.text,
+                  isNonVeg,
+                  _pickedImage,
+                  double.parse(_priceController.text),
+                );
+                CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.success,
+                  text: "Your Food item has been added to the menu!",
+                  onConfirmBtnTap: () {
+                    Navigator.of(context)
+                        .pushReplacementNamed('/add-menu-items');
+                  },
+                  barrierDismissible: false,
+                );
+              } catch (err) {
+                ShowError.showError(err.toString(), context);
+              }
             },
             icon: Icon(Icons.save),
           )
