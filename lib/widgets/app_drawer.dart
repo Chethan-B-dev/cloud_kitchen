@@ -1,13 +1,17 @@
+import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
-import 'dart:async';
-import 'package:provider/provider.dart';
 
-class AppDrawer extends StatelessWidget {
+// TODO:add name and email in app drawer
+
+class AppDrawer extends StatefulWidget {
+  @override
+  _AppDrawerState createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
-    final AuthService authService = AuthService();
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -19,7 +23,7 @@ class AppDrawer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Name',
+                      'name',
                       style: TextStyle(
                         fontSize: 15,
                       ),
@@ -42,9 +46,11 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.shop),
-            title: Text('Become a Seller'),
-            onTap: () {
-              Navigator.of(context).pushNamed('/seller');
+            title: Text('Kitchen'),
+            onTap: () async {
+              await Kitchens().isSeller()
+                  ? Navigator.of(context).pushNamed('/add-menu-items')
+                  : Navigator.of(context).pushNamed('/seller');
             },
           ),
           Divider(),
@@ -52,7 +58,6 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.payment),
             title: Text('Cart'),
             onTap: () {
-              print("user is ${FirebaseAuth.instance.currentUser.uid}");
               Navigator.of(context).pushNamed('/cart');
             },
           ),
@@ -61,7 +66,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () async {
-              await authService.signOut();
+              await AuthService().signOut();
               Navigator.popUntil(context, ModalRoute.withName("/"));
             },
           ),

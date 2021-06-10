@@ -3,8 +3,6 @@ import 'package:cloud_kitchen/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import '../services/users.dart';
 
 class AuthService with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -17,11 +15,12 @@ class AuthService with ChangeNotifier {
     return _auth.authStateChanges().map(_userFromFirebaseUser);
   }
 
-  // sign in with email and password
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
       User user = result.user;
       return _userFromFirebaseUser(user);
     } on FirebaseAuthException catch (e) {
@@ -47,17 +46,23 @@ class AuthService with ChangeNotifier {
       String username, String phone, String address) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
 
       User user = result.user;
 
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'email': email,
-        'username': username,
-        'phone': phone,
-        'address': address,
-        'isSeller': false
-      });
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set(
+        {
+          'email': email,
+          'username': username,
+          'phone': phone,
+          'address': address,
+          'isSeller': false,
+          'hasOrdered': false,
+          'kitchenId': null,
+        },
+      );
       return _userFromFirebaseUser(user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

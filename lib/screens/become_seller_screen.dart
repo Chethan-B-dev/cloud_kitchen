@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../helpers/hex_color.dart';
 import '../services/kitchens.dart';
+import '../helpers/error.dart' as disp;
 
 class BecomeSeller extends StatefulWidget {
   const BecomeSeller({Key key}) : super(key: key);
@@ -15,6 +16,12 @@ class _BecomeSellerState extends State<BecomeSeller> {
   final _controller = TextEditingController();
   bool isNonVeg = false;
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   void toggleSwitch(bool value) {
     setState(() {
       isNonVeg = !isNonVeg;
@@ -26,7 +33,18 @@ class _BecomeSellerState extends State<BecomeSeller> {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Become Seller'),
+        title: FutureBuilder(
+          future: Kitchens().isSeller(),
+          builder: (ctx, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Kitchen');
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return snapshot.data ? Text('Kitchen') : Text('Become a Seller');
+            }
+            return LinearProgressIndicator();
+          },
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -112,29 +130,29 @@ class _BecomeSellerState extends State<BecomeSeller> {
                         return Column(
                           children: [
                             ListTile(
-                              leading: Icon(Icons.kitchen),
-                              title: Text('name'),
+                              leading: Icon(Icons.person),
+                              title: Text('Name'),
                               subtitle: Text(
                                 snapshot.data['username'],
                               ),
                             ),
                             ListTile(
-                              leading: Icon(Icons.kitchen),
-                              title: Text('email'),
+                              leading: Icon(Icons.email),
+                              title: Text('Email'),
                               subtitle: Text(
                                 snapshot.data['email'],
                               ),
                             ),
                             ListTile(
-                              leading: Icon(Icons.kitchen),
-                              title: Text('location'),
+                              leading: Icon(Icons.location_city),
+                              title: Text('Location'),
                               subtitle: Text(
                                 snapshot.data['address'],
                               ),
                             ),
                             ListTile(
-                              leading: Icon(Icons.kitchen),
-                              title: Text('phone number'),
+                              leading: Icon(Icons.phone_android),
+                              title: Text('Phone number'),
                               subtitle: Text(
                                 snapshot.data['phone'],
                               ),
@@ -161,8 +179,16 @@ class _BecomeSellerState extends State<BecomeSeller> {
           child: FloatingActionButton(
             child: Icon(Icons.menu_book_sharp),
             backgroundColor: HexColor('#424242'),
-            onPressed: () {
-              Navigator.of(context).pushNamed('/add-menu-items');
+            onPressed: () async {
+              try {
+                final docId =
+                    await Kitchens().addKitchen(_controller.text, isNonVeg);
+                Navigator.of(context)
+                    .pushNamed('/add-menu-items', arguments: docId);
+              } catch (err) {
+                disp.ShowError.showError(err.toString(), context);
+                print(err.toString());
+              }
             },
           ),
         ),

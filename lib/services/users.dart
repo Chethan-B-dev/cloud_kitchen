@@ -21,10 +21,15 @@ class Users with ChangeNotifier {
     return {..._userDetails};
   }
 
-  Future<Map> get setDbDetailsAndGet async {
+  Future<void> get setDbDetails async {
     final snapshot = await _mainCollection.doc(userId).get();
     _userDetails = snapshot.data();
-    return user;
+  }
+
+  Future get userName async {
+    final snapshot = await _mainCollection.doc(userId).get();
+    final result = snapshot.data();
+    return result;
   }
 
   String get userId {
