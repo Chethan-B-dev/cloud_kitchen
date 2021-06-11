@@ -39,6 +39,9 @@ dependencies:
   page_transition: ^2.0.2
   font_awesome_flutter: ^9.0.0
   smooth_star_rating: ^1.1.1
+  flutter_placeholder_textlines: ^1.0.4
+  transparent_image: ^2.0.0
+  shimmer: ^2.0.0
   cool_alert: ^1.1.0
 
 dev_dependencies:
