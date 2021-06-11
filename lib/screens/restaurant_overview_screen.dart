@@ -3,8 +3,6 @@ import 'package:cloud_kitchen/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/new_restaurants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import './restaurant_detail_screen.dart';
 import '../helpers/hex_color.dart';
 import '../services/auth_service.dart';
 
@@ -21,39 +19,36 @@ class RestaurantOverview extends StatelessWidget {
         'Restaurants overview',
       ),
       actions: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            onTap: () => showDialog<String>(
-              context: context,
-              builder: (BuildContext context) => AlertDialog(
-                title: const Text(
-                  'Logout',
-                  style: TextStyle(
-                    color: Colors.pink,
-                  ),
+        IconButton(
+          onPressed: () => showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.pink,
                 ),
-                content: const Text('Are You sure you want to logout?'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () async {
-                      Navigator.pop(context, 'Cancel');
-                      await authService.signOut();
-                      Navigator.popUntil(context, ModalRoute.withName("/"));
-                    },
-                    child: const Text('Yes'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, 'Cancel'),
-                    child: const Text('No'),
-                  ),
-                ],
               ),
+              content: const Text('Are You sure you want to logout?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () async {
+                    Navigator.pop(context, 'Cancel');
+                    await authService.signOut();
+                    Navigator.popUntil(context, ModalRoute.withName("/"));
+                  },
+                  child: const Text('Yes'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  child: const Text('No'),
+                ),
+              ],
             ),
-            child: Icon(
-              Icons.logout,
-              size: 26.0,
-            ),
+          ),
+          icon: Icon(
+            Icons.logout,
+            size: 26.0,
           ),
         )
       ],
@@ -90,7 +85,7 @@ class RestaurantOverview extends StatelessWidget {
                       mediaQuery.padding.top) *
                   0.55,
               child: AllRestaurants(),
-            )
+            ),
           ],
         ),
       ),

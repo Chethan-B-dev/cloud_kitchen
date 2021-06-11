@@ -17,63 +17,64 @@ class _OrderStatusState extends State<OrderStatus> {
   var rating = 0.0;
   void showNow() {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)), //this right here
-            child: Container(
-              height: 250,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Rate Restaurant',
-                      style: Theme.of(context).textTheme.title,
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)), //this right here
+          child: Container(
+            height: 250,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Rate Restaurant',
+                    style: Theme.of(context).textTheme.title,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SmoothStarRating(
+                    rating: rating,
+                    size: 45,
+                    starCount: 5,
+                    onRated: (value) {
+                      setState(() {
+                        rating = value;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  RaisedButton.icon(
+                    textColor: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      print("Rating is $rating");
+                      Navigator.of(context)
+                          .pushNamed('/restaurants', arguments: rating);
+                    },
+                    icon: Icon(Icons.rate_review_sharp),
+                    label: Text(
+                      'Rate',
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    SmoothStarRating(
-                      rating: rating,
-                      size: 45,
-                      starCount: 5,
-                      onRated: (value) {
-                        setState(() {
-                          rating = value;
-                        });
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    RaisedButton.icon(
-                      textColor: Theme.of(context).primaryColor,
-                      onPressed: () {
-                        print("Rating is $rating");
-                        Navigator.of(context)
-                            .pushNamed('/restaurants', arguments: rating);
-                      },
-                      icon: Icon(Icons.rate_review_sharp),
-                      label: Text(
-                        'Rate',
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   @override

@@ -237,7 +237,7 @@ class _BecomeSellerState extends State<BecomeSeller> {
                 final docId = await Kitchens()
                     .addKitchen(_controller.text, isNonVeg, _pickedImage);
                 Navigator.of(context)
-                    .pushNamed('/add-menu-items', arguments: docId);
+                    .pushReplacementNamed('/add-menu-items', arguments: docId);
               } catch (err) {
                 disp.ShowError.showError(err.toString(), context);
                 print(err.toString());

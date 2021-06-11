@@ -83,6 +83,7 @@ class Kitchens with ChangeNotifier {
           'rating': 0.0,
           'imageUrl': imageUrl,
           'createdAt': DateTime.now().toIso8601String(),
+          'noOfRating': 0.0,
         },
       );
 
@@ -113,6 +114,22 @@ class Kitchens with ChangeNotifier {
     }
   }
 
+  Stream<QuerySnapshot> get newKitchens {
+    try {
+      return _mainCollection.orderBy('createdAt').snapshots();
+    } catch (err) {
+      throw (err.toString());
+    }
+  }
+
+  Stream<QuerySnapshot> get allKitchens {
+    try {
+      return _mainCollection.orderBy('rating').snapshots();
+    } catch (err) {
+      throw (err.toString());
+    }
+  }
+
   Future deleteFood(String id) async {
     try {
       String kitchenid = await kitchenId;
@@ -137,7 +154,7 @@ class Kitchens with ChangeNotifier {
           await _foodCollection.doc(kitchenid).collection('items').add(
         {
           'name': fname,
-          'price': price,
+          'price': price.abs(),
           'imageUrl': '',
           'createdAt': DateTime.now().toIso8601String(),
           'isVeg': !isNonVeg,
