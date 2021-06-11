@@ -49,6 +49,16 @@ class Kitchens with ChangeNotifier {
     }
   }
 
+  Future<String> kitchenNameFromId(String kitchenId) async {
+    try {
+      final kitchenData = await _mainCollection.doc(kitchenId).get();
+      return (kitchenData.data() as Map<String, dynamic>)['kname'];
+    } catch (err) {
+      print(err.toString());
+      throw (err.toString());
+    }
+  }
+
   Future<String> get kitchenId async {
     try {
       final kitchenData = await _secCollection.doc(userId).get();
@@ -109,6 +119,14 @@ class Kitchens with ChangeNotifier {
     try {
       final kitchenid = await kitchenId;
       return _foodCollection.doc(kitchenid).collection('items').snapshots();
+    } catch (err) {
+      throw (err.toString());
+    }
+  }
+
+  Stream<QuerySnapshot> kitchenFoods(String kitchenId) {
+    try {
+      return _foodCollection.doc(kitchenId).collection('items').snapshots();
     } catch (err) {
       throw (err.toString());
     }

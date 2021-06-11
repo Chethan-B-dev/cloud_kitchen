@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:flutter/material.dart';
-import '../screens/cart_screen.dart';
+import 'package:flutter_placeholder_textlines/placeholder_lines.dart';
 
 class RestaurantDetail extends StatefulWidget {
   static String routeName = '/details';
@@ -10,68 +12,123 @@ class RestaurantDetail extends StatefulWidget {
 class _RestaurantDetailState extends State<RestaurantDetail> {
   @override
   Widget build(BuildContext context) {
-    String id = ModalRoute.of(context).settings.arguments as String;
-    final appBar = AppBar(
-      title: Text('Restaurant name'),
-    );
+    String kitchenId = ModalRoute.of(context).settings.arguments as String;
 
     return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
-        child: ListView.builder(
-          primary: false,
-          shrinkWrap: true,
-          itemBuilder: (ctx, index) {
-            return BestFoodTiles(
-              name: "Fried Egg",
-              imageUrl: "ic_popular_food_1",
-              rating: '4.9',
-              numberOfRating: '200',
-              price: '15.06',
-              slug: "fried_egg",
-            );
+      appBar: AppBar(
+        title: FutureBuilder(
+          future: Kitchens().kitchenNameFromId(kitchenId),
+          builder: (ctx, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Add menu items');
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Text(snapshot.data);
+            }
+            return LinearProgressIndicator();
           },
-          itemCount: 10,
         ),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: Kitchens().kitchenFoods(kitchenId),
+        builder: (context, streamSnapshot) {
+          if (streamSnapshot.hasError) {
+            return Text('Something went wrong');
+          }
+
+          if (streamSnapshot.connectionState == ConnectionState.waiting) {
+            return Material(
+              borderRadius: BorderRadius.circular(10),
+              elevation: 9,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 20,
+                ),
+                width: double.infinity,
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.only(right: 16),
+                      width: 70,
+                      height: 70,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(.6),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.photo_size_select_actual,
+                          color: Colors.white,
+                          size: 38,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: PlaceholderLines(
+                        count: 3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          if (streamSnapshot.data.docs.length == 0) {
+            return Center(
+              child: Text('wow such empty'),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: streamSnapshot.data.docs.length,
+            // scrollDirection: Axis.vertical,
+            itemBuilder: (ctx, index) => RestaurantDetailTile(
+              id: streamSnapshot.data.docs[index].id,
+              name: streamSnapshot.data.docs[index]['name'],
+              imageUrl: streamSnapshot.data.docs[index]['imageUrl'],
+              price: streamSnapshot.data.docs[index]['price'],
+              isVeg: streamSnapshot.data.docs[index]['isVeg'],
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class BestFoodTiles extends StatelessWidget {
+class RestaurantDetailTile extends StatelessWidget {
+  String id;
   String name;
   String imageUrl;
-  String rating;
-  String numberOfRating;
-  String price;
-  String slug;
+  double price;
+  bool isVeg;
 
-  BestFoodTiles({
+  RestaurantDetailTile({
     Key key,
+    @required this.id,
     @required this.name,
     @required this.imageUrl,
-    @required this.rating,
-    @required this.numberOfRating,
     @required this.price,
-    @required this.slug,
+    @required this.isVeg,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        print('hello world');
-      },
-      child: Container(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-        child: Card(
-          color: Colors.white,
-          elevation: 8.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(5.0),
-            ),
+    return Padding(
+      padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+      child: Card(
+        color: Colors.white,
+        elevation: 8.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(
+            Radius.circular(5.0),
           ),
+        ),
+        child: InkWell(
+          onTap: () {
+            print('hello world');
+          },
           child: Container(
             width: double.infinity,
             child: Column(
@@ -80,7 +137,7 @@ class BestFoodTiles extends StatelessWidget {
                   height: 200,
                   width: double.infinity,
                   child: Image.network(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFmzJPj0oOrzDyeqygSlw29cp_kQ5ZTpksGQ&usqp=CAU',
+                    imageUrl,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -90,14 +147,14 @@ class BestFoodTiles extends StatelessWidget {
                     Expanded(
                       child: Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.only(left: 5, top: 10),
+                        padding: EdgeInsets.only(left: 5, top: 5),
                         child: IconButton(
                           onPressed: () {
                             Navigator.of(context).pushNamed('/cart');
                           },
                           icon: Icon(
                             Icons.shopping_cart,
-                            color: Colors.pink,
+                            color: Colors.pinkAccent,
                           ),
                         ),
                       ),
@@ -122,9 +179,9 @@ class BestFoodTiles extends StatelessWidget {
                     Expanded(
                       child: Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.only(left: 5, top: 5, right: 5),
+                        padding: EdgeInsets.only(left: 5, top: 5),
                         child: Text(
-                          '\$' + price,
+                          '\u20B9 ' + price.toString(),
                           style: TextStyle(
                             color: Color(0xFF6e6e71),
                             fontSize: 18,
