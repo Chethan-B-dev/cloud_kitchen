@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 class Users with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference _mainCollection =
       FirebaseFirestore.instance.collection('users');
+  final CollectionReference _cartCollection =
+      FirebaseFirestore.instance.collection('cart');
 
   Future<String> get userName async {
     try {
@@ -31,5 +34,29 @@ class Users with ChangeNotifier {
 
   String get userId {
     return FirebaseAuth.instance.currentUser.uid;
+  }
+
+  Future addFoodToCart(String kitchenId, String foodId) async {
+    try {
+      DocumentReference document =
+          await _cartCollection.doc(userId).collection('items').add(
+        {
+          'quantity': 1,
+          'foodId': foodId,
+          'kitchenId': kitchenId,
+        },
+      );
+
+      return document.id;
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
   }
 }

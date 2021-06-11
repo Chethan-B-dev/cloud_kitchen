@@ -49,8 +49,8 @@ class AllRestaurantsTile extends StatelessWidget {
   final String id;
   final String name;
   final String imageUrl;
-  final double rating;
-  final int numberOfRating;
+  final num rating;
+  final num numberOfRating;
 
   const AllRestaurantsTile({
     Key key,
@@ -123,7 +123,7 @@ class AllRestaurantsTile extends StatelessWidget {
                                   padding:
                                       const EdgeInsets.only(left: 5, top: 5),
                                   child: Text(
-                                    rating.toString(),
+                                    rating.toStringAsFixed(2),
                                     style: TextStyle(
                                       color: Color(0xFF6e6e71),
                                       fontSize: 10,
@@ -136,7 +136,7 @@ class AllRestaurantsTile extends StatelessWidget {
                                       const EdgeInsets.only(top: 3, left: 5),
                                   child: SmoothStarRating(
                                     color: Colors.red,
-                                    rating: rating,
+                                    rating: rating.toDouble(),
                                     size: 10,
                                     starCount: 5,
                                   ),
@@ -145,6 +145,24 @@ class AllRestaurantsTile extends StatelessWidget {
                             ),
                           ),
                         ),
+                        Expanded(
+                          child: Tooltip(
+                            message: 'Number of people rated',
+                            child: Container(
+                              alignment: Alignment.centerRight,
+                              margin: EdgeInsets.only(right: 5),
+                              padding: const EdgeInsets.all(5),
+                              child: Text(
+                                numberOfRating.toStringAsFixed(0),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     )
                   ],

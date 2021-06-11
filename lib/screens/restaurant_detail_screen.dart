@@ -85,6 +85,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
             // scrollDirection: Axis.vertical,
             itemBuilder: (ctx, index) => RestaurantDetailTile(
               id: streamSnapshot.data.docs[index].id,
+              kitchenID: kitchenId,
               name: streamSnapshot.data.docs[index]['name'],
               imageUrl: streamSnapshot.data.docs[index]['imageUrl'],
               price: streamSnapshot.data.docs[index]['price'],
@@ -99,6 +100,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
 
 class RestaurantDetailTile extends StatelessWidget {
   String id;
+  String kitchenID;
   String name;
   String imageUrl;
   double price;
@@ -107,6 +109,7 @@ class RestaurantDetailTile extends StatelessWidget {
   RestaurantDetailTile({
     Key key,
     @required this.id,
+    @required this.kitchenID,
     @required this.name,
     @required this.imageUrl,
     @required this.price,
@@ -126,9 +129,7 @@ class RestaurantDetailTile extends StatelessWidget {
           ),
         ),
         child: InkWell(
-          onTap: () {
-            print('hello world');
-          },
+          onTap: () {},
           child: Container(
             width: double.infinity,
             child: Column(
@@ -150,7 +151,13 @@ class RestaurantDetailTile extends StatelessWidget {
                         padding: EdgeInsets.only(left: 5, top: 5),
                         child: IconButton(
                           onPressed: () {
-                            Navigator.of(context).pushNamed('/cart');
+                            Navigator.of(context).pushNamed(
+                              '/cart',
+                              arguments: {
+                                'foodId': id,
+                                'kitchenId': kitchenID,
+                              },
+                            );
                           },
                           icon: Icon(
                             Icons.shopping_cart,

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_kitchen/helpers/border.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_placeholder_textlines/placeholder_lines.dart';
@@ -32,14 +33,14 @@ class _NewRestaurantsState extends State<NewRestaurants> {
   }
 }
 
-class NewRestaurantTiles extends StatelessWidget {
+class NewRestaurantTile extends StatelessWidget {
   final String id;
   final String name;
   final String imageUrl;
-  final double rating;
-  final int numberOfRating;
+  final num rating;
+  final num numberOfRating;
 
-  const NewRestaurantTiles({
+  const NewRestaurantTile({
     Key key,
     @required this.id,
     @required this.name,
@@ -55,7 +56,9 @@ class NewRestaurantTiles extends StatelessWidget {
       elevation: 8.0,
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(
-          Radius.circular(5.0),
+          Radius.circular(
+            5.0,
+          ),
         ),
       ),
       child: InkWell(
@@ -100,7 +103,7 @@ class NewRestaurantTiles extends StatelessWidget {
                           alignment: Alignment.topLeft,
                           padding: const EdgeInsets.only(left: 5, top: 5),
                           child: Text(
-                            rating.toString(),
+                            rating.toStringAsFixed(2),
                             style: TextStyle(
                               color: Color(0xFF6e6e71),
                               fontSize: 10,
@@ -112,7 +115,7 @@ class NewRestaurantTiles extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 3, left: 5),
                           child: SmoothStarRating(
                             color: Colors.red,
-                            rating: rating,
+                            rating: rating.toDouble(),
                             size: 10,
                             starCount: 5,
                           ),
@@ -120,6 +123,24 @@ class NewRestaurantTiles extends StatelessWidget {
                       ],
                     ),
                   ),
+                  Expanded(
+                    child: Tooltip(
+                      message: 'Number of people rated',
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        margin: EdgeInsets.only(right: 5),
+                        padding: const EdgeInsets.all(5),
+                        child: Text(
+                          numberOfRating.toStringAsFixed(0),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               )
             ],
@@ -205,7 +226,7 @@ class NewRestaurantItems extends StatelessWidget {
         return ListView.builder(
           itemCount: streamSnapshot.data.docs.length,
           scrollDirection: Axis.horizontal,
-          itemBuilder: (ctx, index) => NewRestaurantTiles(
+          itemBuilder: (ctx, index) => NewRestaurantTile(
             id: streamSnapshot.data.docs[index].id,
             name: streamSnapshot.data.docs[index]['kname'],
             imageUrl: streamSnapshot.data.docs[index]['imageUrl'],

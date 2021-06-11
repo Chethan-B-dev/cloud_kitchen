@@ -3,7 +3,6 @@ import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_placeholder_textlines/flutter_placeholder_textlines.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class AddMenuItems extends StatefulWidget {
   const AddMenuItems({Key key}) : super(key: key);

@@ -1,5 +1,5 @@
 import 'package:cloud_kitchen/models/user.dart';
-import 'package:cloud_kitchen/services/users.dart';
+import 'package:cloud_kitchen/services/cart.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,7 @@ import './screens/check_orders.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(MyApp());
 }
 
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => Users(),
+          create: (ctx) => Cart(),
         ),
         StreamProvider<UserModel>.value(
           value: AuthService().user,

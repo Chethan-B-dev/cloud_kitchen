@@ -1,9 +1,10 @@
-import 'package:cloud_kitchen/widgets/app_drawer.dart';
+import 'package:cloud_kitchen/services/cart.dart';
+import 'package:cloud_kitchen/services/users.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import '../helpers/hex_color.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../services/auth_service.dart';
+import '../helpers/error.dart';
 
 class CartScreen extends StatefulWidget {
   static String routeName = '/cart';
@@ -12,11 +13,26 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  int counter = 3;
-  final AuthService authService = AuthService();
-
   @override
   Widget build(BuildContext context) {
+    Map<String, String> data =
+        ModalRoute.of(context).settings.arguments as Map<String, String>;
+    final cart = Provider.of<Cart>(context, listen: false);
+    if (data != null) {
+      String foodId = data['foodId'];
+      String kitchenId = data['kitchenId'];
+      if (cart.checkKitchenID(kitchenId)) {
+        (BuildContext context) async {
+          try {
+            await cart.addItem(foodId);
+          } catch (err) {
+            ShowError.showError(err.toString(), context);
+          }
+        }(context);
+        print('done added item to cart');
+        print(cart.items);
+      }
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFAFAFA),
@@ -57,16 +73,23 @@ class _CartScreenState extends State<CartScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            ListView.builder(
-              primary: false,
-              shrinkWrap: true,
-              itemCount: 4,
-              itemBuilder: (ctx, index) {
-                return CartItem(
-                  productName: "Meat vegetable",
-                  productPrice: "\$65.08",
-                  productImage: "ic_popular_food_4",
-                  productCartQuantity: "5",
+            Consumer<Cart>(
+              builder: (context, cart, child) {
+                return ListView.builder(
+                  primary: false,
+                  shrinkWrap: true,
+                  itemCount: cart.itemCount,
+                  itemBuilder: (ctx, index) => Dismissible(
+                    direction: DismissDirection.endToStart,
+                    key: ValueKey(cart.items.values.toList()[index].foodId),
+                    child: CartItem(
+                      productName: cart.items.values.toList()[index].title,
+                      productPrice: cart.items.values.toList()[index].price,
+                      productImage: cart.items.values.toList()[index].imageUrl,
+                      productCartQuantity:
+                          cart.items.values.toList()[index].quantity,
+                    ),
+                  ),
                 );
               },
             ),
@@ -198,12 +221,12 @@ class TotalCalculationWidget extends StatelessWidget {
 }
 
 class CartItem extends StatelessWidget {
-  String productName;
-  String productPrice;
-  String productImage;
-  String productCartQuantity;
+  final String productName;
+  final num productPrice;
+  final String productImage;
+  final num productCartQuantity;
 
-  CartItem({
+  const CartItem({
     Key key,
     @required this.productName,
     @required this.productPrice,
@@ -227,13 +250,15 @@ class CartItem extends StatelessWidget {
         ],
       ),
       child: Card(
-          color: Colors.white,
-          elevation: 8.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(5.0),
-            ),
+        color: Colors.white,
+        elevation: 8.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(
+            Radius.circular(5.0),
           ),
+        ),
+        child: InkWell(
+          onTap: () {},
           child: Container(
             alignment: Alignment.center,
             child: Row(
@@ -242,9 +267,11 @@ class CartItem extends StatelessWidget {
                 Expanded(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(
-                        minWidth: double.infinity, minHeight: double.infinity),
+                      minWidth: double.infinity,
+                      minHeight: double.infinity,
+                    ),
                     child: Image.network(
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFmzJPj0oOrzDyeqygSlw29cp_kQ5ZTpksGQ&usqp=CAU",
+                      productImage,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -260,7 +287,7 @@ class CartItem extends StatelessWidget {
                           alignment: Alignment.center,
                           padding: EdgeInsets.only(top: 5),
                           child: Text(
-                            'paneer butter masala tika',
+                            productName,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -278,7 +305,7 @@ class CartItem extends StatelessWidget {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            '\$ 15.00',
+                            '\u20B9 ' + productPrice.toStringAsFixed(2),
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 15,
@@ -304,7 +331,9 @@ class CartItem extends StatelessWidget {
                 )
               ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -334,7 +363,7 @@ class AddToCartMenu extends StatelessWidget {
               child: Container(
                 alignment: Alignment.center,
                 child: Text(
-                  '2',
+                  productCounter.toString(),
                 ),
               ),
             ),
