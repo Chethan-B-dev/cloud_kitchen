@@ -18,7 +18,6 @@ class RestaurantOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthService authService = AuthService();
     AppBar appBar = AppBar(
       title: Text(
         'Restaurants overview',

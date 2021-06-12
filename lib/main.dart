@@ -36,10 +36,6 @@ class MyApp extends StatelessWidget {
           value: AuthService().user,
           initialData: null,
         ),
-        StreamProvider<Map>.value(
-          value: Users().orderStatus(),
-          initialData: {},
-        ),
       ],
       child: MaterialApp(
         title: 'Cloud Kitchen',

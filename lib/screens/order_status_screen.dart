@@ -1,9 +1,7 @@
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_kitchen/helpers/hex_color.dart';
+import 'package:cloud_kitchen/helpers/loading_card.dart';
+import 'package:cloud_kitchen/services/users.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 enum OrderStatusEnum { done, not_done }
@@ -26,6 +24,8 @@ class OrderStatus extends StatefulWidget {
 class _OrderStatusState extends State<OrderStatus> {
   var rating = 0.0;
   String kitchenId;
+  bool rateButtonVisible = false;
+  String orderStatus;
   void showNow() {
     showDialog(
       context: context,
@@ -115,79 +115,94 @@ class _OrderStatusState extends State<OrderStatus> {
   Widget build(BuildContext context) {
     kitchenId = ModalRoute.of(context).settings.arguments as String;
 
-    bool rateButtonVisible = false;
+    return StreamBuilder<Map>(
+      stream: Users().orderStatus(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Text('Something Went Wrong'),
+          );
+        }
 
-    final Map data = Provider.of<Map>(context);
-    kitchenId = data?.keys?.toList()[0] as String;
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return LoadingCard();
+        }
 
-    final orderStatus = data?.values?.toList()[0] as String;
+        kitchenId = snapshot.data?.keys?.toList()[0] as String;
 
-    if (orderStatus == "3") {
-      setState(() {
-        rateButtonVisible = true;
-      });
-    }
-    List<OrderStatusEnum> status = [];
+        orderStatus = snapshot.data?.values?.toList()[0] as String;
 
-    OrderStatusValue.values.forEach((v) {
-      if (v.index > int.parse(orderStatus)) {
-        status.add(OrderStatusEnum.not_done);
-      } else {
-        status.add(OrderStatusEnum.done);
-      }
-    });
+        List<OrderStatusEnum> status = [];
 
-    print(status);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Order status'),
-      ),
-      body: Column(
-        children: <Widget>[
-          OrderStatusItem(
-            title: 'Order placed',
-            subtitle: 'We have recieved your order',
-            image:
-                'https://cdn4.iconfinder.com/data/icons/web-development-63/64/z-43-512.png',
-            status: status[0],
+        OrderStatusValue.values.forEach((v) {
+          if (v.index > int.parse(orderStatus)) {
+            status.add(OrderStatusEnum.not_done);
+          } else {
+            status.add(OrderStatusEnum.done);
+          }
+        });
+
+        List<bool> selected = [false, false, false, false];
+
+        selected[int.parse(orderStatus) + 1] = true;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Order status'),
           ),
-          OrderStatusItem(
-            title: 'Order confirmed',
-            subtitle: 'Your Order has been confirmed',
-            image: 'https://image.flaticon.com/icons/png/128/3496/3496155.png',
-            status: status[1],
+          body: Column(
+            children: <Widget>[
+              OrderStatusItem(
+                title: 'Order placed',
+                subtitle: 'We have recieved your order',
+                image:
+                    'https://cdn4.iconfinder.com/data/icons/web-development-63/64/z-43-512.png',
+                status: status[0],
+                selected: selected[0],
+              ),
+              OrderStatusItem(
+                title: 'Order confirmed',
+                subtitle: 'Your Order has been confirmed',
+                image:
+                    'https://image.flaticon.com/icons/png/128/3496/3496155.png',
+                status: status[1],
+                selected: selected[1],
+              ),
+              OrderStatusItem(
+                title: 'Order Processed',
+                subtitle: 'We are preparing your food',
+                image:
+                    'https://cdn.iconscout.com/icon/premium/png-256-thumb/preparing-food-1082095.png',
+                status: status[2],
+                selected: selected[2],
+              ),
+              OrderStatusItem(
+                title: 'Ready to pickup',
+                subtitle: 'Your order is ready for pickup',
+                image:
+                    'https://cdn0.iconfinder.com/data/icons/lined-shipping-3/64/Box_check_delivering_package_pickup_pin_shipping-512.png',
+                status: status[3],
+                selected: selected[3],
+              )
+            ],
           ),
-          OrderStatusItem(
-            title: 'Order Processed',
-            subtitle: 'We are preparing your food',
-            image:
-                'https://cdn.iconscout.com/icon/premium/png-256-thumb/preparing-food-1082095.png',
-            status: status[2],
-          ),
-          OrderStatusItem(
-            title: 'Ready to pickup',
-            subtitle: 'Your order is ready for pickup',
-            image:
-                'https://cdn0.iconfinder.com/data/icons/lined-shipping-3/64/Box_check_delivering_package_pickup_pin_shipping-512.png',
-            status: status[3],
-          )
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: Visibility(
-        visible: rateButtonVisible,
-        child: Tooltip(
-          message: "Rate Restaurant",
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 30, right: 10),
-            child: FloatingActionButton(
-              child: Icon(Icons.rate_review),
-              backgroundColor: HexColor('#424242'),
-              onPressed: showNow,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          floatingActionButton: Visibility(
+            visible: orderStatus == "3" ? true : false,
+            child: Tooltip(
+              message: "Rate Restaurant",
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 30, right: 10),
+                child: FloatingActionButton(
+                  child: Icon(Icons.rate_review),
+                  backgroundColor: HexColor('#424242'),
+                  onPressed: showNow,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -197,12 +212,14 @@ class OrderStatusItem extends StatelessWidget {
   final String subtitle;
   final OrderStatusEnum status;
   final String image;
+  final bool selected;
   const OrderStatusItem({
     Key key,
     this.title,
     this.subtitle,
     this.status,
     this.image,
+    this.selected,
   }) : super(key: key);
 
   @override
@@ -230,7 +247,7 @@ class OrderStatusItem extends StatelessWidget {
                 subtitle,
                 style: TextStyle(color: Colors.black),
               ),
-              selected: true,
+              selected: selected,
               trailing: Image.network(
                 image,
                 fit: BoxFit.cover,

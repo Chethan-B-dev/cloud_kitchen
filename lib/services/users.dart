@@ -34,6 +34,8 @@ class Users with ChangeNotifier {
     }
   }
 
+  // TODO - implement provider username ,email and userid
+
   Stream<Map> orderStatus() {
     Map data;
     return _mainCollection
@@ -42,7 +44,6 @@ class Users with ChangeNotifier {
         .map((DocumentSnapshot<Object> snapshot) {
       data =
           json.decode((snapshot.data() as Map<String, dynamic>)['orderStatus']);
-      print(data);
       return data;
     });
   }

@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_kitchen/helpers/loading_card.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_placeholder_textlines/placeholder_lines.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class AllRestaurants extends StatefulWidget {
@@ -187,41 +186,7 @@ class AllRestaurantsList extends StatelessWidget {
         }
 
         if (streamSnapshot.connectionState == ConnectionState.waiting) {
-          return Material(
-            borderRadius: BorderRadius.circular(10),
-            elevation: 9,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: 16,
-                horizontal: 20,
-              ),
-              width: double.infinity,
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.only(right: 16),
-                    width: 70,
-                    height: 70,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(.6),
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.photo_size_select_actual,
-                        color: Colors.white,
-                        size: 38,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: PlaceholderLines(
-                      count: 3,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
+          return LoadingCard();
         }
 
         if (streamSnapshot.data.docs.length == 0) {
