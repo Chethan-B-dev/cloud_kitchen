@@ -4,15 +4,17 @@ import 'package:cloud_kitchen/widgets/all_restaurants.dart';
 import 'package:cloud_kitchen/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/new_restaurants.dart';
 import '../helpers/hex_color.dart';
 import '../services/auth_service.dart';
 
 class RestaurantOverview extends StatelessWidget {
-  const RestaurantOverview({Key key}) : super(key: key);
+  RestaurantOverview({Key key}) : super(key: key);
 
   static const routeName = '/restaurants';
+  SharedPreferences prefs;
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +58,10 @@ class RestaurantOverview extends StatelessWidget {
               actions: <Widget>[
                 TextButton(
                   onPressed: () async {
-                    Navigator.pop(context, 'Cancel');
-                    await authService.signOut();
+                    await Provider.of<Cart>(context, listen: false).clear();
+                    prefs = await SharedPreferences.getInstance();
+                    prefs.clear();
+                    await AuthService().signOut();
                     Navigator.popUntil(context, ModalRoute.withName("/"));
                   },
                   child: const Text('Yes'),

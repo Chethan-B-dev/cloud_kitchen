@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,6 +32,19 @@ class Users with ChangeNotifier {
       print(err.toString());
       throw (err.toString());
     }
+  }
+
+  Stream<Map> orderStatus() {
+    Map data;
+    return _mainCollection
+        .doc(userId)
+        .snapshots()
+        .map((DocumentSnapshot<Object> snapshot) {
+      data =
+          json.decode((snapshot.data() as Map<String, dynamic>)['orderStatus']);
+      print(data);
+      return data;
+    });
   }
 
   String get userId {

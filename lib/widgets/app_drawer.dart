@@ -1,6 +1,9 @@
+import 'package:cloud_kitchen/services/cart.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:cloud_kitchen/services/users.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 
 // TODO:add name and email in app drawer
@@ -11,6 +14,7 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
+  SharedPreferences prefs;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -67,6 +71,9 @@ class _AppDrawerState extends State<AppDrawer> {
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () async {
+              await Provider.of<Cart>(context, listen: false).clear();
+              prefs = await SharedPreferences.getInstance();
+              prefs.clear();
               await AuthService().signOut();
               Navigator.popUntil(context, ModalRoute.withName("/"));
             },
@@ -109,7 +116,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   leading: Icon(Icons.delivery_dining),
                   title: Text('Order Status'),
                   onTap: () {
-                    Navigator.of(context).pushNamed('/check-orders');
+                    Navigator.of(context).pushNamed('/order-status');
                   },
                 );
               } else {

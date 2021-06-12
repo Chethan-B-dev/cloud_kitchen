@@ -12,7 +12,9 @@ class ShowError {
           FlatButton(
             child: Text('Okay'),
             onPressed: () {
-              Navigator.of(ctx).pop();
+              if (Navigator.of(ctx).canPop()) {
+                Navigator.of(ctx).pop();
+              }
             },
           )
         ],

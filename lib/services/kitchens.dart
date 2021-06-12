@@ -134,7 +134,11 @@ class Kitchens with ChangeNotifier {
 
   Stream<QuerySnapshot> get newKitchens {
     try {
-      return _mainCollection.orderBy('createdAt', descending: true).snapshots();
+      return _mainCollection
+          .where('userId', isNotEqualTo: userId)
+          .orderBy('userId')
+          .orderBy('createdAt', descending: true)
+          .snapshots();
     } catch (err) {
       throw (err.toString());
     }
@@ -142,7 +146,11 @@ class Kitchens with ChangeNotifier {
 
   Stream<QuerySnapshot> get allKitchens {
     try {
-      return _mainCollection.orderBy('rating', descending: true).snapshots();
+      return _mainCollection
+          .where('userId', isNotEqualTo: userId)
+          .orderBy('userId')
+          .orderBy('rating', descending: true)
+          .snapshots();
     } catch (err) {
       throw (err.toString());
     }

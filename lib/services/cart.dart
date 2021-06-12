@@ -76,8 +76,11 @@ class Cart with ChangeNotifier {
         print(item.imageUrl);
         _items[item.foodId] = item;
       });
-      notifyListeners();
     }
+    if (prefs.containsKey('kitchenId')) {
+      kitchenId = prefs.getString('kitchenId');
+    }
+    notifyListeners();
   }
 
   Future<String> get userName async {
@@ -108,11 +111,14 @@ class Cart with ChangeNotifier {
     return {..._items};
   }
 
-  bool checkKitchenID(String newKitchenID) {
+  Future<bool> checkKitchenID(String newKitchenID) async {
     if (kitchenId == '') {
       kitchenId = newKitchenID;
       return true;
     }
+
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('kitchenId', kitchenId);
     return newKitchenID == _kitchenId;
   }
 
@@ -212,7 +218,7 @@ class Cart with ChangeNotifier {
     }
   }
 
-  Future placeOrder() async {
+  Future<String> placeOrder() async {
     try {
       Map<String, int> orderItemData = {};
 
@@ -222,16 +228,18 @@ class Cart with ChangeNotifier {
 
       await _mainCollection.doc(userId).update({
         'hasOrdered': true,
-        'orderStatus': '0',
+        'orderStatus': json.encode({
+          kitchenId: '0',
+        }),
       });
-
-//orders---------------> id (i.e kitchenid)-------------->[orders] {id,userid,username,items[]}
 
       await _ordersCollection.doc(kitchenId).collection('orders').add({
         'userId': userId,
         'username': await userName,
         'items': json.encode(orderItemData),
       });
+
+      return kitchenId;
     } on PlatformException catch (err) {
       var message = 'An error occurred, please try again later!';
 
@@ -344,6 +352,7 @@ class Cart with ChangeNotifier {
       kitchenId = '';
       prefs = await SharedPreferences.getInstance();
       prefs.remove('cart');
+      prefs.remove('kitchenId');
       notifyListeners();
     } on PlatformException catch (err) {
       var message = 'An error occurred, please try again later!';

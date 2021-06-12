@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_kitchen/helpers/error.dart';
+import 'package:cloud_kitchen/services/cart.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_placeholder_textlines/placeholder_lines.dart';
+import 'package:provider/provider.dart';
 
 class RestaurantDetail extends StatefulWidget {
   static String routeName = '/details';
@@ -150,7 +153,17 @@ class RestaurantDetailTile extends StatelessWidget {
                         alignment: Alignment.center,
                         padding: EdgeInsets.only(left: 5, top: 5),
                         child: IconButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            final cart =
+                                Provider.of<Cart>(context, listen: false);
+                            if (!await cart.checkKitchenID(kitchenID)) {
+                              ShowError.showError(
+                                'can not add food from multiple kitchens into cart',
+                                context,
+                              );
+                              return;
+                            }
+
                             Navigator.of(context).pushNamed(
                               '/cart',
                               arguments: {

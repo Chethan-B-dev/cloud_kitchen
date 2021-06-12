@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_kitchen/models/user.dart';
 import 'package:cloud_kitchen/services/cart.dart';
+import 'package:cloud_kitchen/services/users.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +25,6 @@ void main() async {
 
 // TODO : add optimization to app by adding const
 class MyApp extends StatelessWidget {
-  final authService = new AuthService();
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -33,6 +35,10 @@ class MyApp extends StatelessWidget {
         StreamProvider<UserModel>.value(
           value: AuthService().user,
           initialData: null,
+        ),
+        StreamProvider<Map>.value(
+          value: Users().orderStatus(),
+          initialData: {},
         ),
       ],
       child: MaterialApp(

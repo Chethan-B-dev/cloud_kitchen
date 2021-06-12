@@ -1,4 +1,5 @@
 import 'package:cloud_kitchen/services/cart.dart';
+import 'package:cloud_kitchen/services/users.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -33,22 +34,14 @@ class _CartScreenState extends State<CartScreen> {
     if (data != null) {
       String foodId = data['foodId'];
       String kitchenId = data['kitchenId'];
-      if (cart.checkKitchenID(kitchenId)) {
-        (BuildContext context) async {
-          try {
-            await cart.addItem(foodId);
-          } catch (err) {
-            ShowError.showError(err.toString(), context);
-          }
-        }(context);
-        print('done added item to cart');
-        print(cart.items);
-      } else {
-        ShowError.showError(
-          'you Can only add food from one restaurant',
-          context,
-        );
-      }
+
+      (BuildContext context) async {
+        try {
+          await cart.addItem(foodId);
+        } catch (err) {
+          ShowError.showError(err.toString(), context);
+        }
+      }(context);
     }
     return Scaffold(
       appBar: AppBar(
@@ -179,36 +172,55 @@ class _CartScreenState extends State<CartScreen> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: Tooltip(
-        message: "Place Order",
-        child: Padding(
-          padding: EdgeInsets.only(bottom: 30, right: 10),
-          child: Consumer<Cart>(
-            child: Icon(Icons.save),
-            builder: (context, value, child) {
-              return FloatingActionButton(
-                child: child,
-                backgroundColor: HexColor('#424242'),
-                onPressed: () async {
-                  if (cart.itemCount == 0) {
-                    ShowError.showError(
-                      'Cart is empty,Please add items before you place an order',
-                      context,
+      floatingActionButton: FutureBuilder(
+        future: Users().hasOrdered,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Container();
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+
+          return Visibility(
+            visible: !snapshot.data,
+            child: Tooltip(
+              message: "Place Order",
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 30, right: 10),
+                child: Consumer<Cart>(
+                  child: Icon(Icons.save),
+                  builder: (context, value, child) {
+                    return FloatingActionButton(
+                      child: child,
+                      backgroundColor: HexColor('#424242'),
+                      onPressed: () async {
+                        if (cart.itemCount == 0) {
+                          ShowError.showError(
+                            'Cart is empty,Please add items before you place an order',
+                            context,
+                          );
+                          return;
+                        }
+                        try {
+                          final kitchenId = await cart.placeOrder();
+                          await cart.clear();
+                          Navigator.of(context).pushReplacementNamed(
+                            '/order-status',
+                            arguments: kitchenId,
+                          );
+                        } catch (err) {
+                          ShowError.showError(err.toString(), context);
+                        }
+                      },
                     );
-                    return;
-                  }
-                  try {
-                    await cart.placeOrder();
-                    await cart.clear();
-                    Navigator.of(context).pushReplacementNamed('/order-status');
-                  } catch (err) {
-                    ShowError.showError(err.toString(), context);
-                  }
-                },
-              );
-            },
-          ),
-        ),
+                  },
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

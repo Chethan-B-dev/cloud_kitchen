@@ -223,6 +223,8 @@ class NewRestaurantItems extends StatelessWidget {
           );
         }
 
+        print(streamSnapshot.data.docs);
+
         return ListView.builder(
           itemCount: streamSnapshot.data.docs.length,
           scrollDirection: Axis.horizontal,
