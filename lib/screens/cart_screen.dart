@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import '../helpers/hex_color.dart';
 import '../helpers/error.dart';
+import 'package:badges/badges.dart';
 
 class CartScreen extends StatefulWidget {
   static String routeName = '/cart';
@@ -49,6 +50,7 @@ class _CartScreenState extends State<CartScreen> {
     }
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Color(0xFFFAFAFA),
         elevation: 8.0,
         leading: IconButton(
@@ -58,19 +60,36 @@ class _CartScreenState extends State<CartScreen> {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Center(
-          child: Text(
-            "Item Carts",
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
-            textAlign: TextAlign.center,
+        title: Text(
+          "Item Carts",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
           ),
         ),
         brightness: Brightness.light,
         actions: <Widget>[
+          Consumer<Cart>(
+            builder: (context, cart, child) => Badge(
+              position: BadgePosition.topEnd(top: 0, end: 3),
+              animationDuration: Duration(milliseconds: 300),
+              animationType: BadgeAnimationType.slide,
+              badgeContent: Text(
+                cart.itemCount.toString(),
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              child: IconButton(
+                onPressed: null,
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
           Tooltip(
             message: 'Clear Cart',
             child: IconButton(
@@ -139,6 +158,7 @@ class _CartScreenState extends State<CartScreen> {
                     },
                     key: ValueKey(cart.items.values.toList()[index].foodId),
                     child: CartItem(
+                      cartId: cart.items.values.toList()[index].cartId,
                       productid: cart.items.values.toList()[index].foodId,
                       productName: cart.items.values.toList()[index].title,
                       productPrice: cart.items.values.toList()[index].price,
@@ -150,7 +170,7 @@ class _CartScreenState extends State<CartScreen> {
                 );
               },
             ),
-            TotalCalculationWidget(cart.totalAmount),
+            TotalCalculationWidget(),
           ],
         ),
       ),
@@ -174,10 +194,6 @@ class _CartScreenState extends State<CartScreen> {
 }
 
 class TotalCalculationWidget extends StatelessWidget {
-  final num total;
-
-  TotalCalculationWidget(this.total);
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -201,80 +217,107 @@ class TotalCalculationWidget extends StatelessWidget {
             Radius.circular(5.0),
           ),
         ),
-        child: Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.only(left: 25, right: 30, top: 10, bottom: 10),
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 10,
-              ),
-              ListView.builder(
-                primary: false,
-                shrinkWrap: true,
-                itemCount: 5,
-                itemBuilder: (ctx, index) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            "Grilled Salmon lol",
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Color(0xFF3a3a3b),
-                                fontWeight: FontWeight.w400),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            "\$192",
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Color(0xFF3a3a3b),
-                                fontWeight: FontWeight.w400),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Consumer<Cart>(
+          builder: (context, cart, child) {
+            if (cart.itemCount == 0) {
+              return Container();
+            }
+
+            return Container(
+              alignment: Alignment.center,
+              padding:
+                  EdgeInsets.only(left: 25, right: 30, top: 10, bottom: 10),
+              child: Column(
                 children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      "Total",
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Color(0xFF3a3a3b),
-                          fontWeight: FontWeight.w400),
-                      textAlign: TextAlign.left,
-                    ),
+                  SizedBox(
+                    height: 10,
                   ),
-                  Expanded(
-                    child: Text(
-                      '\u20B9 ' + total.toStringAsFixed(2),
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.pink,
-                        fontWeight: FontWeight.w400,
+                  ListView.builder(
+                    primary: false,
+                    shrinkWrap: true,
+                    itemCount: cart.itemCount,
+                    itemBuilder: (ctx, index) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                cart.items.values.toList()[index].title,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Color(0xFF3a3a3b),
+                                    fontWeight: FontWeight.w400),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "x${cart.items.values.toList()[index].quantity}",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Color(0xFF3a3a3b),
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            Container(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                '\u20B9 ' +
+                                    cart.items.values
+                                        .toList()[index]
+                                        .price
+                                        .toStringAsFixed(2),
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Color(0xFF3a3a3b),
+                                    fontWeight: FontWeight.w400),
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          "Total",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFF3a3a3b),
+                              fontWeight: FontWeight.w400),
+                          textAlign: TextAlign.left,
+                        ),
                       ),
-                      textAlign: TextAlign.right,
-                    ),
+                      Expanded(
+                        child: Text(
+                          '\u20B9 ' + cart.totalAmount.toStringAsFixed(2),
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.pink,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          textAlign: TextAlign.right,
+                        ),
+                      )
+                    ],
                   )
                 ],
-              )
-            ],
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -284,6 +327,7 @@ class TotalCalculationWidget extends StatelessWidget {
 class CartItem extends StatelessWidget {
   final String productName;
   final String productid;
+  final String cartId;
   final num productPrice;
   final String productImage;
   final num productCartQuantity;
@@ -292,6 +336,7 @@ class CartItem extends StatelessWidget {
     Key key,
     @required this.productName,
     @required this.productid,
+    @required this.cartId,
     @required this.productPrice,
     @required this.productImage,
     @required this.productCartQuantity,
@@ -384,7 +429,11 @@ class CartItem extends StatelessWidget {
                           bottom: 5,
                         ),
                         alignment: Alignment.center,
-                        child: AddToCartMenu(productCartQuantity, productid),
+                        child: AddToCartMenu(
+                          productCartQuantity,
+                          productid,
+                          cartId,
+                        ),
                       ),
                     )
                   ],
@@ -401,8 +450,9 @@ class CartItem extends StatelessWidget {
 class AddToCartMenu extends StatelessWidget {
   final int productCounter;
   final String productId;
+  final String cartId;
 
-  const AddToCartMenu(this.productCounter, this.productId);
+  const AddToCartMenu(this.productCounter, this.productId, this.cartId);
 
   @override
   Widget build(BuildContext context) {
@@ -412,7 +462,14 @@ class AddToCartMenu extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                try {
+                  await Provider.of<Cart>(context, listen: false)
+                      .decQuantity(productId, cartId);
+                } catch (err) {
+                  ShowError.showError(err.toString(), context);
+                }
+              },
               icon: Icon(Icons.remove),
               color: Colors.black,
               iconSize: 14,

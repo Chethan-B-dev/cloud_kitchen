@@ -1,6 +1,9 @@
+import 'package:badges/badges.dart';
+import 'package:cloud_kitchen/services/cart.dart';
 import 'package:cloud_kitchen/widgets/all_restaurants.dart';
 import 'package:cloud_kitchen/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/new_restaurants.dart';
 import '../helpers/hex_color.dart';
@@ -19,6 +22,26 @@ class RestaurantOverview extends StatelessWidget {
         'Restaurants overview',
       ),
       actions: <Widget>[
+        Consumer<Cart>(
+          builder: (context, cart, child) => Badge(
+            position: BadgePosition.topEnd(top: 0, end: 3),
+            animationDuration: Duration(milliseconds: 300),
+            animationType: BadgeAnimationType.slide,
+            badgeContent: Text(
+              cart.itemCount.toString(),
+              style: TextStyle(color: Colors.white),
+            ),
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/cart');
+              },
+              icon: Icon(
+                Icons.shopping_cart,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
         IconButton(
           onPressed: () => showDialog<String>(
             context: context,

@@ -21,6 +21,13 @@ class _FoodItemState extends State<FoodItem> {
   final _priceController = TextEditingController();
   bool isNonVeg = false;
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _priceController.dispose();
+    super.dispose();
+  }
+
   void toggleSwitch(bool value) {
     setState(() {
       isNonVeg = !isNonVeg;
@@ -56,8 +63,11 @@ class _FoodItemState extends State<FoodItem> {
         actions: [
           IconButton(
             onPressed: () async {
-              if (_pickedImage == null) {
-                ShowError.showError('Please pick an image', context);
+              if (_pickedImage == null ||
+                  _nameController.text.trim() == "" ||
+                  _priceController.text.trim() == "") {
+                ShowError.showError(
+                    'Please pick an image and fill all the details', context);
                 return;
               }
               try {

@@ -210,6 +210,59 @@ class Cart with ChangeNotifier {
     }
   }
 
+  Future<void> decQuantity(String foodId, String cartId) async {
+    try {
+      _items.update(
+        foodId,
+        (existingCartItem) {
+          if (existingCartItem.quantity == 1) {
+            removeItem(cartId, foodId).then(
+              (value) => print('item removed'),
+            );
+          }
+
+          return CartItem(
+            cartId: existingCartItem.cartId,
+            foodId: existingCartItem.foodId,
+            title: existingCartItem.title,
+            price: existingCartItem.price,
+            imageUrl: existingCartItem.imageUrl,
+            quantity: existingCartItem.quantity - 1,
+          );
+        },
+      );
+
+      final doc = await _cartCollection
+          .doc(userId)
+          .collection('items')
+          .doc(cartId)
+          .get();
+
+      if (doc.exists) {
+        await doc.reference.update({
+          'quantity': (doc.data() as Map<String, dynamic>)['quantity'] - 1,
+        });
+      }
+
+      prefs = await SharedPreferences.getInstance();
+      List<CartItem> temp = [];
+      items.forEach((key, value) {
+        temp.add(value);
+      });
+      prefs.setString('cart', CartItem.encode(temp));
+      notifyListeners();
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
+
   Future<void> removeItem(String cartId, String foodId) async {
     try {
       await _cartCollection
