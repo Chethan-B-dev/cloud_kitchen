@@ -20,6 +20,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
   void initState() {
     super.initState();
     final snackBar = SnackBar(
+      duration: Duration(seconds: 1),
       content: Text(
         'Swipe left to remove food items',
       ),

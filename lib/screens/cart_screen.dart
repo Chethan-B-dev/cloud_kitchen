@@ -1,5 +1,4 @@
 import 'package:cloud_kitchen/services/cart.dart';
-import 'package:cloud_kitchen/services/users.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +12,18 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final snackBar = SnackBar(
+      duration: Duration(seconds: 1),
+      content: Text(
+        'Swipe left to remove cart items',
+      ),
+    );
+    Future(() => ScaffoldMessenger.of(context).showSnackBar(snackBar));
+  }
+
   @override
   Widget build(BuildContext context) {
     Map<String, String> data =
@@ -31,6 +42,9 @@ class _CartScreenState extends State<CartScreen> {
         }(context);
         print('done added item to cart');
         print(cart.items);
+      } else {
+        ShowError.showError(
+            'you Can only add food from one restaurant', context);
       }
     }
     return Scaffold(
@@ -61,7 +75,13 @@ class _CartScreenState extends State<CartScreen> {
             message: 'Clear Cart',
             child: IconButton(
               color: Colors.black,
-              onPressed: () {},
+              onPressed: () async {
+                try {
+                  await Provider.of<Cart>(context, listen: false).clear();
+                } catch (err) {
+                  ShowError.showError(err.toString(), context);
+                }
+              },
               icon: Icon(
                 Icons.remove_shopping_cart_rounded,
               ),
@@ -75,14 +95,51 @@ class _CartScreenState extends State<CartScreen> {
           children: <Widget>[
             Consumer<Cart>(
               builder: (context, cart, child) {
+                if (cart.itemCount == 0) {
+                  return Center(
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.2,
+                      child: Text('Cart is Empty'),
+                    ),
+                  );
+                }
+
                 return ListView.builder(
                   primary: false,
                   shrinkWrap: true,
                   itemCount: cart.itemCount,
                   itemBuilder: (ctx, index) => Dismissible(
+                    background: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            iconSize: 25,
+                            //color: Colors.red,
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.delete,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                     direction: DismissDirection.endToStart,
+                    onDismissed: (_) async {
+                      try {
+                        await Provider.of<Cart>(context, listen: false)
+                            .removeItem(
+                          cart.items.values.toList()[index].cartId,
+                          cart.items.values.toList()[index].foodId,
+                        );
+                      } catch (err) {
+                        ShowError.showError(err.toString(), context);
+                      }
+                    },
                     key: ValueKey(cart.items.values.toList()[index].foodId),
                     child: CartItem(
+                      productid: cart.items.values.toList()[index].foodId,
                       productName: cart.items.values.toList()[index].title,
                       productPrice: cart.items.values.toList()[index].price,
                       productImage: cart.items.values.toList()[index].imageUrl,
@@ -93,7 +150,7 @@ class _CartScreenState extends State<CartScreen> {
                 );
               },
             ),
-            TotalCalculationWidget(),
+            TotalCalculationWidget(cart.totalAmount),
           ],
         ),
       ),
@@ -117,6 +174,10 @@ class _CartScreenState extends State<CartScreen> {
 }
 
 class TotalCalculationWidget extends StatelessWidget {
+  final num total;
+
+  TotalCalculationWidget(this.total);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -201,7 +262,7 @@ class TotalCalculationWidget extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      "\$192",
+                      '\u20B9 ' + total.toStringAsFixed(2),
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.pink,
@@ -222,6 +283,7 @@ class TotalCalculationWidget extends StatelessWidget {
 
 class CartItem extends StatelessWidget {
   final String productName;
+  final String productid;
   final num productPrice;
   final String productImage;
   final num productCartQuantity;
@@ -229,6 +291,7 @@ class CartItem extends StatelessWidget {
   const CartItem({
     Key key,
     @required this.productName,
+    @required this.productid,
     @required this.productPrice,
     @required this.productImage,
     @required this.productCartQuantity,
@@ -257,80 +320,77 @@ class CartItem extends StatelessWidget {
             Radius.circular(5.0),
           ),
         ),
-        child: InkWell(
-          onTap: () {},
-          child: Container(
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Expanded(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minWidth: double.infinity,
-                      minHeight: double.infinity,
-                    ),
-                    child: Image.network(
-                      productImage,
-                      fit: BoxFit.cover,
-                    ),
+        child: Container(
+          alignment: Alignment.center,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Expanded(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minWidth: double.infinity,
+                    minHeight: double.infinity,
+                  ),
+                  child: Image.network(
+                    productImage,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Flexible(
-                        fit: FlexFit.tight,
-                        flex: 3,
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.only(top: 5),
-                          child: Text(
-                            productName,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 3,
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(top: 5),
+                        child: Text(
+                          productName,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                      Flexible(
-                        fit: FlexFit.tight,
-                        flex: 1,
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            bottom: 5,
+                    ),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 1,
+                      child: Container(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '\u20B9 ' + productPrice.toStringAsFixed(2),
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                           ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            '\u20B9 ' + productPrice.toStringAsFixed(2),
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                      Flexible(
-                        fit: FlexFit.tight,
-                        flex: 1,
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            bottom: 5,
-                          ),
-                          alignment: Alignment.center,
-                          child: AddToCartMenu(2),
+                    ),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 1,
+                      child: Container(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
                         ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
+                        alignment: Alignment.center,
+                        child: AddToCartMenu(productCartQuantity, productid),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -339,9 +399,10 @@ class CartItem extends StatelessWidget {
 }
 
 class AddToCartMenu extends StatelessWidget {
-  int productCounter;
+  final int productCounter;
+  final String productId;
 
-  AddToCartMenu(this.productCounter);
+  const AddToCartMenu(this.productCounter, this.productId);
 
   @override
   Widget build(BuildContext context) {
@@ -370,7 +431,14 @@ class AddToCartMenu extends StatelessWidget {
           ),
           Expanded(
             child: IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                try {
+                  await Provider.of<Cart>(context, listen: false)
+                      .addItem(productId);
+                } catch (err) {
+                  ShowError.showError(err.toString(), context);
+                }
+              },
               icon: Icon(Icons.add),
               color: Color(0xFFfd2c2c),
               iconSize: 14,

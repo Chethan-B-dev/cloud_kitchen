@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CartItem {
   final String foodId;
+  final String cartId;
   final String title;
   final String imageUrl;
   final int quantity;
@@ -15,6 +15,7 @@ class CartItem {
 
   const CartItem({
     @required this.foodId,
+    @required this.cartId,
     @required this.title,
     @required this.quantity,
     @required this.imageUrl,
@@ -23,6 +24,7 @@ class CartItem {
 
   factory CartItem.fromJson(Map<String, dynamic> jsonData) => CartItem(
         foodId: jsonData['foodId'],
+        cartId: jsonData['cartId'],
         title: jsonData['title'],
         imageUrl: jsonData['imageUrl'],
         price: jsonData['price'],
@@ -31,6 +33,7 @@ class CartItem {
 
   static Map<String, dynamic> toMap(CartItem cart) => {
         'foodId': cart.foodId,
+        'cartID': cart.cartId,
         'title': cart.title,
         'imageUrl': cart.imageUrl,
         'price': cart.price,
@@ -65,12 +68,14 @@ class Cart with ChangeNotifier {
   }
   void setup() async {
     prefs = await SharedPreferences.getInstance();
-    List<CartItem> cart = CartItem.decode(prefs.getString('cart'));
-    cart.forEach((item) {
-      _items[item.foodId] = item;
-    });
-    print(items);
-    notifyListeners();
+    if (prefs.containsKey('cart')) {
+      List<CartItem> cart = CartItem.decode(prefs.getString('cart'));
+      cart.forEach((item) {
+        print(item.imageUrl);
+        _items[item.foodId] = item;
+      });
+      notifyListeners();
+    }
   }
 
   Future<String> get userName async {
@@ -137,17 +142,34 @@ class Cart with ChangeNotifier {
       double price = result['price'];
       String imageUrl = result['imageUrl'];
 
-      await _cartCollection.doc(userId).collection('items').add(
-        {
-          'quantity': 1,
-          'foodId': foodId,
-        },
-      );
+      final existingDoc = await _cartCollection
+          .doc(userId)
+          .collection('items')
+          .where('foodId', isEqualTo: foodId)
+          .get();
+
+      DocumentReference doc;
+
+      if (existingDoc.docs.length == 0) {
+        doc = await _cartCollection.doc(userId).collection('items').add(
+          {
+            'quantity': 1,
+            'foodId': foodId,
+          },
+        );
+      } else {
+        final existingQuanity =
+            (existingDoc.docs[0].data() as Map<String, dynamic>)['quantity'];
+        existingDoc.docs[0].reference.update({
+          'quantity': existingQuanity + 1,
+        });
+      }
 
       if (_items.containsKey(foodId)) {
         _items.update(
           foodId,
           (existingCartItem) => CartItem(
+            cartId: existingCartItem.cartId,
             foodId: existingCartItem.foodId,
             title: existingCartItem.title,
             price: existingCartItem.price,
@@ -159,6 +181,7 @@ class Cart with ChangeNotifier {
         _items.putIfAbsent(
           foodId,
           () => CartItem(
+            cartId: doc.id,
             foodId: foodId,
             title: title,
             price: price,
@@ -173,9 +196,7 @@ class Cart with ChangeNotifier {
       items.forEach((key, value) {
         temp.add(value);
       });
-
       prefs.setString('cart', CartItem.encode(temp));
-
       notifyListeners();
     } on PlatformException catch (err) {
       var message = 'An error occurred, please try again later!';
@@ -189,13 +210,57 @@ class Cart with ChangeNotifier {
     }
   }
 
-  void removeItem(String productId) async {
-    _items.remove(productId);
-    notifyListeners();
+  Future<void> removeItem(String cartId, String foodId) async {
+    try {
+      await _cartCollection
+          .doc(userId)
+          .collection('items')
+          .doc(cartId)
+          .delete();
+
+      _items.remove(foodId);
+      prefs = await SharedPreferences.getInstance();
+      List<CartItem> temp = [];
+      items.forEach((key, value) {
+        temp.add(value);
+      });
+      prefs.setString('cart', CartItem.encode(temp));
+      notifyListeners();
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
   }
 
-  void clear() async {
-    _items = {};
-    notifyListeners();
+  Future<void> clear() async {
+    try {
+      final snapshot =
+          await _cartCollection.doc(userId).collection('items').get();
+      final list = snapshot.docs;
+
+      list.forEach((element) {
+        element.reference.delete();
+      });
+
+      _items = {};
+      prefs = await SharedPreferences.getInstance();
+      prefs.remove('cart');
+      notifyListeners();
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
   }
 }
