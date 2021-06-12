@@ -61,6 +61,7 @@ class AuthService with ChangeNotifier {
           'isSeller': false,
           'hasOrdered': false,
           'kitchenId': null,
+          'orderStatus': null,
         },
       );
       return _userFromFirebaseUser(user);

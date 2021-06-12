@@ -60,6 +60,8 @@ class Cart with ChangeNotifier {
       FirebaseFirestore.instance.collection('cart');
   final CollectionReference _foodCollection =
       FirebaseFirestore.instance.collection('foods');
+  final CollectionReference _ordersCollection =
+      FirebaseFirestore.instance.collection('orders');
   SharedPreferences prefs;
 
   Cart() {
@@ -210,6 +212,38 @@ class Cart with ChangeNotifier {
     }
   }
 
+  Future placeOrder() async {
+    try {
+      Map<String, int> orderItemData = {};
+
+      items.forEach((key, value) {
+        orderItemData[key] = value.quantity;
+      });
+
+      await _mainCollection.doc(userId).update({
+        'hasOrdered': true,
+        'orderStatus': '0',
+      });
+
+//orders---------------> id (i.e kitchenid)-------------->[orders] {id,userid,username,items[]}
+
+      await _ordersCollection.doc(kitchenId).collection('orders').add({
+        'userId': userId,
+        'username': await userName,
+        'items': json.encode(orderItemData),
+      });
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
+
   Future<void> decQuantity(String foodId, String cartId) async {
     try {
       _items.update(
@@ -272,12 +306,17 @@ class Cart with ChangeNotifier {
           .delete();
 
       _items.remove(foodId);
-      prefs = await SharedPreferences.getInstance();
-      List<CartItem> temp = [];
-      items.forEach((key, value) {
-        temp.add(value);
-      });
-      prefs.setString('cart', CartItem.encode(temp));
+
+      if (itemCount == 0) {
+        await clear();
+      } else {
+        prefs = await SharedPreferences.getInstance();
+        List<CartItem> temp = [];
+        items.forEach((key, value) {
+          temp.add(value);
+        });
+        prefs.setString('cart', CartItem.encode(temp));
+      }
       notifyListeners();
     } on PlatformException catch (err) {
       var message = 'An error occurred, please try again later!';
@@ -302,6 +341,7 @@ class Cart with ChangeNotifier {
       });
 
       _items = {};
+      kitchenId = '';
       prefs = await SharedPreferences.getInstance();
       prefs.remove('cart');
       notifyListeners();

@@ -45,7 +45,9 @@ class _CartScreenState extends State<CartScreen> {
         print(cart.items);
       } else {
         ShowError.showError(
-            'you Can only add food from one restaurant', context);
+          'you Can only add food from one restaurant',
+          context,
+        );
       }
     }
     return Scaffold(
@@ -71,6 +73,13 @@ class _CartScreenState extends State<CartScreen> {
         brightness: Brightness.light,
         actions: <Widget>[
           Consumer<Cart>(
+            child: IconButton(
+              onPressed: null,
+              icon: Icon(
+                Icons.shopping_cart,
+                color: Colors.black,
+              ),
+            ),
             builder: (context, cart, child) => Badge(
               position: BadgePosition.topEnd(top: 0, end: 3),
               animationDuration: Duration(milliseconds: 300),
@@ -81,13 +90,7 @@ class _CartScreenState extends State<CartScreen> {
                   color: Colors.white,
                 ),
               ),
-              child: IconButton(
-                onPressed: null,
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: Colors.black,
-                ),
-              ),
+              child: child,
             ),
           ),
           Tooltip(
@@ -113,6 +116,21 @@ class _CartScreenState extends State<CartScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Consumer<Cart>(
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      iconSize: 25,
+                      //color: Colors.red,
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.delete,
+                      ),
+                    )
+                  ],
+                ),
+              ),
               builder: (context, cart, child) {
                 if (cart.itemCount == 0) {
                   return Center(
@@ -129,21 +147,7 @@ class _CartScreenState extends State<CartScreen> {
                   shrinkWrap: true,
                   itemCount: cart.itemCount,
                   itemBuilder: (ctx, index) => Dismissible(
-                    background: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            iconSize: 25,
-                            //color: Colors.red,
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.delete,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                    background: child,
                     direction: DismissDirection.endToStart,
                     onDismissed: (_) async {
                       try {
@@ -179,12 +183,29 @@ class _CartScreenState extends State<CartScreen> {
         message: "Place Order",
         child: Padding(
           padding: EdgeInsets.only(bottom: 30, right: 10),
-          child: FloatingActionButton(
-            // isExtended: true,
+          child: Consumer<Cart>(
             child: Icon(Icons.save),
-            backgroundColor: HexColor('#424242'),
-            onPressed: () {
-              Navigator.of(context).pushNamed('/order-status');
+            builder: (context, value, child) {
+              return FloatingActionButton(
+                child: child,
+                backgroundColor: HexColor('#424242'),
+                onPressed: () async {
+                  if (cart.itemCount == 0) {
+                    ShowError.showError(
+                      'Cart is empty,Please add items before you place an order',
+                      context,
+                    );
+                    return;
+                  }
+                  try {
+                    await cart.placeOrder();
+                    await cart.clear();
+                    Navigator.of(context).pushReplacementNamed('/order-status');
+                  } catch (err) {
+                    ShowError.showError(err.toString(), context);
+                  }
+                },
+              );
             },
           ),
         ),
@@ -218,15 +239,30 @@ class TotalCalculationWidget extends StatelessWidget {
           ),
         ),
         child: Consumer<Cart>(
-          builder: (context, cart, child) {
+          child: Expanded(
+            child: Text(
+              "Total",
+              style: TextStyle(
+                fontSize: 18,
+                color: Color(0xFF3a3a3b),
+                fontWeight: FontWeight.w400,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ),
+          builder: (context, cart, ch) {
             if (cart.itemCount == 0) {
               return Container();
             }
 
             return Container(
               alignment: Alignment.center,
-              padding:
-                  EdgeInsets.only(left: 25, right: 30, top: 10, bottom: 10),
+              padding: const EdgeInsets.only(
+                left: 25,
+                right: 30,
+                top: 10,
+                bottom: 10,
+              ),
               child: Column(
                 children: <Widget>[
                   SizedBox(
@@ -238,7 +274,7 @@ class TotalCalculationWidget extends StatelessWidget {
                     itemCount: cart.itemCount,
                     itemBuilder: (ctx, index) {
                       return Padding(
-                        padding: EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.only(bottom: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -274,9 +310,10 @@ class TotalCalculationWidget extends StatelessWidget {
                                         .price
                                         .toStringAsFixed(2),
                                 style: TextStyle(
-                                    fontSize: 18,
-                                    color: Color(0xFF3a3a3b),
-                                    fontWeight: FontWeight.w400),
+                                  fontSize: 18,
+                                  color: Color(0xFF3a3a3b),
+                                  fontWeight: FontWeight.w400,
+                                ),
                                 textAlign: TextAlign.right,
                               ),
                             ),
@@ -291,16 +328,7 @@ class TotalCalculationWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          "Total",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xFF3a3a3b),
-                              fontWeight: FontWeight.w400),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
+                      ch,
                       Expanded(
                         child: Text(
                           '\u20B9 ' + cart.totalAmount.toStringAsFixed(2),
