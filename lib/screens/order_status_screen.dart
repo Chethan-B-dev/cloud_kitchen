@@ -33,7 +33,8 @@ class _OrderStatusState extends State<OrderStatus> {
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0)), //this right here
+            borderRadius: BorderRadius.circular(20.0),
+          ), //this right here
           child: Container(
             height: 250,
             child: Padding(
@@ -46,7 +47,7 @@ class _OrderStatusState extends State<OrderStatus> {
                     'Rate Restaurant',
                     style: Theme.of(context).textTheme.title,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   SmoothStarRating(
@@ -59,7 +60,7 @@ class _OrderStatusState extends State<OrderStatus> {
                       });
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Row(
@@ -79,11 +80,11 @@ class _OrderStatusState extends State<OrderStatus> {
                             ShowError.showError(err.toString(), context);
                           }
                         },
-                        icon: Icon(Icons.rate_review_sharp),
-                        label: Text(
+                        icon: const Icon(Icons.rate_review_sharp),
+                        label: const Text(
                           'Rate',
                         ),
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10),
@@ -103,11 +104,11 @@ class _OrderStatusState extends State<OrderStatus> {
                             ShowError.showError(err.toString(), context);
                           }
                         },
-                        icon: Icon(Icons.door_back),
-                        label: Text(
+                        icon: const Icon(Icons.door_back),
+                        label: const Text(
                           'skip',
                         ),
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                             topRight: Radius.circular(10),
                             bottomLeft: Radius.circular(10),
@@ -133,7 +134,7 @@ class _OrderStatusState extends State<OrderStatus> {
       stream: Users().orderStatus(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(
+          return const Center(
             child: Text('Something Went Wrong'),
           );
         }
@@ -162,7 +163,7 @@ class _OrderStatusState extends State<OrderStatus> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('Order status'),
+            title: const Text('Order status'),
           ),
           body: Column(
             children: <Widget>[
@@ -208,7 +209,7 @@ class _OrderStatusState extends State<OrderStatus> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 30, right: 10),
                 child: FloatingActionButton(
-                  child: Icon(Icons.rate_review),
+                  child: const Icon(Icons.rate_review),
                   backgroundColor: HexColor('#424242'),
                   onPressed: showNow,
                 ),
@@ -254,12 +255,12 @@ class OrderStatusItem extends StatelessWidget {
               title: Text(
                 title,
                 textScaleFactor: 1.5,
-                style: TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
               ),
               //trailing: Icon(Icons.done),
               subtitle: Text(
                 subtitle,
-                style: TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
               ),
               selected: selected,
               trailing: Image.network(

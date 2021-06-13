@@ -323,4 +323,3 @@ class Kitchens with ChangeNotifier {
     }
   }
 }
-//food--------------------->id (i.e kitchenid*)---------------->[items] {id,name,price,image,isVeg}

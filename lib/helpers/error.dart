@@ -6,9 +6,9 @@ class ShowError {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(
+        title: const Text(
           'An Error Occurred!',
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.red,
           ),
         ),
@@ -16,7 +16,7 @@ class ShowError {
         actions: <Widget>[
           FlatButton(
             textColor: Colors.green,
-            child: Text('Okay'),
+            child: const Text('Okay'),
             onPressed: () {
               if (Navigator.of(ctx).canPop()) {
                 Navigator.of(ctx).pop();

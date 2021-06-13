@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
 class Orders with ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference _userCollection =
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _cartCollection =

@@ -32,7 +32,7 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
-      title: Text(
+      title: const Text(
         'Restaurants overview',
       ),
       actions: <Widget>[
@@ -49,7 +49,7 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
               onPressed: () {
                 Navigator.of(context).pushNamed('/cart');
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.shopping_cart,
                 color: Colors.white,
               ),
@@ -83,7 +83,7 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
               ],
             ),
           ),
-          icon: Icon(
+          icon: const Icon(
             Icons.logout,
             size: 26.0,
           ),
@@ -122,13 +122,13 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
                     });
                   },
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(
+                    border: const OutlineInputBorder(
                       borderRadius: const BorderRadius.all(
-                        Radius.circular(
+                        const Radius.circular(
                           5.0,
                         ),
                       ),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         width: 0,
                         //color: Color(0xFFfb3132),
                         color: Colors.purple,
@@ -136,13 +136,13 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
                       ),
                     ),
                     filled: true,
-                    prefixIcon: Icon(
+                    prefixIcon: const Icon(
                       Icons.search,
-                      color: Color(0xFFfb3132),
+                      color: const Color(0xFFfb3132),
                     ),
-                    fillColor: Color(0xFFFAFAFA),
+                    fillColor: const Color(0xFFFAFAFA),
                     hintStyle:
-                        new TextStyle(color: Color(0xFFd0cece), fontSize: 18),
+                        const TextStyle(color: Color(0xFFd0cece), fontSize: 18),
                     hintText: "Where would you like to buy?",
                   ),
                 ),

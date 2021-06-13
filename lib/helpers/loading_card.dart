@@ -24,16 +24,16 @@ class LoadingCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.grey.withOpacity(.6),
               ),
-              child: Center(
-                child: Icon(
+              child: const Center(
+                child: const Icon(
                   Icons.photo_size_select_actual,
                   color: Colors.white,
                   size: 38,
                 ),
               ),
             ),
-            Expanded(
-              child: PlaceholderLines(
+            const Expanded(
+              child: const PlaceholderLines(
                 count: 3,
               ),
             ),

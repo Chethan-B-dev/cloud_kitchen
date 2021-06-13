@@ -17,9 +17,9 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    final snackBar = SnackBar(
-      duration: Duration(seconds: 1),
-      content: Text(
+    final snackBar = const SnackBar(
+      duration: const Duration(seconds: 2),
+      content: const Text(
         'Swipe left to remove cart items',
       ),
     );
@@ -51,15 +51,15 @@ class _CartScreenState extends State<CartScreen> {
         backgroundColor: Color(0xFFFAFAFA),
         elevation: 8.0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
             color: Color(0xFF3a3737),
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(
+        title: const Text(
           "Item Carts",
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w600,
             fontSize: 18,
@@ -68,9 +68,9 @@ class _CartScreenState extends State<CartScreen> {
         brightness: Brightness.light,
         actions: <Widget>[
           Consumer<Cart>(
-            child: IconButton(
+            child: const IconButton(
               onPressed: null,
-              icon: Icon(
+              icon: const Icon(
                 Icons.shopping_cart,
                 color: Colors.black,
               ),
@@ -81,7 +81,7 @@ class _CartScreenState extends State<CartScreen> {
               animationType: BadgeAnimationType.slide,
               badgeContent: Text(
                 cart.itemCount.toString(),
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),
@@ -99,7 +99,7 @@ class _CartScreenState extends State<CartScreen> {
                   ShowError.showError(err.toString(), context);
                 }
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.remove_shopping_cart_rounded,
               ),
             ),
@@ -115,11 +115,10 @@ class _CartScreenState extends State<CartScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(
+                    const IconButton(
+                      onPressed: null,
                       iconSize: 25,
-                      //color: Colors.red,
-                      onPressed: () {},
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.delete,
                       ),
                     )
@@ -191,7 +190,7 @@ class _CartScreenState extends State<CartScreen> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
 
           return Visibility(
@@ -199,9 +198,9 @@ class _CartScreenState extends State<CartScreen> {
             child: Tooltip(
               message: "Place Order",
               child: Padding(
-                padding: EdgeInsets.only(bottom: 30, right: 10),
+                padding: const EdgeInsets.only(bottom: 30, right: 10),
                 child: Consumer<Cart>(
-                  child: Icon(Icons.save),
+                  child: const Icon(Icons.save),
                   builder: (context, value, child) {
                     return FloatingActionButton(
                       child: child,
@@ -256,16 +255,16 @@ class TotalCalculationWidget extends StatelessWidget {
       child: Card(
         color: Colors.white,
         elevation: 8.0,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(
             Radius.circular(5.0),
           ),
         ),
         child: Consumer<Cart>(
-          child: Expanded(
-            child: Text(
+          child: const Expanded(
+            child: const Text(
               "Total",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 color: Color(0xFF3a3a3b),
                 fontWeight: FontWeight.w400,
@@ -288,7 +287,7 @@ class TotalCalculationWidget extends StatelessWidget {
               ),
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   ListView.builder(
@@ -304,19 +303,21 @@ class TotalCalculationWidget extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 cart.items.values.toList()[index].title,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: Color(0xFF3a3a3b),
-                                    fontWeight: FontWeight.w400),
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  color: Color(0xFF3a3a3b),
+                                  fontWeight: FontWeight.w400,
+                                ),
                                 textAlign: TextAlign.left,
                               ),
                             ),
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               alignment: Alignment.center,
                               child: Text(
                                 "x${cart.items.values.toList()[index].quantity}",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   color: Color(0xFF3a3a3b),
                                   fontWeight: FontWeight.w400,
@@ -332,7 +333,7 @@ class TotalCalculationWidget extends StatelessWidget {
                                         .toList()[index]
                                         .price
                                         .toStringAsFixed(2),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   color: Color(0xFF3a3a3b),
                                   fontWeight: FontWeight.w400,
@@ -345,7 +346,7 @@ class TotalCalculationWidget extends StatelessWidget {
                       );
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Row(
@@ -355,7 +356,7 @@ class TotalCalculationWidget extends StatelessWidget {
                       Expanded(
                         child: Text(
                           '\u20B9 ' + cart.totalAmount.toStringAsFixed(2),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             color: Colors.pink,
                             fontWeight: FontWeight.w400,
@@ -411,7 +412,7 @@ class CartItem extends StatelessWidget {
       child: Card(
         color: Colors.white,
         elevation: 8.0,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(
             Radius.circular(5.0),
           ),
@@ -442,10 +443,10 @@ class CartItem extends StatelessWidget {
                       flex: 3,
                       child: Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.only(top: 5),
+                        padding: const EdgeInsets.only(top: 5),
                         child: Text(
                           productName,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -463,7 +464,7 @@ class CartItem extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Text(
                           '\u20B9 ' + productPrice.toStringAsFixed(2),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -521,7 +522,7 @@ class AddToCartMenu extends StatelessWidget {
                   ShowError.showError(err.toString(), context);
                 }
               },
-              icon: Icon(Icons.remove),
+              icon: const Icon(Icons.remove),
               color: Colors.black,
               iconSize: 14,
             ),
@@ -544,7 +545,7 @@ class AddToCartMenu extends StatelessWidget {
                   ShowError.showError(err.toString(), context);
                 }
               },
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               color: Color(0xFFfd2c2c),
               iconSize: 14,
             ),

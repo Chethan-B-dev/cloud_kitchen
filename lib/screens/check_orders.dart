@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/helpers/loading_card.dart';
@@ -22,9 +21,9 @@ class _CheckOrdersState extends State<CheckOrders> {
   @override
   void initState() {
     super.initState();
-    final snackBar = SnackBar(
-      duration: Duration(seconds: 1),
-      content: Text(
+    final snackBar = const SnackBar(
+      duration: Duration(seconds: 2),
+      content: const Text(
         'Swipe left to remove orders, dismissing it will complete the order for the user',
       ),
     );
@@ -46,7 +45,7 @@ class _CheckOrdersState extends State<CheckOrders> {
               future: Orders().orderList,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return Center(
+                  return const Center(
                     child: Text('Something went wrong'),
                   );
                 }
@@ -70,11 +69,11 @@ class _CheckOrdersState extends State<CheckOrders> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          Padding(
+                          const Padding(
                             padding: const EdgeInsets.all(10),
-                            child: Text(
+                            child: const Text(
                               'You have no orders right now.',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontFamily: 'Lato',
                                 fontWeight: FontWeight.w600,
@@ -103,9 +102,8 @@ class _CheckOrdersState extends State<CheckOrders> {
                           children: [
                             IconButton(
                               iconSize: 25,
-                              //color: Colors.red,
                               onPressed: () {},
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.delete,
                               ),
                             )
@@ -160,7 +158,7 @@ class _CheckOrdersState extends State<CheckOrders> {
                                             snapshot.data.docs[index]
                                                 ['userId']);
                                       },
-                                      icon: Tooltip(
+                                      icon: const Tooltip(
                                         message: 'Update order status',
                                         child: const Icon(
                                           Icons.more_vert,
@@ -170,36 +168,27 @@ class _CheckOrdersState extends State<CheckOrders> {
                                           <PopupMenuEntry>[
                                         const PopupMenuItem(
                                           value: 1,
-                                          child: ListTile(
-                                            leading: Icon(Icons.add),
+                                          child: const ListTile(
+                                            leading: const Icon(Icons.add),
                                             title: const Text('Order recieved'),
                                           ),
                                         ),
                                         const PopupMenuItem(
                                           value: 2,
-                                          child: ListTile(
-                                            leading: Icon(Icons.anchor),
+                                          child: const ListTile(
+                                            leading: const Icon(Icons.anchor),
                                             title:
                                                 const Text('Order Processed'),
                                           ),
                                         ),
                                         const PopupMenuItem(
                                           value: 3,
-                                          child: ListTile(
-                                            leading: Icon(Icons.article),
+                                          child: const ListTile(
+                                            leading: const Icon(Icons.article),
                                             title:
                                                 const Text('Ready for pickup'),
                                           ),
                                         ),
-                                        // const PopupMenuDivider(),
-                                        // const PopupMenuItem(
-                                        //   value: 4,
-                                        //   child: ListTile(
-                                        //     leading: Icon(Icons.delete_outline),
-                                        //     title: const Text('Delete'),
-                                        //   ),
-                                        // ),
-                                        // const PopupMenuItem(child: Text('Item B')),
                                       ],
                                     ),
                                   ],
@@ -221,9 +210,10 @@ class _CheckOrdersState extends State<CheckOrders> {
                                               ),
                                               builder: (context, fsnapshot) {
                                                 if (fsnapshot.hasError) {
-                                                  return Center(
+                                                  return const Center(
                                                     child: Text(
-                                                        'Something went wrong'),
+                                                      'Something went wrong',
+                                                    ),
                                                   );
                                                 }
 

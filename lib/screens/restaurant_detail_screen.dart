@@ -5,7 +5,6 @@ import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_placeholder_textlines/placeholder_lines.dart';
 import 'package:provider/provider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class RestaurantDetail extends StatefulWidget {
   static String routeName = '/details';
@@ -24,12 +23,12 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
           future: Kitchens().kitchenNameFromId(kitchenId),
           builder: (ctx, snapshot) {
             if (snapshot.hasError) {
-              return Text('Add menu items');
+              return const Text('Add menu items');
             }
             if (snapshot.connectionState == ConnectionState.done) {
               return Text(snapshot.data);
             }
-            return LinearProgressIndicator();
+            return const LinearProgressIndicator();
           },
         ),
       ),
@@ -37,7 +36,11 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
         stream: Kitchens().kitchenFoods(kitchenId),
         builder: (context, streamSnapshot) {
           if (streamSnapshot.hasError) {
-            return Text('Something went wrong');
+            return const Center(
+              child: Text(
+                'Something went wrong',
+              ),
+            );
           }
 
           if (streamSnapshot.connectionState == ConnectionState.waiting) {
@@ -59,8 +62,8 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                       decoration: BoxDecoration(
                         color: Colors.grey.withOpacity(.6),
                       ),
-                      child: Center(
-                        child: Icon(
+                      child: const Center(
+                        child: const Icon(
                           Icons.photo_size_select_actual,
                           color: Colors.white,
                           size: 38,
@@ -68,7 +71,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                       ),
                     ),
                     Expanded(
-                      child: PlaceholderLines(
+                      child: const PlaceholderLines(
                         count: 3,
                       ),
                     ),
@@ -97,9 +100,9 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                       child: Container(
                         alignment: Alignment.center,
                         padding: const EdgeInsets.all(10),
-                        child: Text(
+                        child: const Text(
                           'Menu is Empty!',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             fontFamily: 'Lato',
                             fontWeight: FontWeight.w600,
@@ -115,7 +118,6 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
 
           return ListView.builder(
             itemCount: streamSnapshot.data.docs.length,
-            // scrollDirection: Axis.vertical,
             itemBuilder: (ctx, index) => RestaurantDetailTile(
               id: streamSnapshot.data.docs[index].id,
               kitchenID: kitchenId,
@@ -132,14 +134,14 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
 }
 
 class RestaurantDetailTile extends StatelessWidget {
-  String id;
-  String kitchenID;
-  String name;
-  String imageUrl;
-  double price;
-  bool isVeg;
+  final String id;
+  final String kitchenID;
+  final String name;
+  final String imageUrl;
+  final double price;
+  final bool isVeg;
 
-  RestaurantDetailTile({
+  const RestaurantDetailTile({
     Key key,
     @required this.id,
     @required this.kitchenID,
@@ -152,11 +154,11 @@ class RestaurantDetailTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
       child: Card(
         color: Colors.white,
         elevation: 8.0,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(
             Radius.circular(5.0),
           ),
@@ -204,7 +206,7 @@ class RestaurantDetailTile extends StatelessWidget {
                     Expanded(
                       child: Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.only(left: 5, top: 5),
+                        padding: const EdgeInsets.only(left: 5, top: 5),
                         child: IconButton(
                           onPressed: () async {
                             final cart =
@@ -225,7 +227,7 @@ class RestaurantDetailTile extends StatelessWidget {
                               },
                             );
                           },
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.add_shopping_cart_rounded,
                             color: Colors.pinkAccent,
                           ),
@@ -235,10 +237,10 @@ class RestaurantDetailTile extends StatelessWidget {
                     Expanded(
                       child: Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.only(left: 5, top: 5),
+                        padding: const EdgeInsets.only(left: 5, top: 5),
                         child: Text(
                           name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color(0xFF6e6e71),
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -252,10 +254,10 @@ class RestaurantDetailTile extends StatelessWidget {
                     Expanded(
                       child: Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.only(left: 5, top: 5),
+                        padding: const EdgeInsets.only(left: 5, top: 5),
                         child: Text(
                           '\u20B9 ' + price.toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color(0xFF6e6e71),
                             fontSize: 18,
                             fontWeight: FontWeight.w600,

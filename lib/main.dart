@@ -16,18 +16,12 @@ import './screens/add_food_item.dart';
 import './screens/check_orders.dart';
 import 'package:flutter/services.dart';
 
-//refer these blogs for search after dinner
-//https://medium.com/flutterdevs/implement-searching-with-firebase-firestore-flutter-de7ebd53c8c9
-//https://medium.com/flutterdevs/search-data-in-flutter-using-cloud-firestore-search-delegate-1a46c703384
-//https://www.youtube.com/watch?v=0szEJiCUtMM
-//https://github.com/rajayogan/flutterfirestore-instantsearch/tree/master/lib
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
 
-// TODO : add optimization to app by adding const
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

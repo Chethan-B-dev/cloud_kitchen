@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Users with ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference _mainCollection =
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _cartCollection =
@@ -27,8 +26,6 @@ class Users with ChangeNotifier {
   Users() {
     setup();
   }
-
-  //* added try catch in setup if error comes remove it
 
   void setup() async {
     prefs = await SharedPreferences.getInstance();
@@ -79,8 +76,6 @@ class Users with ChangeNotifier {
       throw (error.toString());
     }
   }
-
-  // TODO - implement provider username ,email and userid
 
   Stream<Map> orderStatus() {
     Map data;

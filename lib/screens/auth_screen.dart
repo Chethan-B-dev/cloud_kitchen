@@ -1,5 +1,5 @@
+import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import '../services/auth_service.dart';
 import '../models/user.dart';
@@ -17,13 +17,15 @@ class AuthScreen extends StatelessWidget {
       body: Stack(
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(
-                color: Colors.black,
-                image: DecorationImage(
-                  image: NetworkImage(
-                      'https://i.pinimg.com/originals/25/19/2f/25192f4eda302e18aece7516878ae9e5.jpg'),
-                  fit: BoxFit.cover,
-                )),
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              image: DecorationImage(
+                image: NetworkImage(
+                  'https://i.pinimg.com/originals/25/19/2f/25192f4eda302e18aece7516878ae9e5.jpg',
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
           SingleChildScrollView(
             child: Container(
@@ -36,14 +38,14 @@ class AuthScreen extends StatelessWidget {
                   Flexible(
                     flex: deviceSize.width > 600 ? 2 : 1,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'Cloud ',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 45,
                               color: Colors.blue,
                               fontWeight: FontWeight.bold,
@@ -53,7 +55,7 @@ class AuthScreen extends StatelessWidget {
                           Text(
                             'Kitchen ',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 45,
                               color: Colors.orange,
                               fontWeight: FontWeight.bold,
@@ -85,8 +87,6 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard>
     with SingleTickerProviderStateMixin {
-  final _auth = FirebaseAuth.instance;
-
   final AuthService authService = AuthService();
   UserModel user;
 
@@ -138,24 +138,6 @@ class _AuthCardState extends State<AuthCard>
     _controller.dispose();
   }
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('An Error Occurred!'),
-        content: Text(message),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Okay'),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
-          )
-        ],
-      ),
-    );
-  }
-
   Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       return;
@@ -172,7 +154,7 @@ class _AuthCardState extends State<AuthCard>
         user = await authService.signInWithEmailAndPassword(
             _authData['email'], _authData['password']);
         if (user == null) {
-          _showErrorDialog('Failed To Authenticate');
+          ShowError.showError('Failed To Authenticate', context);
         }
       } else {
         user = await authService.registerWithEmailAndPassword(
@@ -183,11 +165,11 @@ class _AuthCardState extends State<AuthCard>
           _authData['address'],
         );
         if (user == null) {
-          _showErrorDialog('Failed To Authenticate');
+          ShowError.showError('Failed To Authenticate', context);
         }
       }
     } catch (err) {
-      _showErrorDialog(err.toString());
+      ShowError.showError(err.toString(), context);
     }
     setState(() {
       _isLoading = false;
@@ -223,14 +205,14 @@ class _AuthCardState extends State<AuthCard>
         constraints:
             BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
         width: deviceSize.width * 0.75,
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'E-Mail'),
+                  decoration: const InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     bool emailValid = RegExp(
@@ -246,7 +228,7 @@ class _AuthCardState extends State<AuthCard>
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: const InputDecoration(labelText: 'Password'),
                   obscureText: true,
                   controller: _passwordController,
                   validator: (value) {
@@ -272,8 +254,9 @@ class _AuthCardState extends State<AuthCard>
                       position: _slideAnimation,
                       child: TextFormField(
                         enabled: _authMode == AuthMode.Signup,
-                        decoration:
-                            InputDecoration(labelText: 'Confirm Password'),
+                        decoration: const InputDecoration(
+                          labelText: 'Confirm Password',
+                        ),
                         obscureText: true,
                         validator: _authMode == AuthMode.Signup
                             ? (value) {
@@ -300,20 +283,22 @@ class _AuthCardState extends State<AuthCard>
                     child: SlideTransition(
                       position: _slideAnimation,
                       child: TextFormField(
-                          enabled: _authMode == AuthMode.Signup,
-                          decoration: InputDecoration(labelText: 'Username'),
-                          keyboardType: TextInputType.text,
-                          validator: _authMode == AuthMode.Signup
-                              ? (value) {
-                                  if (value.isEmpty || value.length < 4) {
-                                    return 'Please enter valid Username!';
-                                  }
-                                  return null;
+                        enabled: _authMode == AuthMode.Signup,
+                        decoration:
+                            const InputDecoration(labelText: 'Username'),
+                        keyboardType: TextInputType.text,
+                        validator: _authMode == AuthMode.Signup
+                            ? (value) {
+                                if (value.isEmpty || value.length < 4) {
+                                  return 'Please enter valid Username!';
                                 }
-                              : null,
-                          onSaved: (value) {
-                            _authData['username'] = value;
-                          }),
+                                return null;
+                              }
+                            : null,
+                        onSaved: (value) {
+                          _authData['username'] = value;
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -331,7 +316,7 @@ class _AuthCardState extends State<AuthCard>
                       child: TextFormField(
                           enabled: _authMode == AuthMode.Signup,
                           decoration:
-                              InputDecoration(labelText: 'Phone Number'),
+                              const InputDecoration(labelText: 'Phone Number'),
                           keyboardType: TextInputType.number,
                           validator: _authMode == AuthMode.Signup
                               ? (value) {
@@ -364,15 +349,15 @@ class _AuthCardState extends State<AuthCard>
                       position: _slideAnimation,
                       child: TextFormField(
                           enabled: _authMode == AuthMode.Signup,
-                          decoration: InputDecoration(labelText: 'Address'),
+                          decoration:
+                              const InputDecoration(labelText: 'Address'),
                           keyboardType: TextInputType.text,
                           validator: _authMode == AuthMode.Signup
                               ? (value) {
-                                  if (value.isEmpty) {
-                                    return 'Please enter your address';
+                                  if (value.isEmpty || value.length < 10) {
+                                    return 'Please enter your complete address';
                                   }
                                   return null;
-                                  // TODO: enter big address greater than 10 letters
                                 }
                               : null,
                           onSaved: (value) {
@@ -381,11 +366,11 @@ class _AuthCardState extends State<AuthCard>
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 if (_isLoading)
-                  CircularProgressIndicator()
+                  const CircularProgressIndicator()
                 else
                   RaisedButton(
                     child:
@@ -394,8 +379,10 @@ class _AuthCardState extends State<AuthCard>
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30.0,
+                      vertical: 8.0,
+                    ),
                     color: Theme.of(context).primaryColor,
                     textColor: Theme.of(context).primaryTextTheme.button.color,
                   ),
@@ -403,7 +390,8 @@ class _AuthCardState extends State<AuthCard>
                   child: Text(
                       '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
                   onPressed: _switchAuthMode,
-                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   textColor: Theme.of(context).primaryColor,
                 ),

@@ -18,7 +18,7 @@ class _AllRestaurantsState extends State<AllRestaurants> {
     return Column(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.symmetric(vertical: 5),
+          padding: const EdgeInsets.symmetric(vertical: 5),
           child: AllRestaurantsTitle(),
         ),
         Expanded(
@@ -33,12 +33,12 @@ class AllRestaurantsTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-      child: Text(
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+      child: const Text(
         "All Restaurants",
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20,
-          color: Color(0xFF3a3a3b),
+          color: const Color(0xFF3a3a3b),
           fontWeight: FontWeight.bold,
         ),
         textAlign: TextAlign.center,
@@ -79,7 +79,7 @@ class AllRestaurantsTile extends StatelessWidget {
           child: Card(
             color: Colors.white,
             elevation: 8.0,
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: const BorderRadius.all(
                 Radius.circular(5.0),
               ),
@@ -108,7 +108,7 @@ class AllRestaurantsTile extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 5, top: 5),
                       child: Text(
                         name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Color(0xFF6e6e71),
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
@@ -132,8 +132,8 @@ class AllRestaurantsTile extends StatelessWidget {
                                       const EdgeInsets.only(left: 5, top: 5),
                                   child: Text(
                                     actualRating.toStringAsFixed(2),
-                                    style: TextStyle(
-                                      color: Color(0xFF6e6e71),
+                                    style: const TextStyle(
+                                      color: const Color(0xFF6e6e71),
                                       fontSize: 10,
                                       fontWeight: FontWeight.w400,
                                     ),
@@ -159,11 +159,11 @@ class AllRestaurantsTile extends StatelessWidget {
                             message: 'Number of people rated',
                             child: Container(
                               alignment: Alignment.centerRight,
-                              margin: EdgeInsets.only(right: 5),
+                              margin: const EdgeInsets.only(right: 5),
                               padding: const EdgeInsets.all(5),
                               child: Text(
                                 numberOfRating.toStringAsFixed(0),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 10,
                                   fontWeight: FontWeight.w400,
@@ -198,7 +198,9 @@ class AllRestaurantsList extends StatelessWidget {
           : Kitchens().allKitchens,
       builder: (context, streamSnapshot) {
         if (streamSnapshot.hasError) {
-          return Text('Something went wrong');
+          return const Center(
+            child: Text('Something went wrong'),
+          );
         }
 
         if (streamSnapshot.connectionState == ConnectionState.waiting) {
@@ -206,7 +208,7 @@ class AllRestaurantsList extends StatelessWidget {
         }
 
         if (streamSnapshot.data.docs.length == 0) {
-          return Center(
+          return const Center(
             child: Text('wow such empty'),
           );
         }

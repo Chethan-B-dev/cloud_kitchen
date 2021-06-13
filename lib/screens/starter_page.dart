@@ -1,6 +1,4 @@
-import 'package:cloud_kitchen/screens/restaurant_overview_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 class StarterPage extends StatefulWidget {
   @override
@@ -40,7 +38,10 @@ class _StarterPageState extends State<StarterPage>
     });
 
     _animationController.forward().then(
-        (f) => Navigator.of(context).pushReplacementNamed('/restaurants'));
+          (f) => Navigator.of(context).pushReplacementNamed(
+            '/restaurants',
+          ),
+        );
   }
 
   @override
@@ -48,10 +49,12 @@ class _StarterPageState extends State<StarterPage>
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-            image: DecorationImage(
-                image: NetworkImage(
-                    'https://i.pinimg.com/originals/f4/6d/ac/f46dac364207e409b17506fc4543bc0e.jpg'),
-                fit: BoxFit.cover)),
+          image: DecorationImage(
+            image: NetworkImage(
+                'https://i.pinimg.com/originals/f4/6d/ac/f46dac364207e409b17506fc4543bc0e.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -69,7 +72,7 @@ class _StarterPageState extends State<StarterPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                Text(
+                const Text(
                   'Home cooked meals',
                   style: TextStyle(
                     color: Colors.white,
@@ -78,10 +81,10 @@ class _StarterPageState extends State<StarterPage>
                   ),
                   textAlign: TextAlign.start,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
-                Text(
+                const Text(
                   "This App was designed as a mini-project by 6th sem MCE Students.",
                   style: TextStyle(
                     color: Colors.white,
@@ -89,7 +92,7 @@ class _StarterPageState extends State<StarterPage>
                     fontSize: 18,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 100,
                 ),
                 ScaleTransition(
@@ -117,7 +120,7 @@ class _StarterPageState extends State<StarterPage>
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 AnimatedOpacity(
@@ -130,7 +133,7 @@ class _StarterPageState extends State<StarterPage>
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
               ],

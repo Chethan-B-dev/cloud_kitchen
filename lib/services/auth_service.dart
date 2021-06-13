@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthService with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   SharedPreferences prefs;
-  // create user obj based on firebase user
+
   UserModel _userFromFirebaseUser(User user) {
     return user != null ? UserModel(id: user.uid) : null;
   }
@@ -50,7 +50,6 @@ class AuthService with ChangeNotifier {
     }
   }
 
-  // register with email and password
   Future registerWithEmailAndPassword(String email, String password,
       String username, String phone, String address) async {
     try {
@@ -101,8 +100,7 @@ class AuthService with ChangeNotifier {
     }
   }
 
-  // sign out
-  Future signOut() async {
+  Future<void> signOut() async {
     try {
       prefs = await SharedPreferences.getInstance();
       prefs.clear();

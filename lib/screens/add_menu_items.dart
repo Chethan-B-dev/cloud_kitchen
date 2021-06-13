@@ -15,12 +15,11 @@ class AddMenuItems extends StatefulWidget {
 
 class _AddMenuItemsState extends State<AddMenuItems> {
   bool isNonVeg = false;
-  var _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
     final snackBar = SnackBar(
-      duration: Duration(seconds: 1),
+      duration: Duration(seconds: 2),
       content: Text(
         'Swipe left to remove food items',
       ),
@@ -38,12 +37,12 @@ class _AddMenuItemsState extends State<AddMenuItems> {
           future: Kitchens().kitchenName,
           builder: (ctx, snapshot) {
             if (snapshot.hasError) {
-              return Text('Add menu items');
+              return const Text('Add menu items');
             }
             if (snapshot.connectionState == ConnectionState.done) {
               return Text(snapshot.data);
             }
-            return LinearProgressIndicator();
+            return const LinearProgressIndicator();
           },
         ),
         actions: [
@@ -65,7 +64,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
               future: Kitchens().foodItems,
               builder: (ctx, snapshot) {
                 if (snapshot.hasError) {
-                  return Center(
+                  return const Center(
                     child: Text(
                       'Something went wrong',
                     ),
@@ -80,7 +79,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                   stream: snapshot.data,
                   builder: (context, streamSnapshot) {
                     if (streamSnapshot.hasError) {
-                      return Text('Something went wrong');
+                      return const Center(child: Text('Something went wrong'));
                     }
 
                     if (streamSnapshot.connectionState ==
@@ -109,7 +108,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                                   padding: const EdgeInsets.all(10),
                                   child: Text(
                                     'Menu is Empty, Add Some Food Items!',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 20,
                                       fontFamily: 'Lato',
                                       fontWeight: FontWeight.w600,
@@ -145,11 +144,10 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                IconButton(
+                                const IconButton(
                                   iconSize: 25,
-                                  //color: Colors.red,
-                                  onPressed: () {},
-                                  icon: Icon(
+                                  onPressed: null,
+                                  icon: const Icon(
                                     Icons.delete,
                                   ),
                                 )
@@ -225,7 +223,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                                         children: [
                                           if (streamSnapshot.data.docs[index]
                                               ['isVeg'])
-                                            Text('Veg'),
+                                            const Text('Veg'),
                                           Container(
                                             alignment: Alignment.center,
                                             child: Switch(
@@ -240,7 +238,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                                           ),
                                           if (!streamSnapshot.data.docs[index]
                                               ['isVeg'])
-                                            Text('Non Veg'),
+                                            const Text('Non Veg'),
                                         ],
                                       ),
                                     ),

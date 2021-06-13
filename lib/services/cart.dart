@@ -54,7 +54,6 @@ class CartItem {
 }
 
 class Cart with ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference _mainCollection =
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _cartCollection =
@@ -257,8 +256,6 @@ class Cart with ChangeNotifier {
       throw (error.toString());
     }
   }
-
-  //Future<void> completeOrder()
 
   Future<String> placeOrder() async {
     try {

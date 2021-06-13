@@ -53,7 +53,7 @@ class _FoodItemState extends State<FoodItem> {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Add Food',
         ),
         actions: [
@@ -83,11 +83,13 @@ class _FoodItemState extends State<FoodItem> {
                   },
                   barrierDismissible: false,
                 );
+              } on FormatException catch (err) {
+                ShowError.showError('Please Enter a valid price', context);
               } catch (err) {
                 ShowError.showError(err.toString(), context);
               }
             },
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
           )
         ],
       ),
@@ -98,14 +100,14 @@ class _FoodItemState extends State<FoodItem> {
               children: [
                 Container(
                   width: deviceSize.width * 0.65,
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: TextField(
                     controller: _nameController,
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.sentences,
                     autocorrect: false,
                     enableSuggestions: true,
-                    decoration: InputDecoration(labelText: 'Food Name'),
+                    decoration: const InputDecoration(labelText: 'Food Name'),
                   ),
                 ),
                 Expanded(
@@ -113,7 +115,7 @@ class _FoodItemState extends State<FoodItem> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      if (!isNonVeg) Text('Veg'),
+                      if (!isNonVeg) const Text('Veg'),
                       Container(
                         alignment: Alignment.center,
                         child: Switch(
@@ -125,7 +127,7 @@ class _FoodItemState extends State<FoodItem> {
                           inactiveTrackColor: Colors.green,
                         ),
                       ),
-                      if (isNonVeg) Text('Non Veg'),
+                      if (isNonVeg) const Text('Non Veg'),
                     ],
                   ),
                 ),
@@ -144,7 +146,7 @@ class _FoodItemState extends State<FoodItem> {
                 builder: (BuildContext context) => AlertDialog(
                   title: const Text(
                     'File Upload',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.pink,
                     ),
                   ),
@@ -168,18 +170,18 @@ class _FoodItemState extends State<FoodItem> {
                   ],
                 ),
               ),
-              icon: Icon(Icons.image),
-              label: Text('Add Image'),
+              icon: const Icon(Icons.image),
+              label: const Text('Add Image'),
             ),
             Container(
               width: deviceSize.width,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: TextField(
                 controller: _priceController,
                 keyboardType: TextInputType.number,
                 autocorrect: false,
                 enableSuggestions: true,
-                decoration: InputDecoration(labelText: 'Price'),
+                decoration: const InputDecoration(labelText: 'Price'),
               ),
             ),
           ],

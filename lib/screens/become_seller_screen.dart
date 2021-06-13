@@ -50,17 +50,8 @@ class _BecomeSellerState extends State<BecomeSeller> {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: FutureBuilder(
-          future: Kitchens().isSeller(),
-          builder: (ctx, snapshot) {
-            if (snapshot.hasError) {
-              return Text('Kitchen');
-            }
-            if (snapshot.connectionState == ConnectionState.done) {
-              return snapshot.data ? Text('Kitchen') : Text('Become a Seller');
-            }
-            return LinearProgressIndicator();
-          },
+        title: const Text(
+          'Become a Seller',
         ),
       ),
       body: SingleChildScrollView(
@@ -70,7 +61,7 @@ class _BecomeSellerState extends State<BecomeSeller> {
               children: [
                 Container(
                   width: deviceSize.width * 0.65,
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: TextField(
                     controller: _controller,
                     keyboardType: TextInputType.text,
@@ -85,7 +76,7 @@ class _BecomeSellerState extends State<BecomeSeller> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      if (!isNonVeg) Text('Veg'),
+                      if (!isNonVeg) const Text('Veg'),
                       Container(
                         alignment: Alignment.center,
                         child: Switch(
@@ -97,7 +88,7 @@ class _BecomeSellerState extends State<BecomeSeller> {
                           inactiveTrackColor: Colors.green,
                         ),
                       ),
-                      if (isNonVeg) Text('Non Veg'),
+                      if (isNonVeg) const Text('Non Veg'),
                     ],
                   ),
                 ),
@@ -116,12 +107,13 @@ class _BecomeSellerState extends State<BecomeSeller> {
                 builder: (BuildContext context) => AlertDialog(
                   title: const Text(
                     'File Upload',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.pink,
                     ),
                   ),
                   content: const Text(
-                      'Where do you want the image to be taken from?'),
+                    'Where do you want the image to be taken from?',
+                  ),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () {
@@ -140,8 +132,8 @@ class _BecomeSellerState extends State<BecomeSeller> {
                   ],
                 ),
               ),
-              icon: Icon(Icons.image),
-              label: Text('Add Image'),
+              icon: const Icon(Icons.image),
+              label: const Text('Add Image'),
             ),
             Container(
               padding: const EdgeInsets.all(10),
@@ -151,7 +143,7 @@ class _BecomeSellerState extends State<BecomeSeller> {
                 ),
                 elevation: 8.0,
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(40),
                     ),
@@ -160,35 +152,39 @@ class _BecomeSellerState extends State<BecomeSeller> {
                     future: Kitchens().sellerDetails,
                     builder: (ctx, snapshot) {
                       if (snapshot.hasError) {
-                        return Center(child: Text('Something Went Wrong'));
+                        return const Center(
+                          child: Text(
+                            'Something Went Wrong',
+                          ),
+                        );
                       }
                       if (snapshot.connectionState == ConnectionState.done) {
                         return Column(
                           children: [
                             ListTile(
-                              leading: Icon(Icons.person),
-                              title: Text('Name'),
+                              leading: const Icon(Icons.person),
+                              title: const Text('Name'),
                               subtitle: Text(
                                 snapshot.data['username'],
                               ),
                             ),
                             ListTile(
-                              leading: Icon(Icons.email),
-                              title: Text('Email'),
+                              leading: const Icon(Icons.email),
+                              title: const Text('Email'),
                               subtitle: Text(
                                 snapshot.data['email'],
                               ),
                             ),
                             ListTile(
-                              leading: Icon(Icons.location_city),
-                              title: Text('Location'),
+                              leading: const Icon(Icons.location_city),
+                              title: const Text('Location'),
                               subtitle: Text(
                                 snapshot.data['address'],
                               ),
                             ),
                             ListTile(
-                              leading: Icon(Icons.phone_android),
-                              title: Text('Phone number'),
+                              leading: const Icon(Icons.phone_android),
+                              title: const Text('Phone number'),
                               subtitle: Text(
                                 snapshot.data['phone'],
                               ),
@@ -196,8 +192,8 @@ class _BecomeSellerState extends State<BecomeSeller> {
                           ],
                         );
                       }
-                      return Center(
-                        child: CircularProgressIndicator(),
+                      return const Center(
+                        child: const CircularProgressIndicator(),
                       );
                     },
                   ),
@@ -211,9 +207,9 @@ class _BecomeSellerState extends State<BecomeSeller> {
       floatingActionButton: Tooltip(
         message: "Add Menu",
         child: Padding(
-          padding: EdgeInsets.only(bottom: 30, right: 10),
+          padding: const EdgeInsets.only(bottom: 30, right: 10),
           child: FloatingActionButton(
-            child: Icon(Icons.menu_book_sharp),
+            child: const Icon(Icons.menu_book_sharp),
             backgroundColor: HexColor('#424242'),
             onPressed: () async {
               try {

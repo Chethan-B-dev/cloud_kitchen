@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 
-// TODO:add name and email in app drawer
-
 class AppDrawer extends StatefulWidget {
   @override
   _AppDrawerState createState() => _AppDrawerState();
@@ -25,7 +23,7 @@ class _AppDrawerState extends State<AppDrawer> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Consumer<Users>(
-                  child: SizedBox(
+                  child: const SizedBox(
                     height: 5,
                   ),
                   builder: (context, user, child) {
@@ -34,14 +32,14 @@ class _AppDrawerState extends State<AppDrawer> {
                       children: [
                         Text(
                           user.username,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 15,
                           ),
                         ),
                         child,
                         Text(
                           user.email,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                           ),
                         ),
@@ -53,28 +51,28 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
             automaticallyImplyLeading: false,
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            leading: Icon(Icons.shop),
-            title: Text('Kitchen'),
+            leading: const Icon(Icons.shop),
+            title: const Text('Kitchen'),
             onTap: () async {
               await Kitchens().isSeller()
                   ? Navigator.of(context).pushNamed('/add-menu-items')
                   : Navigator.of(context).pushNamed('/seller');
             },
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            leading: Icon(Icons.payment),
-            title: Text('Cart'),
+            leading: const Icon(Icons.payment),
+            title: const Text('Cart'),
             onTap: () {
               Navigator.of(context).pushNamed('/cart');
             },
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Logout'),
+            leading: const Icon(Icons.exit_to_app),
+            title: const Text('Logout'),
             onTap: () async {
               await Provider.of<Cart>(context, listen: false).clear();
 
@@ -82,7 +80,7 @@ class _AppDrawerState extends State<AppDrawer> {
               Navigator.popUntil(context, ModalRoute.withName("/"));
             },
           ),
-          Divider(),
+          const Divider(),
           FutureBuilder(
             future: Kitchens().isSeller(),
             builder: (ctx, snapshot) {
@@ -94,8 +92,8 @@ class _AppDrawerState extends State<AppDrawer> {
               }
               if (snapshot.data) {
                 return ListTile(
-                  leading: Icon(Icons.delivery_dining),
-                  title: Text('Check Orders'),
+                  leading: const Icon(Icons.money_off_csred_rounded),
+                  title: const Text('Check Orders'),
                   onTap: () {
                     Navigator.of(context).pushNamed('/check-orders');
                   },
@@ -105,7 +103,7 @@ class _AppDrawerState extends State<AppDrawer> {
               }
             },
           ),
-          Divider(),
+          const Divider(),
           FutureBuilder(
             future: Users().hasOrdered,
             builder: (ctx, snapshot) {
@@ -117,8 +115,8 @@ class _AppDrawerState extends State<AppDrawer> {
               }
               if (snapshot.data) {
                 return ListTile(
-                  leading: Icon(Icons.delivery_dining),
-                  title: Text('Order Status'),
+                  leading: const Icon(Icons.delivery_dining),
+                  title: const Text('Order Status'),
                   onTap: () {
                     Navigator.of(context).pushNamed('/order-status');
                   },
