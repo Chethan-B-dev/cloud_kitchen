@@ -26,6 +26,8 @@ class _CartScreenState extends State<CartScreen> {
     Future(() => ScaffoldMessenger.of(context).showSnackBar(snackBar));
   }
 
+  bool isItemCountZero = false;
+
   @override
   Widget build(BuildContext context) {
     Map<String, String> data =
@@ -126,11 +128,20 @@ class _CartScreenState extends State<CartScreen> {
               ),
               builder: (context, cart, child) {
                 if (cart.itemCount == 0) {
+                  isItemCountZero = true;
+
                   return Center(
                     child: Container(
+                      width: double.infinity,
                       alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      child: Text('Cart is Empty'),
+                      height: 300,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Image.network(
+                          'https://www.kindpng.com/picc/m/174-1749396_empty-cart-your-cart-is-empty-hd-png.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   );
                 }
@@ -198,7 +209,7 @@ class _CartScreenState extends State<CartScreen> {
                       onPressed: () async {
                         if (cart.itemCount == 0) {
                           ShowError.showError(
-                            'Cart is empty,Please add items before you place an order',
+                            'Cart is empty, Please add items before you place an order.',
                             context,
                           );
                           return;

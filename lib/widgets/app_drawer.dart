@@ -24,25 +24,30 @@ class _AppDrawerState extends State<AppDrawer> {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'name',
-                      style: TextStyle(
-                        fontSize: 15,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      'email',
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
+                Consumer<Users>(
+                  child: SizedBox(
+                    height: 5,
+                  ),
+                  builder: (context, user, child) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user.username,
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                        child,
+                        Text(
+                          user.email,
+                          style: TextStyle(
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),
@@ -72,8 +77,7 @@ class _AppDrawerState extends State<AppDrawer> {
             title: Text('Logout'),
             onTap: () async {
               await Provider.of<Cart>(context, listen: false).clear();
-              prefs = await SharedPreferences.getInstance();
-              prefs.clear();
+
               await AuthService().signOut();
               Navigator.popUntil(context, ModalRoute.withName("/"));
             },

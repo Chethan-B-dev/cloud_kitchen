@@ -1,3 +1,4 @@
+import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/helpers/hex_color.dart';
 import 'package:cloud_kitchen/helpers/loading_card.dart';
 import 'package:cloud_kitchen/services/users.dart';
@@ -66,8 +67,16 @@ class _OrderStatusState extends State<OrderStatus> {
                     children: [
                       RaisedButton.icon(
                         textColor: Theme.of(context).primaryColor,
-                        onPressed: () {
+                        onPressed: () async {
                           print("Rating is $rating");
+                          try {
+                            await Users()
+                                .completeOrder(kitchenId, false, rating);
+                            Navigator.of(context)
+                                .pushNamed('/restaurants', arguments: rating);
+                          } catch (err) {
+                            ShowError.showError(err.toString(), context);
+                          }
                           Navigator.of(context)
                               .pushNamed('/restaurants', arguments: rating);
                         },
@@ -84,10 +93,14 @@ class _OrderStatusState extends State<OrderStatus> {
                       ),
                       RaisedButton.icon(
                         textColor: Theme.of(context).primaryColor,
-                        onPressed: () {
-                          print("Rating is $rating");
-                          Navigator.of(context)
-                              .pushNamed('/restaurants', arguments: rating);
+                        onPressed: () async {
+                          try {
+                            await Users().completeOrder(kitchenId, true, null);
+                            Navigator.of(context)
+                                .pushNamed('/restaurants', arguments: rating);
+                          } catch (err) {
+                            ShowError.showError(err.toString(), context);
+                          }
                         },
                         icon: Icon(Icons.door_back),
                         label: Text(
@@ -144,7 +157,7 @@ class _OrderStatusState extends State<OrderStatus> {
 
         List<bool> selected = [false, false, false, false];
 
-        selected[int.parse(orderStatus) + 1] = true;
+        selected[int.parse(orderStatus)] = true;
 
         return Scaffold(
           appBar: AppBar(

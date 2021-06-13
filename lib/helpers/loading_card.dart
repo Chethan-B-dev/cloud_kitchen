@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_placeholder_textlines/placeholder_lines.dart';
 
 class LoadingCard extends StatelessWidget {
-  const LoadingCard({Key key}) : super(key: key);
+  LoadingCard({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

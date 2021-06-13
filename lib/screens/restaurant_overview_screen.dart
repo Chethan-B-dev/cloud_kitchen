@@ -58,8 +58,6 @@ class RestaurantOverview extends StatelessWidget {
                 TextButton(
                   onPressed: () async {
                     await Provider.of<Cart>(context, listen: false).clear();
-                    prefs = await SharedPreferences.getInstance();
-                    prefs.clear();
                     await AuthService().signOut();
                     Navigator.popUntil(context, ModalRoute.withName("/"));
                   },

@@ -64,14 +64,6 @@ class _BecomeSellerState extends State<BecomeSeller> {
             return LinearProgressIndicator();
           },
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              print('clicked button');
-            },
-            icon: Icon(Icons.add),
-          )
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(

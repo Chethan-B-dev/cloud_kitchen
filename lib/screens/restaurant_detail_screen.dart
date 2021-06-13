@@ -5,6 +5,7 @@ import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_placeholder_textlines/placeholder_lines.dart';
 import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class RestaurantDetail extends StatefulWidget {
   static String routeName = '/details';
@@ -137,13 +138,36 @@ class RestaurantDetailTile extends StatelessWidget {
             width: double.infinity,
             child: Column(
               children: <Widget>[
-                Container(
-                  height: 200,
-                  width: double.infinity,
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                  ),
+                Stack(
+                  children: [
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(5),
+                      alignment: Alignment.centerRight,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Icon(
+                            Icons.crop_square_sharp,
+                            color: isVeg ? Colors.green : Colors.red,
+                            size: 36,
+                          ),
+                          Icon(
+                            Icons.circle,
+                            color: isVeg ? Colors.green : Colors.red,
+                            size: 14,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -173,7 +197,7 @@ class RestaurantDetailTile extends StatelessWidget {
                             );
                           },
                           icon: Icon(
-                            Icons.shopping_cart,
+                            Icons.add_shopping_cart_rounded,
                             color: Colors.pinkAccent,
                           ),
                         ),

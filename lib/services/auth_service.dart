@@ -3,9 +3,11 @@ import 'package:cloud_kitchen/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  SharedPreferences prefs;
   // create user obj based on firebase user
   UserModel _userFromFirebaseUser(User user) {
     return user != null ? UserModel(id: user.uid) : null;
@@ -22,6 +24,11 @@ class AuthService with ChangeNotifier {
         password: password,
       );
       User user = result.user;
+
+      prefs = await SharedPreferences.getInstance();
+      prefs.setString('email', email);
+      prefs.setString('userId', user.uid);
+
       return _userFromFirebaseUser(user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -64,6 +71,12 @@ class AuthService with ChangeNotifier {
           'orderStatus': null,
         },
       );
+
+      prefs = await SharedPreferences.getInstance();
+      prefs.setString('email', email);
+      prefs.setString('userId', user.uid);
+      prefs.setString('username', username);
+
       return _userFromFirebaseUser(user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -86,6 +99,8 @@ class AuthService with ChangeNotifier {
   // sign out
   Future signOut() async {
     try {
+      prefs = await SharedPreferences.getInstance();
+      prefs.clear();
       return await _auth.signOut();
     } catch (error) {
       print(error.toString());

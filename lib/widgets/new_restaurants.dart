@@ -50,6 +50,12 @@ class NewRestaurantTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    num actualRating = 0.0;
+
+    if (numberOfRating != 0) {
+      actualRating = rating.toInt() / numberOfRating.toInt();
+    }
+
     return Card(
       color: Colors.white,
       elevation: 8.0,
@@ -102,7 +108,7 @@ class NewRestaurantTile extends StatelessWidget {
                           alignment: Alignment.topLeft,
                           padding: const EdgeInsets.only(left: 5, top: 5),
                           child: Text(
-                            rating.toStringAsFixed(2),
+                            actualRating.toStringAsFixed(2),
                             style: TextStyle(
                               color: Color(0xFF6e6e71),
                               fontSize: 10,
@@ -114,7 +120,7 @@ class NewRestaurantTile extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 3, left: 5),
                           child: SmoothStarRating(
                             color: Colors.red,
-                            rating: rating.toDouble(),
+                            rating: actualRating,
                             size: 10,
                             starCount: 5,
                           ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -134,6 +135,32 @@ class Cart with ChangeNotifier {
     return total;
   }
 
+  Future<void> deleteOrder(String orderId, String userId) async {
+    try {
+      await _ordersCollection
+          .doc(await Kitchens().kitchenId)
+          .collection('orders')
+          .doc(orderId)
+          .delete();
+
+      await _mainCollection.doc(userId).update({
+        'hasOrdered': true,
+        'orderStatus': json.encode({
+          await Kitchens().kitchenId: '3',
+        }),
+      });
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
+
   Future<void> addItem(String foodId) async {
     try {
       final snapshot = await _foodCollection
@@ -217,6 +244,8 @@ class Cart with ChangeNotifier {
       throw (error.toString());
     }
   }
+
+  //Future<void> completeOrder()
 
   Future<String> placeOrder() async {
     try {

@@ -89,11 +89,36 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                     }
 
                     if (streamSnapshot.data.docs.length == 0) {
-                      return Container(
-                        padding: EdgeInsets.all(10),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Please add some food items to the menu',
+                      return Center(
+                        child: Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * .6,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: Image.network(
+                                    'https://image.flaticon.com/icons/png/512/2007/2007606.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  'Add Food items to your menu!',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontFamily: 'Lato',
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       );
                     }
