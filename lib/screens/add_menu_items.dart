@@ -98,22 +98,22 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: Image.network(
-                                    'https://image.flaticon.com/icons/png/512/2007/2007606.png',
-                                    fit: BoxFit.cover,
-                                  ),
+                                child: Image.network(
+                                  'https://image.flaticon.com/icons/png/512/2007/2007606.png',
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(
-                                  'Add Food items to your menu!',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontFamily: 'Lato',
-                                    fontWeight: FontWeight.w600,
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                    'Menu is Empty, Add Some Food Items!',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: 'Lato',
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
                               )

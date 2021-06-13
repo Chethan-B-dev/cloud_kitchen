@@ -80,7 +80,36 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
 
           if (streamSnapshot.data.docs.length == 0) {
             return Center(
-              child: Text('wow such empty'),
+              child: Container(
+                width: double.infinity,
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height * .6,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.network(
+                        'https://image.flaticon.com/icons/png/512/450/450210.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          'Menu is Empty!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Lato',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             );
           }
 

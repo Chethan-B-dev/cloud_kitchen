@@ -72,13 +72,13 @@ class _OrderStatusState extends State<OrderStatus> {
                           try {
                             await Users()
                                 .completeOrder(kitchenId, false, rating);
-                            Navigator.of(context)
-                                .pushNamed('/restaurants', arguments: rating);
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pushReplacementNamed(
+                                '/restaurants',
+                                arguments: rating);
                           } catch (err) {
                             ShowError.showError(err.toString(), context);
                           }
-                          Navigator.of(context)
-                              .pushNamed('/restaurants', arguments: rating);
                         },
                         icon: Icon(Icons.rate_review_sharp),
                         label: Text(
@@ -96,8 +96,10 @@ class _OrderStatusState extends State<OrderStatus> {
                         onPressed: () async {
                           try {
                             await Users().completeOrder(kitchenId, true, null);
-                            Navigator.of(context)
-                                .pushNamed('/restaurants', arguments: rating);
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pushReplacementNamed(
+                                '/restaurants',
+                                arguments: rating);
                           } catch (err) {
                             ShowError.showError(err.toString(), context);
                           }
