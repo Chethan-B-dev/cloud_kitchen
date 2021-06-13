@@ -26,7 +26,9 @@ class AuthService with ChangeNotifier {
       User user = result.user;
 
       prefs = await SharedPreferences.getInstance();
+      prefs.remove('email');
       prefs.setString('email', email);
+      prefs.remove('userId');
       prefs.setString('userId', user.uid);
 
       return _userFromFirebaseUser(user);
@@ -73,8 +75,11 @@ class AuthService with ChangeNotifier {
       );
 
       prefs = await SharedPreferences.getInstance();
+      prefs.remove('email');
       prefs.setString('email', email);
+      prefs.remove('userId');
       prefs.setString('userId', user.uid);
+      prefs.remove('username');
       prefs.setString('username', username);
 
       return _userFromFirebaseUser(user);
@@ -102,9 +107,15 @@ class AuthService with ChangeNotifier {
       prefs = await SharedPreferences.getInstance();
       prefs.clear();
       return await _auth.signOut();
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, pelase check your credentials!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
     } catch (error) {
-      print(error.toString());
-      return null;
+      throw ('Could not authenticate you. Please try again later.');
     }
   }
 }

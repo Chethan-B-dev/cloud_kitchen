@@ -22,9 +22,15 @@ class Kitchens with ChangeNotifier {
     try {
       final snapshot = await _secCollection.doc(userId).get();
       return snapshot.data();
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -32,9 +38,15 @@ class Kitchens with ChangeNotifier {
     try {
       final data = await sellerDetails;
       return data['isSeller'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -43,9 +55,15 @@ class Kitchens with ChangeNotifier {
       final kitchenData =
           await _mainCollection.where('userId', isEqualTo: userId).get();
       return (kitchenData.docs[0].data() as Map<String, dynamic>)['kname'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -53,9 +71,15 @@ class Kitchens with ChangeNotifier {
     try {
       final kitchenData = await _mainCollection.doc(kitchenId).get();
       return (kitchenData.data() as Map<String, dynamic>)['kname'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -67,9 +91,15 @@ class Kitchens with ChangeNotifier {
           .doc(foodId)
           .get();
       return (foodData.data() as Map<String, dynamic>)['name'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -77,10 +107,26 @@ class Kitchens with ChangeNotifier {
     try {
       final kitchenData = await _secCollection.doc(userId).get();
       return (kitchenData.data() as Map<String, dynamic>)['kitchenId'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
+  }
+
+  List<String> setSearchParam(String kname) {
+    List<String> nameSearchList = [];
+    String temp = "";
+    for (int i = 0; i < kname.length; i++) {
+      temp = temp + kname[i].toLowerCase();
+      nameSearchList.add(temp);
+    }
+    return nameSearchList;
   }
 
   Future addKitchen(String kname, bool isNonVeg, File image) async {
@@ -98,6 +144,7 @@ class Kitchens with ChangeNotifier {
       DocumentReference document = await _mainCollection.add(
         {
           'kname': kname,
+          'searchParams': setSearchParam(kname),
           'userId': userId,
           'username': userDetails['username'],
           'email': userDetails['email'],
@@ -133,16 +180,30 @@ class Kitchens with ChangeNotifier {
     try {
       final kitchenid = await kitchenId;
       return _foodCollection.doc(kitchenid).collection('items').snapshots();
-    } catch (err) {
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
   Stream<QuerySnapshot> kitchenFoods(String kitchenId) {
     try {
       return _foodCollection.doc(kitchenId).collection('items').snapshots();
-    } catch (err) {
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -153,8 +214,33 @@ class Kitchens with ChangeNotifier {
           .orderBy('userId')
           .orderBy('createdAt', descending: true)
           .snapshots();
-    } catch (err) {
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
+
+  Stream<QuerySnapshot> searchKitchen(String query) {
+    try {
+      return _mainCollection
+          .where('userId', isNotEqualTo: userId)
+          .where('searchParams', arrayContains: query)
+          .snapshots();
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -165,8 +251,15 @@ class Kitchens with ChangeNotifier {
           .orderBy('userId')
           .orderBy('rating', descending: true)
           .snapshots();
-    } catch (err) {
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 

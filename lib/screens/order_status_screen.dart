@@ -68,14 +68,13 @@ class _OrderStatusState extends State<OrderStatus> {
                       RaisedButton.icon(
                         textColor: Theme.of(context).primaryColor,
                         onPressed: () async {
-                          print("Rating is $rating");
                           try {
                             await Users()
                                 .completeOrder(kitchenId, false, rating);
                             Navigator.of(context).pop();
-                            Navigator.of(context).pushReplacementNamed(
-                                '/restaurants',
-                                arguments: rating);
+                            Navigator.of(context).pop();
+                            // Navigator.of(context)
+                            //     .pushReplacementNamed('/restaurants');
                           } catch (err) {
                             ShowError.showError(err.toString(), context);
                           }
@@ -97,9 +96,9 @@ class _OrderStatusState extends State<OrderStatus> {
                           try {
                             await Users().completeOrder(kitchenId, true, null);
                             Navigator.of(context).pop();
-                            Navigator.of(context).pushReplacementNamed(
-                                '/restaurants',
-                                arguments: rating);
+                            Navigator.of(context).pop();
+                            // Navigator.of(context)
+                            //     .pushReplacementNamed('/restaurants');
                           } catch (err) {
                             ShowError.showError(err.toString(), context);
                           }

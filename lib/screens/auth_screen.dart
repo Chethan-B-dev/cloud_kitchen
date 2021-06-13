@@ -188,77 +188,11 @@ class _AuthCardState extends State<AuthCard>
       }
     } catch (err) {
       _showErrorDialog(err.toString());
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
-  // }Future<void> _submit() async {
-  //   UserCredential authResult;
-
-  //   if (!_formKey.currentState.validate()) {
-  //     return;
-  //   }
-
-  //   _formKey.currentState.save();
-
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-
-  //   try {
-  //     if (_authMode == AuthMode.Login) {
-  //       authResult = await _auth.signInWithEmailAndPassword(
-  //         email: _authData['email'],
-  //         password: _authData['password'],
-  //       );
-  //     } else {
-  //       authResult = await _auth.createUserWithEmailAndPassword(
-  //         email: _authData['email'],
-  //         password: _authData['password'],
-  //       );
-
-  //       print(_authData.toString());
-
-  //       await FirebaseFirestore.instance
-  //           .collection('users')
-  //           .doc(authResult.user.uid)
-  //           .set({
-  //         'email': _authData['email'],
-  //         'username': _authData['username'],
-  //         'phone': _authData['phone'],
-  //         'address': _authData['address'],
-  //         'isSeller': false
-  //       });
-  //     }
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'weak-password') {
-  //       _showErrorDialog('The password provided is too weak.');
-  //     } else if (e.code == 'email-already-in-use') {
-  //       _showErrorDialog('The account already exists for that email.');
-  //     }
-  //   } on PlatformException catch (err) {
-  //     var message = 'An error occurred, pelase check your credentials!';
-
-  //     if (err.message != null) {
-  //       message = err.message;
-  //     }
-  //     _showErrorDialog(message);
-  //     setState(() {
-  //       _isLoading = false;
-  //     });
-  //   } catch (error) {
-  //     print(error);
-  //     const errorMessage =
-  //         'Could not authenticate you. Please try again later.';
-  //     _showErrorDialog(errorMessage);
-  //   }
-
-  //   setState(() {
-  //     _isLoading = false;
-  //   });
-  // }
 
   void _switchAuthMode() {
     if (_authMode == AuthMode.Login) {
@@ -286,7 +220,6 @@ class _AuthCardState extends State<AuthCard>
         duration: Duration(milliseconds: 300),
         curve: Curves.easeIn,
         height: _authMode == AuthMode.Signup ? 320 : 260,
-        // height: _heightAnimation.value.height,
         constraints:
             BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
         width: deviceSize.width * 0.75,

@@ -20,9 +20,15 @@ class Orders with ChangeNotifier {
       final snapshot = await _userCollection.doc(userId).get();
       final result = snapshot.data() as Map<String, dynamic>;
       return result['username'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -31,9 +37,15 @@ class Orders with ChangeNotifier {
       final snapshot = await _userCollection.doc(userId).get();
       final result = snapshot.data() as Map<String, dynamic>;
       return result['hasOrdered'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -45,9 +57,15 @@ class Orders with ChangeNotifier {
     try {
       final data = await sellerDetails;
       return data['isSeller'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -55,9 +73,15 @@ class Orders with ChangeNotifier {
     try {
       final snapshot = await _userCollection.doc(userId).get();
       return snapshot.data();
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -66,9 +90,15 @@ class Orders with ChangeNotifier {
       final kitchenData =
           await _kitchenCollection.where('userId', isEqualTo: userId).get();
       return (kitchenData.docs[0].data() as Map<String, dynamic>)['kname'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -76,9 +106,15 @@ class Orders with ChangeNotifier {
     try {
       final kitchenData = await _kitchenCollection.doc(kitchenId).get();
       return (kitchenData.data() as Map<String, dynamic>)['kname'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -86,9 +122,15 @@ class Orders with ChangeNotifier {
     try {
       final kitchenData = await _userCollection.doc(userId).get();
       return (kitchenData.data() as Map<String, dynamic>)['kitchenId'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 

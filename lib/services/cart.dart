@@ -74,7 +74,6 @@ class Cart with ChangeNotifier {
     if (prefs.containsKey('cart')) {
       List<CartItem> cart = CartItem.decode(prefs.getString('cart'));
       cart.forEach((item) {
-        print(item.imageUrl);
         _items[item.foodId] = item;
       });
     }
@@ -89,9 +88,15 @@ class Cart with ChangeNotifier {
       final snapshot = await _mainCollection.doc(userId).get();
       final result = snapshot.data() as Map<String, dynamic>;
       return result['username'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -113,14 +118,25 @@ class Cart with ChangeNotifier {
   }
 
   Future<bool> checkKitchenID(String newKitchenID) async {
-    if (kitchenId == '') {
-      kitchenId = newKitchenID;
-      return true;
-    }
+    try {
+      if (kitchenId == '') {
+        kitchenId = newKitchenID;
+        return true;
+      }
 
-    prefs = await SharedPreferences.getInstance();
-    prefs.setString('kitchenId', kitchenId);
-    return newKitchenID == _kitchenId;
+      prefs = await SharedPreferences.getInstance();
+      prefs.setString('kitchenId', kitchenId);
+      return newKitchenID == _kitchenId;
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
   }
 
   int get itemCount {

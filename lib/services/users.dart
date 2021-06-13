@@ -25,9 +25,10 @@ class Users with ChangeNotifier {
   String email = "";
 
   Users() {
-    print('default constructor of users called');
     setup();
   }
+
+  //* added try catch in setup if error comes remove it
 
   void setup() async {
     prefs = await SharedPreferences.getInstance();
@@ -50,9 +51,15 @@ class Users with ChangeNotifier {
       final snapshot = await _mainCollection.doc(userId).get();
       final result = snapshot.data() as Map<String, dynamic>;
       return result['username'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 
@@ -61,9 +68,15 @@ class Users with ChangeNotifier {
       final snapshot = await _mainCollection.doc(userId).get();
       final result = snapshot.data() as Map<String, dynamic>;
       return result['hasOrdered'];
-    } catch (err) {
-      print(err.toString());
-      throw (err.toString());
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
     }
   }
 

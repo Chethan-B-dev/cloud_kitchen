@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class AllRestaurants extends StatefulWidget {
+  final String searchQuery;
+
+  const AllRestaurants(this.searchQuery);
   @override
   _AllRestaurantsState createState() => _AllRestaurantsState();
 }
@@ -19,7 +22,7 @@ class _AllRestaurantsState extends State<AllRestaurants> {
           child: AllRestaurantsTitle(),
         ),
         Expanded(
-          child: AllRestaurantsList(),
+          child: AllRestaurantsList(widget.searchQuery.toLowerCase()),
         ),
       ],
     );
@@ -182,10 +185,16 @@ class AllRestaurantsTile extends StatelessWidget {
 }
 
 class AllRestaurantsList extends StatelessWidget {
+  final String searchQuery;
+
+  AllRestaurantsList(this.searchQuery);
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Kitchens().allKitchens,
+      stream: (searchQuery != "" && searchQuery != null)
+          ? Kitchens().searchKitchen(searchQuery)
+          : Kitchens().allKitchens,
       builder: (context, streamSnapshot) {
         if (streamSnapshot.hasError) {
           return Text('Something went wrong');

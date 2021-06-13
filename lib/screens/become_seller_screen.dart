@@ -80,9 +80,6 @@ class _BecomeSellerState extends State<BecomeSeller> {
                     autocorrect: false,
                     enableSuggestions: true,
                     decoration: InputDecoration(labelText: 'Kitchen Name'),
-                    onChanged: (value) {
-                      print(_controller.text);
-                    },
                   ),
                 ),
                 Expanded(

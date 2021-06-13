@@ -10,11 +10,25 @@ import '../widgets/new_restaurants.dart';
 import '../helpers/hex_color.dart';
 import '../services/auth_service.dart';
 
-class RestaurantOverview extends StatelessWidget {
+class RestaurantOverview extends StatefulWidget {
   RestaurantOverview({Key key}) : super(key: key);
 
   static const routeName = '/restaurants';
+
+  @override
+  _RestaurantOverviewState createState() => _RestaurantOverviewState();
+}
+
+class _RestaurantOverviewState extends State<RestaurantOverview> {
   SharedPreferences prefs;
+  final _searchController = TextEditingController();
+  String searchQuery = "";
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,21 +108,60 @@ class RestaurantOverview extends StatelessWidget {
                       appBar.preferredSize.height -
                       mediaQuery.padding.top) *
                   0.1,
-              child: SearchWidget(),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 10,
+                  top: 5,
+                  right: 10,
+                  bottom: 5,
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(
+                          5.0,
+                        ),
+                      ),
+                      borderSide: BorderSide(
+                        width: 0,
+                        //color: Color(0xFFfb3132),
+                        color: Colors.purple,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                    filled: true,
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Color(0xFFfb3132),
+                    ),
+                    fillColor: Color(0xFFFAFAFA),
+                    hintStyle:
+                        new TextStyle(color: Color(0xFFd0cece), fontSize: 18),
+                    hintText: "Where would you like to buy?",
+                  ),
+                ),
+              ),
             ),
             Container(
               height: (mediaQuery.size.height -
                       appBar.preferredSize.height -
                       mediaQuery.padding.top) *
                   0.35,
-              child: NewRestaurants(),
+              child: NewRestaurants(searchQuery),
             ),
             Container(
               height: (mediaQuery.size.height -
                       appBar.preferredSize.height -
                       mediaQuery.padding.top) *
                   0.55,
-              child: AllRestaurants(),
+              child: AllRestaurants(searchQuery),
             ),
           ],
         ),
