@@ -143,6 +143,7 @@ class AllRestaurantsTile extends StatelessWidget {
                                   padding:
                                       const EdgeInsets.only(top: 3, left: 5),
                                   child: SmoothStarRating(
+                                    isReadOnly: true,
                                     color: Colors.red,
                                     rating: actualRating,
                                     size: 10,
