@@ -5,7 +5,6 @@ import 'package:cloud_kitchen/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../widgets/search_bar.dart';
 import '../widgets/new_restaurants.dart';
 import '../helpers/hex_color.dart';
 import '../services/auth_service.dart';

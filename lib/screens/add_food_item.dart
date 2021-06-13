@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:image_picker/image_picker.dart';
@@ -47,8 +45,6 @@ class _FoodItemState extends State<FoodItem> {
       setState(() {
         _pickedImage = File(pickedFile.path);
       });
-    } else {
-      print('No image selected.');
     }
   }
 
@@ -110,9 +106,6 @@ class _FoodItemState extends State<FoodItem> {
                     autocorrect: false,
                     enableSuggestions: true,
                     decoration: InputDecoration(labelText: 'Food Name'),
-                    onChanged: (value) {
-                      print(_nameController.text);
-                    },
                   ),
                 ),
                 Expanded(
@@ -187,9 +180,6 @@ class _FoodItemState extends State<FoodItem> {
                 autocorrect: false,
                 enableSuggestions: true,
                 decoration: InputDecoration(labelText: 'Price'),
-                onChanged: (value) {
-                  print(_priceController.text);
-                },
               ),
             ),
           ],

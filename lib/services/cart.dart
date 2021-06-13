@@ -66,7 +66,6 @@ class Cart with ChangeNotifier {
   SharedPreferences prefs;
 
   Cart() {
-    print('Default provider of cart was called');
     setup();
   }
   void setup() async {
@@ -186,8 +185,6 @@ class Cart with ChangeNotifier {
           .get();
 
       final result = snapshot.data() as Map<String, dynamic>;
-
-      print(result);
 
       String title = result['name'];
       double price = result['price'];

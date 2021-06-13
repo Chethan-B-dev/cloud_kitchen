@@ -42,8 +42,6 @@ class _BecomeSellerState extends State<BecomeSeller> {
       setState(() {
         _pickedImage = File(pickedFile.path);
       });
-    } else {
-      print('No image selected.');
     }
   }
 
@@ -229,7 +227,6 @@ class _BecomeSellerState extends State<BecomeSeller> {
                     .pushReplacementNamed('/add-menu-items', arguments: docId);
               } catch (err) {
                 disp.ShowError.showError(err.toString(), context);
-                print(err.toString());
               }
             },
           ),

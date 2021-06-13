@@ -527,13 +527,10 @@ class AddToCartMenu extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: InkWell(
-              onTap: () => print('hello'),
-              child: Container(
-                alignment: Alignment.center,
-                child: Text(
-                  productCounter.toString(),
-                ),
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                productCounter.toString(),
               ),
             ),
           ),
