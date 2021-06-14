@@ -1,6 +1,7 @@
 import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/helpers/hex_color.dart';
 import 'package:cloud_kitchen/helpers/loading_card.dart';
+import 'package:cloud_kitchen/screens/restaurant_overview_screen.dart';
 import 'package:cloud_kitchen/services/users.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -67,15 +68,14 @@ class _OrderStatusState extends State<OrderStatus> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       RaisedButton.icon(
-                        textColor: Theme.of(context).primaryColor,
+                        // textColor: Theme.of(context).primaryColor,
                         onPressed: () async {
                           try {
                             await Users()
                                 .completeOrder(kitchenId, false, rating);
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                            // Navigator.of(context)
-                            //     .pushReplacementNamed('/restaurants');
+
+                            Navigator.of(context)
+                                .pushReplacementNamed('/restaurants');
                           } catch (err) {
                             ShowError.showError(err.toString(), context);
                           }
@@ -92,14 +92,11 @@ class _OrderStatusState extends State<OrderStatus> {
                         ),
                       ),
                       RaisedButton.icon(
-                        textColor: Theme.of(context).primaryColor,
                         onPressed: () async {
                           try {
                             await Users().completeOrder(kitchenId, true, null);
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                            // Navigator.of(context)
-                            //     .pushReplacementNamed('/restaurants');
+                            Navigator.of(context)
+                                .pushReplacementNamed('/restaurants');
                           } catch (err) {
                             ShowError.showError(err.toString(), context);
                           }
@@ -134,8 +131,12 @@ class _OrderStatusState extends State<OrderStatus> {
       stream: Users().orderStatus(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Center(
-            child: Text('Something Went Wrong'),
+          return Center(
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text('Thanks for ordering'),
+              ),
+            ),
           );
         }
 

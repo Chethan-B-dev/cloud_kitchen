@@ -42,13 +42,23 @@ dependencies:
   flutter_placeholder_textlines: ^1.0.4
   transparent_image: ^2.0.0
   font_awesome_flutter: ^9.1.0
+  pinch_zoom: ^0.1.0
   shimmer: ^2.0.0
   badges: ^2.0.1
   cool_alert: ^1.1.0
+  photo_view: ^0.11.1
+  implicitly_animated_reorderable_list: ^0.4.0
+  drag_and_drop_lists: ^0.2.1
+  flutter_launcher_icons: ^0.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/real_logo.jpg"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

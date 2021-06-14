@@ -19,6 +19,8 @@ class _FoodItemState extends State<FoodItem> {
   final _priceController = TextEditingController();
   bool isNonVeg = false;
 
+  var _isLoading = false;
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -38,8 +40,8 @@ class _FoodItemState extends State<FoodItem> {
   void _pickImage(String source) async {
     final pickedFile = await picker.getImage(
       source: source == 'Gallery' ? ImageSource.gallery : ImageSource.camera,
-      imageQuality: 50,
-      maxWidth: 150,
+      // imageQuality: 100,
+      // maxWidth: 150,
     );
     if (pickedFile != null) {
       setState(() {
@@ -57,40 +59,56 @@ class _FoodItemState extends State<FoodItem> {
           'Add Food',
         ),
         actions: [
-          IconButton(
-            onPressed: () async {
-              if (_pickedImage == null ||
-                  _nameController.text.trim() == "" ||
-                  _priceController.text.trim() == "") {
-                ShowError.showError(
-                    'Please pick an image and fill all the details', context);
-                return;
-              }
-              try {
-                await Kitchens().addFood(
-                  _nameController.text,
-                  isNonVeg,
-                  _pickedImage,
-                  double.parse(_priceController.text),
-                );
-                CoolAlert.show(
-                  context: context,
-                  type: CoolAlertType.success,
-                  text: "Your Food item has been added to the menu!",
-                  onConfirmBtnTap: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
+          _isLoading
+              ? CircularProgressIndicator()
+              : IconButton(
+                  onPressed: () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+
+                    if (_pickedImage == null ||
+                        _nameController.text.trim() == "" ||
+                        _priceController.text.trim() == "") {
+                      ShowError.showError(
+                        'Please pick an image and fill all the details',
+                        context,
+                      );
+                      setState(() {
+                        _isLoading = false;
+                      });
+                      return;
+                    }
+                    try {
+                      await Kitchens().addFood(
+                        _nameController.text,
+                        isNonVeg,
+                        _pickedImage,
+                        double.parse(_priceController.text),
+                      );
+                      CoolAlert.show(
+                        context: context,
+                        type: CoolAlertType.success,
+                        text: "Your Food item has been added to the menu!",
+                        onConfirmBtnTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        barrierDismissible: false,
+                      );
+                    } on FormatException catch (err) {
+                      ShowError.showError(
+                          'Please Enter a valid price', context);
+                    } catch (err) {
+                      ShowError.showError(err.toString(), context);
+                    } finally {
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    }
                   },
-                  barrierDismissible: false,
-                );
-              } on FormatException catch (err) {
-                ShowError.showError('Please Enter a valid price', context);
-              } catch (err) {
-                ShowError.showError(err.toString(), context);
-              }
-            },
-            icon: const Icon(Icons.save),
-          )
+                  icon: const Icon(Icons.save),
+                )
         ],
       ),
       body: SingleChildScrollView(

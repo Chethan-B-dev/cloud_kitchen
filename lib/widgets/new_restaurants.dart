@@ -36,7 +36,7 @@ class _NewRestaurantsState extends State<NewRestaurants> {
   }
 }
 
-class NewRestaurantTile extends StatelessWidget {
+class NewRestaurantTile extends StatefulWidget {
   final String id;
   final String name;
   final String imageUrl;
@@ -53,11 +53,18 @@ class NewRestaurantTile extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _NewRestaurantTileState createState() => _NewRestaurantTileState();
+}
+
+class _NewRestaurantTileState extends State<NewRestaurantTile> {
+  @override
   Widget build(BuildContext context) {
     num actualRating = 0.0;
 
-    if (numberOfRating != 0) {
-      actualRating = rating.toInt() / numberOfRating.toInt();
+    if (widget.numberOfRating != 0) {
+      setState(() {
+        actualRating = widget.rating.toInt() / widget.numberOfRating.toInt();
+      });
     }
 
     return Card(
@@ -74,7 +81,7 @@ class NewRestaurantTile extends StatelessWidget {
         onTap: () {
           Navigator.of(context).pushNamed(
             '/details',
-            arguments: id,
+            arguments: widget.id,
           );
         },
         child: Container(
@@ -84,7 +91,7 @@ class NewRestaurantTile extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: Image.network(
-                  imageUrl,
+                  widget.imageUrl,
                   fit: BoxFit.cover,
                   height: 130,
                 ),
@@ -93,7 +100,7 @@ class NewRestaurantTile extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                 padding: const EdgeInsets.only(left: 5, top: 5),
                 child: Text(
-                  name,
+                  widget.name,
                   style: const TextStyle(
                     color: Color(0xFF6e6e71),
                     fontSize: 15,
@@ -141,7 +148,7 @@ class NewRestaurantTile extends StatelessWidget {
                         margin: const EdgeInsets.only(right: 5),
                         padding: const EdgeInsets.all(5),
                         child: Text(
-                          numberOfRating.toStringAsFixed(0),
+                          widget.numberOfRating.toStringAsFixed(0),
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 10,

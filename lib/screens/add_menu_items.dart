@@ -30,6 +30,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

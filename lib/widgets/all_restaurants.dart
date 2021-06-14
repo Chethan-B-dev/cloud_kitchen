@@ -47,7 +47,7 @@ class AllRestaurantsTitle extends StatelessWidget {
   }
 }
 
-class AllRestaurantsTile extends StatelessWidget {
+class AllRestaurantsTile extends StatefulWidget {
   final String id;
   final String name;
   final String imageUrl;
@@ -64,123 +64,123 @@ class AllRestaurantsTile extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _AllRestaurantsTileState createState() => _AllRestaurantsTileState();
+}
+
+class _AllRestaurantsTileState extends State<AllRestaurantsTile> {
+  @override
   Widget build(BuildContext context) {
     num actualRating = 0.0;
 
-    if (numberOfRating != 0) {
-      actualRating = rating.toInt() / numberOfRating.toInt();
+    if (widget.numberOfRating != 0) {
+      setState(() {
+        actualRating = widget.rating.toInt() / widget.numberOfRating.toInt();
+      });
     }
 
-    return Column(
-      children: <Widget>[
-        Container(
-          padding:
-              const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-          child: Card(
-            color: Colors.white,
-            elevation: 8.0,
-            shape: const RoundedRectangleBorder(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(5.0),
-              ),
-            ),
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                  '/details',
-                  arguments: id,
-                );
-              },
-              child: Container(
-                width: double.infinity,
-                child: Column(
+    return Container(
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+      child: Card(
+        color: Colors.white,
+        elevation: 8.0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(
+            Radius.circular(5.0),
+          ),
+        ),
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              '/details',
+              arguments: widget.id,
+            );
+          },
+          child: Container(
+            width: double.infinity,
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  width: double.infinity,
+                  child: Image.network(
+                    widget.imageUrl,
+                    fit: BoxFit.cover,
+                    height: 200,
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  padding: const EdgeInsets.only(left: 5, top: 5),
+                  child: Text(
+                    widget.name,
+                    style: const TextStyle(
+                      color: Color(0xFF6e6e71),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    SizedBox(
-                      width: double.infinity,
-                      child: Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        height: 200,
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.bottomLeft,
-                      padding: const EdgeInsets.only(left: 5, top: 5),
-                      child: Text(
-                        name,
-                        style: const TextStyle(
-                          color: Color(0xFF6e6e71),
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 10,
                         ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: 10,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  alignment: Alignment.topLeft,
-                                  padding:
-                                      const EdgeInsets.only(left: 5, top: 5),
-                                  child: Text(
-                                    actualRating.toStringAsFixed(2),
-                                    style: const TextStyle(
-                                      color: const Color(0xFF6e6e71),
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding:
-                                      const EdgeInsets.only(top: 3, left: 5),
-                                  child: SmoothStarRating(
-                                    isReadOnly: true,
-                                    color: Colors.red,
-                                    rating: actualRating,
-                                    size: 10,
-                                    starCount: 5,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Tooltip(
-                            message: 'Number of people rated',
-                            child: Container(
-                              alignment: Alignment.centerRight,
-                              margin: const EdgeInsets.only(right: 5),
-                              padding: const EdgeInsets.all(5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.topLeft,
+                              padding: const EdgeInsets.only(left: 5, top: 5),
                               child: Text(
-                                numberOfRating.toStringAsFixed(0),
+                                actualRating.toStringAsFixed(2),
                                 style: const TextStyle(
-                                  color: Colors.black,
+                                  color: const Color(0xFF6e6e71),
                                   fontSize: 10,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
                             ),
+                            Container(
+                              padding: const EdgeInsets.only(top: 3, left: 5),
+                              child: SmoothStarRating(
+                                isReadOnly: true,
+                                color: Colors.red,
+                                rating: actualRating,
+                                size: 10,
+                                starCount: 5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Tooltip(
+                        message: 'Number of people rated',
+                        child: Container(
+                          alignment: Alignment.centerRight,
+                          margin: const EdgeInsets.only(right: 5),
+                          padding: const EdgeInsets.all(5),
+                          child: Text(
+                            widget.numberOfRating.toStringAsFixed(0),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
-                        )
-                      ],
+                        ),
+                      ),
                     )
                   ],
-                ),
-              ),
+                )
+              ],
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

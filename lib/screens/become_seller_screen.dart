@@ -19,6 +19,7 @@ class _BecomeSellerState extends State<BecomeSeller> {
   bool isNonVeg = false;
   File _pickedImage;
   final picker = ImagePicker();
+  var _isLoading = false;
 
   @override
   void dispose() {
@@ -35,8 +36,8 @@ class _BecomeSellerState extends State<BecomeSeller> {
   void _pickImage(String source) async {
     final pickedFile = await picker.getImage(
       source: source == 'Gallery' ? ImageSource.gallery : ImageSource.camera,
-      imageQuality: 50,
-      maxWidth: 150,
+      // imageQuality: 50,
+      // maxWidth: 150,
     );
     if (pickedFile != null) {
       setState(() {
@@ -49,6 +50,7 @@ class _BecomeSellerState extends State<BecomeSeller> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
           'Become a Seller',
@@ -204,30 +206,42 @@ class _BecomeSellerState extends State<BecomeSeller> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: Tooltip(
-        message: "Add Menu",
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 30, right: 10),
-          child: FloatingActionButton(
-            child: const Icon(Icons.menu_book_sharp),
-            backgroundColor: HexColor('#424242'),
-            onPressed: () async {
-              try {
-                if (_pickedImage == null) {
-                  disp.ShowError.showError('Please pick an image', context);
-                  return;
-                }
-                final docId = await Kitchens()
-                    .addKitchen(_controller.text, isNonVeg, _pickedImage);
-                Navigator.of(context)
-                    .pushReplacementNamed('/add-menu-items', arguments: docId);
-              } catch (err) {
-                disp.ShowError.showError(err.toString(), context);
-              }
-            },
-          ),
-        ),
-      ),
+      floatingActionButton: _isLoading
+          ? CircularProgressIndicator()
+          : Tooltip(
+              message: "Add Menu",
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 30, right: 10),
+                child: FloatingActionButton(
+                  child: const Icon(Icons.menu_book_sharp),
+                  backgroundColor: HexColor('#424242'),
+                  onPressed: () async {
+                    try {
+                      setState(() {
+                        _isLoading = true;
+                      });
+
+                      if (_pickedImage == null) {
+                        disp.ShowError.showError(
+                            'Please pick an image', context);
+                        return;
+                      }
+                      final docId = await Kitchens()
+                          .addKitchen(_controller.text, isNonVeg, _pickedImage);
+                      Navigator.of(context).pushReplacementNamed(
+                          '/add-menu-items',
+                          arguments: docId);
+                    } catch (err) {
+                      disp.ShowError.showError(err.toString(), context);
+                    }
+
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  },
+                ),
+              ),
+            ),
     );
   }
 }

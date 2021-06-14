@@ -56,38 +56,38 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
             ),
           ),
         ),
-        IconButton(
-          onPressed: () => showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: const Text(
-                'Logout',
-                style: TextStyle(
-                  color: Colors.pink,
-                ),
-              ),
-              content: const Text('Are You sure you want to logout?'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () async {
-                    await Provider.of<Cart>(context, listen: false).clear();
-                    await AuthService().signOut();
-                    Navigator.popUntil(context, ModalRoute.withName("/"));
-                  },
-                  child: const Text('Yes'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'Cancel'),
-                  child: const Text('No'),
-                ),
-              ],
-            ),
-          ),
-          icon: const Icon(
-            Icons.logout,
-            size: 26.0,
-          ),
-        )
+        // IconButton(
+        //   onPressed: () => showDialog<String>(
+        //     context: context,
+        //     builder: (BuildContext context) => AlertDialog(
+        //       title: const Text(
+        //         'Logout',
+        //         style: const TextStyle(
+        //           color: Colors.pink,
+        //         ),
+        //       ),
+        //       content: const Text('Are You sure you want to logout?'),
+        //       actions: <Widget>[
+        //         TextButton(
+        //           onPressed: () async {
+        //             await Provider.of<Cart>(context, listen: false).clear();
+        //             await AuthService().signOut();
+        //             Navigator.popUntil(context, ModalRoute.withName("/"));
+        //           },
+        //           child: const Text('Yes'),
+        //         ),
+        //         TextButton(
+        //           onPressed: () => Navigator.pop(context, 'Cancel'),
+        //           child: const Text('No'),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        //   icon: const Icon(
+        //     Icons.logout,
+        //     size: 26.0,
+        //   ),
+        // )
       ],
     );
 
