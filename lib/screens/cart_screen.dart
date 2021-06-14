@@ -18,9 +18,13 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     final snackBar = const SnackBar(
+      backgroundColor: Colors.cyan,
       duration: const Duration(seconds: 2),
       content: const Text(
         'Swipe left to remove cart items',
+        style: TextStyle(
+          color: Colors.black,
+        ),
       ),
     );
     Future(() => ScaffoldMessenger.of(context).showSnackBar(snackBar));
@@ -48,31 +52,22 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Color(0xFFFAFAFA),
         elevation: 8.0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Color(0xFF3a3737),
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
         title: const Text(
           "Item Carts",
           style: const TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontWeight: FontWeight.w600,
             fontSize: 18,
           ),
         ),
-        brightness: Brightness.light,
         actions: <Widget>[
           Consumer<Cart>(
             child: const IconButton(
               onPressed: null,
               icon: const Icon(
                 Icons.shopping_cart,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
             builder: (context, cart, child) => Badge(
@@ -91,7 +86,7 @@ class _CartScreenState extends State<CartScreen> {
           Tooltip(
             message: 'Clear Cart',
             child: IconButton(
-              color: Colors.black,
+              color: Colors.white,
               onPressed: () async {
                 try {
                   await Provider.of<Cart>(context, listen: false).clear();
@@ -120,6 +115,7 @@ class _CartScreenState extends State<CartScreen> {
                       iconSize: 25,
                       icon: const Icon(
                         Icons.delete,
+                        color: Colors.white,
                       ),
                     )
                   ],
@@ -131,14 +127,19 @@ class _CartScreenState extends State<CartScreen> {
 
                   return Center(
                     child: Container(
+                      padding: const EdgeInsets.all(15),
                       width: double.infinity,
                       alignment: Alignment.center,
                       height: 300,
                       child: SizedBox(
                         width: double.infinity,
-                        child: Image.network(
-                          'https://www.kindpng.com/picc/m/174-1749396_empty-cart-your-cart-is-empty-hd-png.png',
-                          fit: BoxFit.cover,
+                        child: FadeInImage(
+                          placeholder: AssetImage(
+                            'assets/images/place.png',
+                          ),
+                          image: NetworkImage(
+                            'https://vastravila.com/uploads/shopping-cart.png',
+                          ),
                         ),
                       ),
                     ),
@@ -200,11 +201,13 @@ class _CartScreenState extends State<CartScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 30, right: 10),
                 child: Consumer<Cart>(
-                  child: const Icon(Icons.save),
+                  child: const Icon(
+                    Icons.save,
+                  ),
                   builder: (context, value, child) {
                     return FloatingActionButton(
                       child: child,
-                      backgroundColor: HexColor('#424242'),
+                      backgroundColor: Colors.yellow,
                       onPressed: () async {
                         if (cart.itemCount == 0) {
                           ShowError.showError(
@@ -242,18 +245,7 @@ class TotalCalculationWidget extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       width: double.infinity,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xFFfae3e2).withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 1,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
       child: Card(
-        color: Colors.white,
         elevation: 8.0,
         shape: const RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(
@@ -266,7 +258,7 @@ class TotalCalculationWidget extends StatelessWidget {
               "Total",
               style: const TextStyle(
                 fontSize: 18,
-                color: Color(0xFF3a3a3b),
+                color: Colors.white,
                 fontWeight: FontWeight.w400,
               ),
               textAlign: TextAlign.left,
@@ -305,7 +297,7 @@ class TotalCalculationWidget extends StatelessWidget {
                                 cart.items.values.toList()[index].title,
                                 style: const TextStyle(
                                   fontSize: 18,
-                                  color: Color(0xFF3a3a3b),
+                                  color: Colors.white,
                                   fontWeight: FontWeight.w400,
                                 ),
                                 textAlign: TextAlign.left,
@@ -319,7 +311,7 @@ class TotalCalculationWidget extends StatelessWidget {
                                 "x${cart.items.values.toList()[index].quantity}",
                                 style: const TextStyle(
                                   fontSize: 18,
-                                  color: Color(0xFF3a3a3b),
+                                  color: Colors.white,
                                   fontWeight: FontWeight.w400,
                                 ),
                                 textAlign: TextAlign.left,
@@ -335,7 +327,7 @@ class TotalCalculationWidget extends StatelessWidget {
                                         .toStringAsFixed(2),
                                 style: const TextStyle(
                                   fontSize: 18,
-                                  color: Color(0xFF3a3a3b),
+                                  color: Colors.white,
                                   fontWeight: FontWeight.w400,
                                 ),
                                 textAlign: TextAlign.right,
@@ -358,14 +350,17 @@ class TotalCalculationWidget extends StatelessWidget {
                           '\u20B9 ' + cart.totalAmount.toStringAsFixed(2),
                           style: const TextStyle(
                             fontSize: 18,
-                            color: Colors.pink,
+                            color: Colors.yellow,
                             fontWeight: FontWeight.w400,
                           ),
                           textAlign: TextAlign.right,
                         ),
                       )
                     ],
-                  )
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                 ],
               ),
             );
@@ -396,102 +391,78 @@ class CartItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
     return Container(
       width: double.infinity,
-      height: 150,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xFFfae3e2).withOpacity(0.3),
-            spreadRadius: 1,
-            blurRadius: 1,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
+      height: 100,
       child: Card(
-        color: Colors.white,
+        color: ThemeData.dark().cardColor,
         elevation: 8.0,
-        shape: const RoundedRectangleBorder(
-          borderRadius: const BorderRadius.all(
-            Radius.circular(5.0),
-          ),
-        ),
-        child: Container(
-          alignment: Alignment.center,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Expanded(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minWidth: double.infinity,
-                    minHeight: double.infinity,
-                  ),
-                  child: Image.network(
+        child: InkWell(
+          onTap: () {},
+          child: Container(
+            height: deviceSize.height * 0.1,
+            padding: const EdgeInsets.symmetric(
+              vertical: 0,
+              horizontal: 5,
+            ),
+            child: Row(
+              children: <Widget>[
+                CircleAvatar(
+                  radius: 32,
+                  backgroundImage: NetworkImage(
                     productImage,
-                    fit: BoxFit.cover,
                   ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Flexible(
-                      fit: FlexFit.tight,
-                      flex: 3,
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Text(
-                          productName,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                Container(
+                  width: deviceSize.width * 0.55,
+                  padding: const EdgeInsets.all(5),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              productName,
+                              textAlign: TextAlign.left,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
                         ),
-                      ),
-                    ),
-                    Flexible(
-                      fit: FlexFit.tight,
-                      flex: 1,
-                      child: Container(
-                        padding: EdgeInsets.only(
-                          bottom: 5,
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          '\u20B9 ' + productPrice.toStringAsFixed(2),
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                Text(
+                                  '\u20B9 ' + productPrice.toString(),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            ),
                           ),
-                          textAlign: TextAlign.center,
                         ),
-                      ),
+                      ],
                     ),
-                    Flexible(
-                      fit: FlexFit.tight,
-                      flex: 1,
-                      child: Container(
-                        padding: EdgeInsets.only(
-                          bottom: 5,
-                        ),
-                        alignment: Alignment.center,
-                        child: AddToCartMenu(
-                          productCartQuantity,
-                          productid,
-                          cartId,
-                        ),
-                      ),
-                    )
-                  ],
+                  ),
                 ),
-              )
-            ],
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                      bottom: 5,
+                    ),
+                    alignment: Alignment.center,
+                    child: AddToCartMenu(
+                      productCartQuantity,
+                      productid,
+                      cartId,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -522,7 +493,10 @@ class AddToCartMenu extends StatelessWidget {
                   ShowError.showError(err.toString(), context);
                 }
               },
-              icon: const Icon(Icons.remove),
+              icon: const Icon(
+                Icons.remove,
+                color: Colors.white,
+              ),
               color: Colors.black,
               iconSize: 14,
             ),
@@ -532,6 +506,9 @@ class AddToCartMenu extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 productCounter.toString(),
+                style: TextStyle(
+                  color: Colors.yellow,
+                ),
               ),
             ),
           ),
@@ -545,7 +522,10 @@ class AddToCartMenu extends StatelessWidget {
                   ShowError.showError(err.toString(), context);
                 }
               },
-              icon: const Icon(Icons.add),
+              icon: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
               color: Color(0xFFfd2c2c),
               iconSize: 14,
             ),

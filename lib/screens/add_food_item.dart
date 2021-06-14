@@ -60,7 +60,18 @@ class _FoodItemState extends State<FoodItem> {
         ),
         actions: [
           _isLoading
-              ? CircularProgressIndicator()
+              ? Container(
+                  alignment: Alignment.center,
+                  width: 40.0,
+                  height: 10.0,
+                  child: SizedBox(
+                    height: 15,
+                    width: 15,
+                    child: CircularProgressIndicator(
+                      color: Colors.yellow,
+                    ),
+                  ),
+                )
               : IconButton(
                   onPressed: () async {
                     setState(() {
@@ -107,7 +118,10 @@ class _FoodItemState extends State<FoodItem> {
                       });
                     }
                   },
-                  icon: const Icon(Icons.save),
+                  icon: const Icon(
+                    Icons.save,
+                    color: Colors.yellow,
+                  ),
                 )
         ],
       ),
@@ -139,8 +153,8 @@ class _FoodItemState extends State<FoodItem> {
                         child: Switch(
                           value: isNonVeg,
                           onChanged: toggleSwitch,
-                          activeTrackColor: Colors.redAccent,
-                          activeColor: Colors.redAccent,
+                          activeTrackColor: Colors.red.shade400,
+                          activeColor: Colors.red.shade400,
                           inactiveThumbColor: Colors.green,
                           inactiveTrackColor: Colors.green,
                         ),
@@ -169,11 +183,13 @@ class _FoodItemState extends State<FoodItem> {
                     ),
                   ),
                   content: const Text(
-                      'Where do you want the image to be taken from?'),
+                    'Where do you want the image to be taken from?',
+                  ),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
+
                         _pickImage('Camera');
                       },
                       child: const Text('Camera'),
@@ -188,8 +204,16 @@ class _FoodItemState extends State<FoodItem> {
                   ],
                 ),
               ),
-              icon: const Icon(Icons.image),
-              label: const Text('Add Image'),
+              icon: const Icon(
+                Icons.image,
+                color: Colors.white,
+              ),
+              label: const Text(
+                'Add Image',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
             ),
             Container(
               width: deviceSize.width,

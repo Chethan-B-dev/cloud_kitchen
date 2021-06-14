@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../helpers/hex_color.dart';
 import '../services/kitchens.dart';
 import '../helpers/error.dart' as disp;
 import 'dart:io';
@@ -103,7 +102,7 @@ class _BecomeSellerState extends State<BecomeSeller> {
                   _pickedImage != null ? FileImage(_pickedImage) : null,
             ),
             FlatButton.icon(
-              textColor: Theme.of(context).primaryColor,
+              textColor: Colors.white,
               onPressed: () => showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
@@ -207,14 +206,28 @@ class _BecomeSellerState extends State<BecomeSeller> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: _isLoading
-          ? CircularProgressIndicator()
+          ? Container(
+              alignment: Alignment.center,
+              width: 40.0,
+              height: 10.0,
+              child: SizedBox(
+                height: 15,
+                width: 15,
+                child: CircularProgressIndicator(
+                  color: Colors.yellow,
+                ),
+              ),
+            )
           : Tooltip(
               message: "Add Menu",
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 30, right: 10),
                 child: FloatingActionButton(
-                  child: const Icon(Icons.menu_book_sharp),
-                  backgroundColor: HexColor('#424242'),
+                  child: const Icon(
+                    Icons.menu_book_sharp,
+                    color: Colors.black,
+                  ),
+                  backgroundColor: Colors.yellow,
                   onPressed: () async {
                     try {
                       setState(() {

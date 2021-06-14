@@ -149,7 +149,11 @@ class Cart with ChangeNotifier {
     return total;
   }
 
-  Future<void> deleteOrder(String orderId, String userId) async {
+  Future<void> deleteOrder(
+    String orderId,
+    String userId,
+    bool isCancelled,
+  ) async {
     try {
       await _ordersCollection
           .doc(await Kitchens().kitchenId)
@@ -157,12 +161,21 @@ class Cart with ChangeNotifier {
           .doc(orderId)
           .delete();
 
-      await _mainCollection.doc(userId).update({
-        'hasOrdered': true,
-        'orderStatus': json.encode({
-          await Kitchens().kitchenId: '3',
-        }),
-      });
+      if (!isCancelled) {
+        await _mainCollection.doc(userId).update({
+          'hasOrdered': true,
+          'orderStatus': json.encode({
+            await Kitchens().kitchenId: '3',
+          }),
+        });
+      } else {
+        await _mainCollection.doc(userId).update({
+          'hasOrdered': true,
+          'orderStatus': json.encode({
+            await Kitchens().kitchenId: '4',
+          }),
+        });
+      }
     } on PlatformException catch (err) {
       var message = 'An error occurred, please try again later!';
 

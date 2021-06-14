@@ -46,21 +46,7 @@ class MyApp extends StatelessWidget {
         title: 'Cloud Kitchen',
         home: Wrapper(),
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-          accentColor: Colors.black,
-          errorColor: Colors.red,
-          textTheme: ThemeData.light().textTheme.copyWith(
-                title: TextStyle(
-                  fontFamily: 'OpenSans',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-                button: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-        ),
+        theme: ThemeData.dark(),
         routes: <String, WidgetBuilder>{
           AuthScreen.routeName: (ctx) => AuthScreen(),
           RestaurantOverview.routeName: (ctx) => RestaurantOverview(),

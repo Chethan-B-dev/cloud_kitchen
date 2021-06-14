@@ -19,9 +19,13 @@ class _AddMenuItemsState extends State<AddMenuItems> {
   void initState() {
     super.initState();
     final snackBar = SnackBar(
+      backgroundColor: Colors.cyan,
       duration: Duration(seconds: 2),
       content: Text(
         'Swipe left to remove food items',
+        style: TextStyle(
+          color: Colors.black,
+        ),
       ),
     );
     Future(() => ScaffoldMessenger.of(context).showSnackBar(snackBar));
@@ -53,6 +57,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
             },
             icon: const Icon(
               Icons.add,
+              color: Colors.yellow,
             ),
           ),
         ],
@@ -146,10 +151,11 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 const IconButton(
-                                  iconSize: 25,
                                   onPressed: null,
+                                  iconSize: 25,
                                   icon: const Icon(
                                     Icons.delete,
+                                    color: Colors.white,
                                   ),
                                 )
                               ],

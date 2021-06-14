@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:cloud_kitchen/services/cart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class Orders with ChangeNotifier {
   final CollectionReference _userCollection =
@@ -133,7 +135,12 @@ class Orders with ChangeNotifier {
     }
   }
 
-  Future<void> updateOrderStatus(int value, String userId) async {
+  Future<void> updateOrderStatus(
+    int value,
+    String userId,
+    String orderId,
+    BuildContext context,
+  ) async {
     try {
       final doc = await _userCollection.doc(userId).get();
       final orderData = json
@@ -143,6 +150,14 @@ class Orders with ChangeNotifier {
           orderData.keys.toList()[0]: value.toString(),
         })
       });
+
+      if (value == 3) {
+        await Provider.of<Cart>(context, listen: false).deleteOrder(
+          orderId,
+          userId,
+          false,
+        );
+      }
     } on PlatformException catch (err) {
       var message = 'An error occurred, please try again later!';
 
@@ -155,12 +170,12 @@ class Orders with ChangeNotifier {
     }
   }
 
-  Future<QuerySnapshot> get orderList async {
+  Future<Stream<QuerySnapshot>> get orderList async {
     try {
-      return await _orderCollection
+      return _orderCollection
           .doc(await kitchenId)
           .collection('orders')
-          .get();
+          .snapshots();
     } on PlatformException catch (err) {
       var message = 'An error occurred, please try again later!';
 

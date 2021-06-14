@@ -1,7 +1,6 @@
 import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/helpers/hex_color.dart';
 import 'package:cloud_kitchen/helpers/loading_card.dart';
-import 'package:cloud_kitchen/screens/restaurant_overview_screen.dart';
 import 'package:cloud_kitchen/services/users.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -136,6 +135,9 @@ class _OrderStatusState extends State<OrderStatus> {
               appBar: AppBar(
                 title: Text('Thanks for ordering'),
               ),
+              body: Center(
+                child: Text('Thanks for ordering'),
+              ),
             ),
           );
         }
@@ -147,6 +149,50 @@ class _OrderStatusState extends State<OrderStatus> {
         kitchenId = snapshot.data?.keys?.toList()[0] as String;
 
         orderStatus = snapshot.data?.values?.toList()[0] as String;
+
+        if (orderStatus == "4") {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Order Status'),
+              automaticallyImplyLeading: false,
+              actions: [
+                IconButton(
+                  onPressed: () async {
+                    try {
+                      await Users().completeOrder(kitchenId, true, null);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/restaurants',
+                        (route) => false,
+                      );
+                    } catch (err) {
+                      ShowError.showError(err.toString(), context);
+                    }
+                  },
+                  icon: Icon(Icons.close),
+                )
+              ],
+            ),
+            body: Column(
+              children: [
+                Container(
+                  height: 400,
+                  alignment: Alignment.center,
+                  child: Image.network(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaI630BSQYSltXn_WviEPNE-l0xBAWf7FSeg&usqp=CAU',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Text(
+                  'Your order has been cancelled',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
 
         List<OrderStatusEnum> status = [];
 
@@ -176,6 +222,7 @@ class _OrderStatusState extends State<OrderStatus> {
                 status: status[0],
                 selected: selected[0],
               ),
+              Divider(),
               OrderStatusItem(
                 title: 'Order confirmed',
                 subtitle: 'Your Order has been confirmed',
@@ -184,6 +231,7 @@ class _OrderStatusState extends State<OrderStatus> {
                 status: status[1],
                 selected: selected[1],
               ),
+              Divider(),
               OrderStatusItem(
                 title: 'Order Processed',
                 subtitle: 'We are preparing your food',
@@ -192,6 +240,7 @@ class _OrderStatusState extends State<OrderStatus> {
                 status: status[2],
                 selected: selected[2],
               ),
+              Divider(),
               OrderStatusItem(
                 title: 'Ready to pickup',
                 subtitle: 'Your order is ready for pickup',
@@ -208,10 +257,15 @@ class _OrderStatusState extends State<OrderStatus> {
             child: Tooltip(
               message: "Rate Restaurant",
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 30, right: 10),
+                padding: const EdgeInsets.only(
+                  bottom: 20,
+                  right: 5,
+                ),
                 child: FloatingActionButton(
-                  child: const Icon(Icons.rate_review),
-                  backgroundColor: HexColor('#424242'),
+                  child: const Icon(
+                    Icons.rate_review,
+                  ),
+                  backgroundColor: Colors.yellow,
                   onPressed: showNow,
                 ),
               ),
@@ -245,30 +299,46 @@ class OrderStatusItem extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           alignment: Alignment.center,
-          child: SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-            child: ListTile(
-              selectedTileColor: HexColor('#EEEEEE'),
-              leading: status == OrderStatusEnum.done
-                  ? Icon(Icons.done_all_rounded)
-                  : CircularProgressIndicator(),
-              title: Text(
-                title,
-                textScaleFactor: 1.5,
-                style: const TextStyle(color: Colors.black),
+          child: InkWell(
+            onTap: () {},
+            child: Center(
+              child: ListTile(
+                selectedTileColor: ThemeData.dark().cardColor,
+                leading: status == OrderStatusEnum.done
+                    ? Icon(Icons.done_all_rounded, color: Colors.yellow)
+                    : Container(
+                        height: 60,
+                        width: 20,
+                        child: Center(
+                          child: SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.yellow,
+                            ),
+                          ),
+                        ),
+                      ),
+                title: Text(
+                  title,
+                  textScaleFactor: 1.5,
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                //trailing: Icon(Icons.done),
+                subtitle: Text(
+                  subtitle,
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                selected: selected,
+                trailing: Image.network(
+                  image,
+                  fit: BoxFit.cover,
+                ),
               ),
-              //trailing: Icon(Icons.done),
-              subtitle: Text(
-                subtitle,
-                style: const TextStyle(color: Colors.black),
-              ),
-              selected: selected,
-              trailing: Image.network(
-                image,
-                fit: BoxFit.cover,
-              ),
-              onTap: () {},
             ),
           ),
         ),

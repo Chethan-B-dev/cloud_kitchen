@@ -1,4 +1,5 @@
 import 'package:badges/badges.dart';
+import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/services/cart.dart';
 import 'package:cloud_kitchen/widgets/all_restaurants.dart';
 import 'package:cloud_kitchen/widgets/app_drawer.dart';
@@ -7,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/new_restaurants.dart';
 import '../helpers/hex_color.dart';
-import '../services/auth_service.dart';
 
 class RestaurantOverview extends StatefulWidget {
   RestaurantOverview({Key key}) : super(key: key);
@@ -43,7 +43,9 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
             animationType: BadgeAnimationType.slide,
             badgeContent: Text(
               cart.itemCount.toString(),
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                color: Colors.white,
+              ),
             ),
             child: IconButton(
               onPressed: () {
@@ -97,9 +99,9 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
       resizeToAvoidBottomInset: false,
       appBar: appBar,
       body: Container(
-        decoration: BoxDecoration(
-          color: HexColor('#ECEFF1'),
-        ),
+        // decoration: BoxDecoration(
+        //   color: HexColor('#ECEFF1'),
+        // ),
         child: Column(
           children: [
             Container(
@@ -131,18 +133,20 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
                       borderSide: const BorderSide(
                         width: 0,
                         //color: Color(0xFFfb3132),
-                        color: Colors.purple,
+                        color: Colors.yellow,
                         style: BorderStyle.none,
                       ),
                     ),
                     filled: true,
                     prefixIcon: const Icon(
                       Icons.search,
-                      color: const Color(0xFFfb3132),
+                      color: Colors.yellow,
                     ),
-                    fillColor: const Color(0xFFFAFAFA),
-                    hintStyle:
-                        const TextStyle(color: Color(0xFFd0cece), fontSize: 18),
+                    fillColor: ThemeData.dark().bottomAppBarColor,
+                    hintStyle: const TextStyle(
+                      color: Color(0xFFd0cece),
+                      fontSize: 18,
+                    ),
                     hintText: "Where would you like to buy?",
                   ),
                 ),

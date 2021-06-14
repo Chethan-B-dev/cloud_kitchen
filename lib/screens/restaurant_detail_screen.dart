@@ -156,7 +156,7 @@ class RestaurantDetailTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
       child: Card(
-        color: Colors.white,
+        color: ThemeData.dark().cardColor,
         elevation: 8.0,
         shape: const RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(
@@ -171,12 +171,15 @@ class RestaurantDetailTile extends StatelessWidget {
               children: <Widget>[
                 Stack(
                   children: [
-                    Container(
-                      height: 200,
+                    FadeInImage(
                       width: double.infinity,
-                      child: Image.network(
+                      fit: BoxFit.cover,
+                      height: 200,
+                      placeholder: AssetImage(
+                        'assets/images/place.png',
+                      ),
+                      image: NetworkImage(
                         imageUrl,
-                        fit: BoxFit.cover,
                       ),
                     ),
                     Container(
@@ -229,7 +232,7 @@ class RestaurantDetailTile extends StatelessWidget {
                           },
                           icon: const Icon(
                             Icons.add_shopping_cart_rounded,
-                            color: Colors.pinkAccent,
+                            color: Colors.yellow,
                           ),
                         ),
                       ),
@@ -241,7 +244,7 @@ class RestaurantDetailTile extends StatelessWidget {
                         child: Text(
                           name,
                           style: const TextStyle(
-                            color: Color(0xFF6e6e71),
+                            color: Colors.white,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -258,7 +261,7 @@ class RestaurantDetailTile extends StatelessWidget {
                         child: Text(
                           '\u20B9 ' + price.toString(),
                           style: const TextStyle(
-                            color: Color(0xFF6e6e71),
+                            color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),

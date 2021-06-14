@@ -68,7 +68,7 @@ class _NewRestaurantTileState extends State<NewRestaurantTile> {
     }
 
     return Card(
-      color: Colors.white,
+      color: ThemeData.dark().cardColor,
       elevation: 8.0,
       shape: const RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(
@@ -90,10 +90,15 @@ class _NewRestaurantTileState extends State<NewRestaurantTile> {
             children: <Widget>[
               SizedBox(
                 width: double.infinity,
-                child: Image.network(
-                  widget.imageUrl,
+                child: FadeInImage(
                   fit: BoxFit.cover,
                   height: 130,
+                  placeholder: AssetImage(
+                    'assets/images/place.png',
+                  ),
+                  image: NetworkImage(
+                    widget.imageUrl,
+                  ),
                 ),
               ),
               Container(
@@ -102,7 +107,7 @@ class _NewRestaurantTileState extends State<NewRestaurantTile> {
                 child: Text(
                   widget.name,
                   style: const TextStyle(
-                    color: Color(0xFF6e6e71),
+                    color: Colors.white,
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                   ),
@@ -121,7 +126,7 @@ class _NewRestaurantTileState extends State<NewRestaurantTile> {
                           child: Text(
                             actualRating.toStringAsFixed(2),
                             style: const TextStyle(
-                              color: Color(0xFF6e6e71),
+                              color: Colors.white,
                               fontSize: 10,
                               fontWeight: FontWeight.w400,
                             ),
@@ -131,7 +136,7 @@ class _NewRestaurantTileState extends State<NewRestaurantTile> {
                           padding: const EdgeInsets.only(top: 3, left: 5),
                           child: SmoothStarRating(
                             isReadOnly: true,
-                            color: Colors.red,
+                            color: Colors.yellow,
                             rating: actualRating,
                             size: 10,
                             starCount: 5,
@@ -150,7 +155,7 @@ class _NewRestaurantTileState extends State<NewRestaurantTile> {
                         child: Text(
                           widget.numberOfRating.toStringAsFixed(0),
                           style: const TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontSize: 10,
                             fontWeight: FontWeight.w400,
                           ),
@@ -177,7 +182,7 @@ class NewRestaurantsTitle extends StatelessWidget {
         "New Restaurants",
         style: const TextStyle(
           fontSize: 20,
-          color: const Color(0xFF3a3a3b),
+          color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
         textAlign: TextAlign.center,
@@ -208,7 +213,12 @@ class NewRestaurantItems extends StatelessWidget {
 
         if (streamSnapshot.data.docs.length == 0) {
           return const Center(
-            child: Text('wow such empty'),
+            child: Text(
+              'wow such empty',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
           );
         }
 

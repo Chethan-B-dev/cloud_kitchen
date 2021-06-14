@@ -194,6 +194,7 @@ class _AuthCardState extends State<AuthCard>
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Card(
+      // color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
@@ -212,6 +213,7 @@ class _AuthCardState extends State<AuthCard>
             child: Column(
               children: <Widget>[
                 TextFormField(
+                  style: TextStyle(color: Colors.orange),
                   decoration: const InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
@@ -228,6 +230,7 @@ class _AuthCardState extends State<AuthCard>
                   },
                 ),
                 TextFormField(
+                  style: TextStyle(color: Colors.orange),
                   decoration: const InputDecoration(labelText: 'Password'),
                   obscureText: true,
                   controller: _passwordController,
@@ -253,6 +256,7 @@ class _AuthCardState extends State<AuthCard>
                     child: SlideTransition(
                       position: _slideAnimation,
                       child: TextFormField(
+                        style: TextStyle(color: Colors.orange),
                         enabled: _authMode == AuthMode.Signup,
                         decoration: const InputDecoration(
                           labelText: 'Confirm Password',
@@ -283,6 +287,7 @@ class _AuthCardState extends State<AuthCard>
                     child: SlideTransition(
                       position: _slideAnimation,
                       child: TextFormField(
+                        style: TextStyle(color: Colors.orange),
                         enabled: _authMode == AuthMode.Signup,
                         decoration:
                             const InputDecoration(labelText: 'Username'),
@@ -314,6 +319,7 @@ class _AuthCardState extends State<AuthCard>
                     child: SlideTransition(
                       position: _slideAnimation,
                       child: TextFormField(
+                          style: TextStyle(color: Colors.orange),
                           enabled: _authMode == AuthMode.Signup,
                           decoration:
                               const InputDecoration(labelText: 'Phone Number'),
@@ -348,6 +354,7 @@ class _AuthCardState extends State<AuthCard>
                     child: SlideTransition(
                       position: _slideAnimation,
                       child: TextFormField(
+                          style: TextStyle(color: Colors.orange),
                           enabled: _authMode == AuthMode.Signup,
                           decoration:
                               const InputDecoration(labelText: 'Address'),
@@ -373,8 +380,12 @@ class _AuthCardState extends State<AuthCard>
                   const CircularProgressIndicator()
                 else
                   RaisedButton(
-                    child:
-                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                    child: Text(
+                      _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                     onPressed: _submit,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -389,6 +400,9 @@ class _AuthCardState extends State<AuthCard>
                 FlatButton(
                   child: Text(
                     '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
                   onPressed: _switchAuthMode,
                   padding:
