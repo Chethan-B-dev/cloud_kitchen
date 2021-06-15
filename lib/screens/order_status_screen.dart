@@ -57,6 +57,7 @@ class _OrderStatusState extends State<OrderStatus> {
                     height: 10,
                   ),
                   SmoothStarRating(
+                    color: Colors.yellow,
                     rating: rating,
                     size: 45,
                     starCount: 5,

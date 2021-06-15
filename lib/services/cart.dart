@@ -7,9 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_sms/flutter_sms.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'package:telephony/telephony.dart';
 
 class CartItem {
   final String foodId;
@@ -307,28 +307,18 @@ class Cart with ChangeNotifier {
     }
   }
 
-  Future<void> _sendSMS(String message, List<String> recipents) async {
-    String _result = await sendSMS(message: message, recipients: recipents)
-        .catchError((onError) {
-      print(onError);
-    });
-    print(_result);
-  }
-
   Future<String> placeOrder() async {
     try {
       final doc = await _kitchensCollection.doc(kitchenId).get();
       final phoneNumber =
           (doc.data() as Map<String, dynamic>)['phone'] as String;
-      final email = (doc.data() as Map<String, dynamic>)['email'] as String;
-      String message = "I have placed an ordered in your kitchen!";
-      List<String> recipents = [phoneNumber];
 
-      await _sendSMS(message, recipents);
+      final Telephony telephony = Telephony.instance;
 
-      String user = await userName;
-
-      await mail(email, "You have a new order from $user");
+      await telephony.sendSms(
+        to: phoneNumber,
+        message: "Hey i have placed an order in your restaurant!",
+      );
 
       Map<String, int> orderItemData = {};
 
