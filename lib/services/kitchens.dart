@@ -34,6 +34,21 @@ class Kitchens with ChangeNotifier {
     }
   }
 
+  Stream<DocumentSnapshot> get sellerDetailsStream {
+    try {
+      return _secCollection.doc(userId).snapshots();
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
+
   Future<bool> isSeller() async {
     try {
       final data = await sellerDetails;

@@ -170,4 +170,31 @@ class Users with ChangeNotifier {
       throw (error.toString());
     }
   }
+
+  Future<void> editProfile(String name, String phone, String address) async {
+    try {
+      await _mainCollection.doc(userId).update({
+        'username': name,
+        'phone': phone,
+        'address': address,
+      });
+
+      prefs = await SharedPreferences.getInstance();
+      prefs.remove('username');
+      prefs.setString('username', username);
+
+      this.username = name;
+      this.email = email;
+
+      notifyListeners();
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
 }

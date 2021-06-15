@@ -219,8 +219,10 @@ class _AuthCardState extends State<AuthCard>
                   validator: (value) {
                     bool emailValid = RegExp(
                             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                        .hasMatch(value);
-                    if (value.isEmpty || !value.contains('@') || !emailValid) {
+                        .hasMatch(value.trim());
+                    if (value.trim().isEmpty ||
+                        !value.trim().contains('@') ||
+                        !emailValid) {
                       return 'Invalid email!';
                     }
                     return null;
@@ -235,7 +237,7 @@ class _AuthCardState extends State<AuthCard>
                   obscureText: true,
                   controller: _passwordController,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value.trim().isEmpty) {
                       return 'Password is too short!';
                     }
                     return null;
@@ -264,8 +266,8 @@ class _AuthCardState extends State<AuthCard>
                         obscureText: true,
                         validator: _authMode == AuthMode.Signup
                             ? (value) {
-                                if (value != _passwordController.text &&
-                                    value.isNotEmpty) {
+                                if (value.trim() != _passwordController.text &&
+                                    value.trim().isNotEmpty) {
                                   return 'Passwords do not match!';
                                 }
                                 return null;
@@ -294,7 +296,8 @@ class _AuthCardState extends State<AuthCard>
                         keyboardType: TextInputType.text,
                         validator: _authMode == AuthMode.Signup
                             ? (value) {
-                                if (value.isEmpty || value.length < 4) {
+                                if (value.trim().isEmpty ||
+                                    value.trim().length < 4) {
                                   return 'Please enter valid Username!';
                                 }
                                 return null;
@@ -328,8 +331,8 @@ class _AuthCardState extends State<AuthCard>
                               ? (value) {
                                   bool numberValid =
                                       RegExp(r"^[0-9]+$").hasMatch(value);
-                                  if (value.isEmpty ||
-                                      value.length != 10 ||
+                                  if (value.trim().isEmpty ||
+                                      value.trim().length != 10 ||
                                       !numberValid) {
                                     return 'Please enter valid phone number!';
                                   }
@@ -361,7 +364,8 @@ class _AuthCardState extends State<AuthCard>
                           keyboardType: TextInputType.text,
                           validator: _authMode == AuthMode.Signup
                               ? (value) {
-                                  if (value.isEmpty || value.length < 10) {
+                                  if (value.trim().isEmpty ||
+                                      value.trim().length < 10) {
                                     return 'Please enter your complete address';
                                   }
                                   return null;
@@ -377,7 +381,9 @@ class _AuthCardState extends State<AuthCard>
                   height: 20,
                 ),
                 if (_isLoading)
-                  const CircularProgressIndicator()
+                  const CircularProgressIndicator(
+                    color: Colors.yellow,
+                  )
                 else
                   RaisedButton(
                     child: Text(
