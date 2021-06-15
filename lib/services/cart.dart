@@ -1,10 +1,15 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_kitchen/config.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_sms/flutter_sms.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 
 class CartItem {
   final String foodId;
@@ -62,6 +67,9 @@ class Cart with ChangeNotifier {
       FirebaseFirestore.instance.collection('foods');
   final CollectionReference _ordersCollection =
       FirebaseFirestore.instance.collection('orders');
+  final CollectionReference _kitchensCollection =
+      FirebaseFirestore.instance.collection('kitchens');
+
   SharedPreferences prefs;
 
   Cart() {
@@ -140,6 +148,34 @@ class Cart with ChangeNotifier {
 
   int get itemCount {
     return _items.length;
+  }
+
+  Future mail(String email, String msg) async {
+    String username = Config.email; //Your Email;
+    String password = Config.password; //Your Email's password;
+
+    final smtpServer = gmail(username, password);
+    // Creating the Gmail server
+
+    // Create our email message.
+    final message = Message()
+      ..from = Address(username)
+      ..recipients.add(email)
+      ..subject =
+          'New Order - Cloud Kitchen :: 😀 :: ${DateTime.now()}' //subject of the email
+      ..text = msg; //body of the email
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' +
+          sendReport.toString()); //print if the email is sent
+    } on MailerException catch (e) {
+      print('Message not sent. \n' + e.toString());
+      throw e; //print if the email is not sent
+      // e.toString() will show why the email is not sending
+    } catch (err) {
+      throw err;
+    }
   }
 
   double get totalAmount {
@@ -271,8 +307,29 @@ class Cart with ChangeNotifier {
     }
   }
 
+  Future<void> _sendSMS(String message, List<String> recipents) async {
+    String _result = await sendSMS(message: message, recipients: recipents)
+        .catchError((onError) {
+      print(onError);
+    });
+    print(_result);
+  }
+
   Future<String> placeOrder() async {
     try {
+      final doc = await _kitchensCollection.doc(kitchenId).get();
+      final phoneNumber =
+          (doc.data() as Map<String, dynamic>)['phone'] as String;
+      final email = (doc.data() as Map<String, dynamic>)['email'] as String;
+      String message = "I have placed an ordered in your kitchen!";
+      List<String> recipents = [phoneNumber];
+
+      await _sendSMS(message, recipents);
+
+      String user = await userName;
+
+      await mail(email, "You have a new order from $user");
+
       Map<String, int> orderItemData = {};
 
       items.forEach((key, value) {

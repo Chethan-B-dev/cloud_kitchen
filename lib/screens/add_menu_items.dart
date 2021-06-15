@@ -44,10 +44,12 @@ class _AddMenuItemsState extends State<AddMenuItems> {
             if (snapshot.hasError) {
               return const Text('Add menu items');
             }
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Text(snapshot.data);
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const LinearProgressIndicator(
+                color: Colors.yellow,
+              );
             }
-            return const LinearProgressIndicator();
+            return Text(snapshot.data);
           },
         ),
         actions: [

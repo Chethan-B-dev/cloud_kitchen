@@ -273,7 +273,7 @@ class _OrderStatusState extends State<OrderStatus> {
                           CoolAlert.show(
                               barrierDismissible: false,
                               context: context,
-                              type: CoolAlertType.success,
+                              type: CoolAlertType.info,
                               text: 'Your order has been cancelled',
                               onConfirmBtnTap: () {
                                 Navigator.of(context).pop();

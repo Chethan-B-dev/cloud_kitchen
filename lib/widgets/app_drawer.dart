@@ -1,6 +1,8 @@
+import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/services/cart.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:cloud_kitchen/services/users.dart';
+import 'package:cloud_kitchen/widgets/edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +14,9 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
+  var _isLoading = false;
+  Map sellerDetails;
+
   SharedPreferences prefs;
   @override
   Widget build(BuildContext context) {
@@ -51,7 +56,6 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
             automaticallyImplyLeading: false,
           ),
-          const Divider(),
           ListTile(
             leading: const Icon(Icons.fastfood_rounded),
             title: const Text('Kitchen'),
@@ -61,7 +65,6 @@ class _AppDrawerState extends State<AppDrawer> {
                   : Navigator.of(context).pushNamed('/seller');
             },
           ),
-          const Divider(),
           ListTile(
             leading: const Icon(Icons.shopping_cart),
             title: const Text('Cart'),
@@ -69,18 +72,6 @@ class _AppDrawerState extends State<AppDrawer> {
               Navigator.of(context).pushNamed('/cart');
             },
           ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.exit_to_app),
-            title: const Text('Logout'),
-            onTap: () async {
-              await Provider.of<Cart>(context, listen: false).clear();
-
-              await AuthService().signOut();
-              Navigator.popUntil(context, ModalRoute.withName("/"));
-            },
-          ),
-          const Divider(),
           FutureBuilder(
             future: Kitchens().isSeller(),
             builder: (ctx, snapshot) {
@@ -88,7 +79,10 @@ class _AppDrawerState extends State<AppDrawer> {
                 return Container();
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Container();
+                return ListTile(
+                  leading: const Icon(Icons.circle),
+                  title: const Text('Loading'),
+                );
               }
               if (snapshot.data) {
                 return ListTile(
@@ -103,7 +97,6 @@ class _AppDrawerState extends State<AppDrawer> {
               }
             },
           ),
-          const Divider(),
           FutureBuilder(
             future: Users().hasOrdered,
             builder: (ctx, snapshot) {
@@ -111,7 +104,10 @@ class _AppDrawerState extends State<AppDrawer> {
                 return Container();
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Container();
+                return ListTile(
+                  leading: const Icon(Icons.circle),
+                  title: const Text('Loading'),
+                );
               }
               if (snapshot.data) {
                 return ListTile(
@@ -125,6 +121,72 @@ class _AppDrawerState extends State<AppDrawer> {
                 return Container();
               }
             },
+          ),
+          ListTile(
+            leading: _isLoading
+                ? Icon(
+                    Icons.circle_rounded,
+                    color: Colors.yellow,
+                  )
+                : Icon(Icons.person),
+            title: const Text('Edit profile'),
+            onTap: () async {
+              setState(() {
+                _isLoading = true;
+              });
+              try {
+                sellerDetails = await Kitchens().sellerDetails;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => FullScreenDialog(
+                      name: sellerDetails['username'],
+                      email: sellerDetails['email'],
+                      phone: sellerDetails['phone'],
+                      address: sellerDetails['address'],
+                    ),
+                    fullscreenDialog: true,
+                  ),
+                );
+              } catch (err) {
+                ShowError.showError(err.toString(), context);
+              } finally {
+                setState(() {
+                  _isLoading = false;
+                });
+              }
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.exit_to_app),
+            title: const Text('Logout'),
+            onTap: () => showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text(
+                  'Logout',
+                  style: const TextStyle(
+                    color: Colors.yellow,
+                  ),
+                ),
+                content: const Text('Are You sure you want to logout?'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () async {
+                      await Provider.of<Cart>(context, listen: false).clear();
+                      await AuthService().signOut();
+                      Navigator.popUntil(context, ModalRoute.withName("/"));
+                    },
+                    child: const Text('Yes'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text('No'),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

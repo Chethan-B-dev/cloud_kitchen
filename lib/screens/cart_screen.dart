@@ -13,6 +13,8 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  var _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -181,7 +183,7 @@ class _CartScreenState extends State<CartScreen> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: FutureBuilder(
+      floatingActionButton: FutureBuilder<bool>(
         future: Users().hasOrdered,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -189,7 +191,19 @@ class _CartScreenState extends State<CartScreen> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return Container(
+              margin: const EdgeInsets.only(bottom: 15, left: 10),
+              alignment: Alignment.center,
+              width: 40.0,
+              height: 20.0,
+              child: SizedBox(
+                height: 15,
+                width: 15,
+                child: CircularProgressIndicator(
+                  color: Colors.yellow,
+                ),
+              ),
+            );
           }
 
           return Visibility(
@@ -214,6 +228,7 @@ class _CartScreenState extends State<CartScreen> {
                           );
                           return;
                         }
+
                         try {
                           final kitchenId = await cart.placeOrder();
                           await cart.clear();

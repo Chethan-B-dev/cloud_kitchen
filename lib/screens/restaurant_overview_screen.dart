@@ -37,26 +37,27 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
       ),
       actions: <Widget>[
         Consumer<Cart>(
+          child: IconButton(
+            padding: const EdgeInsets.only(right: 10),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/cart');
+            },
+            icon: const Icon(
+              Icons.shopping_cart,
+              color: Colors.white,
+            ),
+          ),
           builder: (context, cart, child) => Badge(
             position: BadgePosition.topEnd(top: 0, end: 3),
             animationDuration: Duration(milliseconds: 300),
             animationType: BadgeAnimationType.slide,
             badgeContent: Text(
               cart.itemCount.toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
               ),
             ),
-            child: IconButton(
-              padding: const EdgeInsets.only(right: 10),
-              onPressed: () {
-                Navigator.of(context).pushNamed('/cart');
-              },
-              icon: const Icon(
-                Icons.shopping_cart,
-                color: Colors.white,
-              ),
-            ),
+            child: child,
           ),
         ),
         // IconButton(

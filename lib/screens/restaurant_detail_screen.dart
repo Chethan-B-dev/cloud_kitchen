@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/services/cart.dart';
@@ -23,14 +24,74 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
           future: Kitchens().kitchenNameFromId(kitchenId),
           builder: (ctx, snapshot) {
             if (snapshot.hasError) {
-              return const Text('Add menu items');
+              return const Text('Menu');
             }
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Text(snapshot.data);
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const LinearProgressIndicator(
+                color: Colors.yellow,
+              );
             }
-            return const LinearProgressIndicator();
+            return Text(snapshot.data);
           },
         ),
+        actions: <Widget>[
+          Consumer<Cart>(
+            child: IconButton(
+              padding: const EdgeInsets.only(right: 10),
+              onPressed: () {
+                Navigator.of(context).pushNamed('/cart');
+              },
+              icon: const Icon(
+                Icons.shopping_cart,
+                color: Colors.white,
+              ),
+            ),
+            builder: (context, cart, child) => Badge(
+              position: BadgePosition.topEnd(top: 0, end: 3),
+              animationDuration: Duration(milliseconds: 300),
+              animationType: BadgeAnimationType.slide,
+              badgeContent: Text(
+                cart.itemCount.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              child: child,
+            ),
+          ),
+          // IconButton(
+          //   onPressed: () => showDialog<String>(
+          //     context: context,
+          //     builder: (BuildContext context) => AlertDialog(
+          //       title: const Text(
+          //         'Logout',
+          //         style: const TextStyle(
+          //           color: Colors.pink,
+          //         ),
+          //       ),
+          //       content: const Text('Are You sure you want to logout?'),
+          //       actions: <Widget>[
+          //         TextButton(
+          //           onPressed: () async {
+          //             await Provider.of<Cart>(context, listen: false).clear();
+          //             await AuthService().signOut();
+          //             Navigator.popUntil(context, ModalRoute.withName("/"));
+          //           },
+          //           child: const Text('Yes'),
+          //         ),
+          //         TextButton(
+          //           onPressed: () => Navigator.pop(context, 'Cancel'),
+          //           child: const Text('No'),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          //   icon: const Icon(
+          //     Icons.logout,
+          //     size: 26.0,
+          //   ),
+          // )
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: Kitchens().kitchenFoods(kitchenId),
@@ -125,8 +186,9 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
               imageUrl: streamSnapshot.data.docs[index]['imageUrl'],
               price: streamSnapshot.data.docs[index]['price'],
               isVeg: streamSnapshot.data.docs[index]['isVeg'],
-              isInCart: Provider.of<Cart>(context)
-                  .isInCart(streamSnapshot.data.docs[index].id),
+              isInCart: Provider.of<Cart>(context).isInCart(
+                streamSnapshot.data.docs[index].id,
+              ),
             ),
           );
         },

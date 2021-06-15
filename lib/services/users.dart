@@ -179,12 +179,21 @@ class Users with ChangeNotifier {
         'address': address,
       });
 
+      final kdoc = await _kitchenCollection
+          .where('userId', isEqualTo: userId)
+          .limit(1)
+          .get();
+
+      await kdoc.docs[0].reference.update({
+        'address': address,
+        'phone': phone,
+      });
+
       prefs = await SharedPreferences.getInstance();
       prefs.remove('username');
       prefs.setString('username', username);
 
       this.username = name;
-      this.email = email;
 
       notifyListeners();
     } on PlatformException catch (err) {
