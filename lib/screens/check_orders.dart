@@ -23,9 +23,9 @@ class _CheckOrdersState extends State<CheckOrders> {
     super.initState();
     final snackBar = const SnackBar(
       backgroundColor: Colors.cyan,
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: 3),
       content: const Text(
-        'Swipe left to remove orders, dismissing it will complete the order for the user',
+        'Swipe left to cancel orders, dismissing it will cancel the order for the user',
         style: TextStyle(
           color: Colors.black,
         ),

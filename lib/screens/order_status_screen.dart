@@ -1,8 +1,11 @@
 import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/helpers/hex_color.dart';
 import 'package:cloud_kitchen/helpers/loading_card.dart';
+import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:cloud_kitchen/services/users.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 enum OrderStatusEnum { done, not_done }
@@ -27,6 +30,9 @@ class _OrderStatusState extends State<OrderStatus> {
   String kitchenId;
   bool rateButtonVisible = false;
   String orderStatus;
+
+  var _isLoading = false;
+
   void showNow() {
     showDialog(
       context: context,
@@ -210,7 +216,79 @@ class _OrderStatusState extends State<OrderStatus> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Order status'),
+            title: FutureBuilder(
+              future: Kitchens().kitchenNameFromId(kitchenId),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Text(
+                    'Order status',
+                  );
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text(
+                    'Order status',
+                  );
+                }
+
+                return Text(
+                  "Order status - ${snapshot.data}",
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                );
+              },
+            ),
+            actions: [
+              _isLoading
+                  ? Container(
+                      alignment: Alignment.center,
+                      width: 40.0,
+                      height: 10.0,
+                      child: SizedBox(
+                        height: 15,
+                        width: 15,
+                        child: CircularProgressIndicator(
+                          color: Colors.yellow,
+                        ),
+                      ),
+                    )
+                  : IconButton(
+                      tooltip: 'Cancel Order',
+                      onPressed: () async {
+                        try {
+                          setState(() {
+                            _isLoading = true;
+                          });
+
+                          await Provider.of<Users>(
+                            context,
+                            listen: false,
+                          ).cancelOrder(
+                            kitchenId,
+                          );
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          CoolAlert.show(
+                              barrierDismissible: false,
+                              context: context,
+                              type: CoolAlertType.success,
+                              text: 'Your order has been cancelled',
+                              onConfirmBtnTap: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context)
+                                    .pushReplacementNamed('/restaurants');
+                              });
+                        } catch (err) {
+                          ShowError.showError(err.toString(), context);
+                        }
+                      },
+                      icon: Icon(
+                        Icons.close,
+                      ),
+                    )
+            ],
           ),
           body: Column(
             children: <Widget>[

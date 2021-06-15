@@ -125,6 +125,8 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
               imageUrl: streamSnapshot.data.docs[index]['imageUrl'],
               price: streamSnapshot.data.docs[index]['price'],
               isVeg: streamSnapshot.data.docs[index]['isVeg'],
+              isInCart: Provider.of<Cart>(context)
+                  .isInCart(streamSnapshot.data.docs[index].id),
             ),
           );
         },
@@ -133,13 +135,14 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
   }
 }
 
-class RestaurantDetailTile extends StatelessWidget {
+class RestaurantDetailTile extends StatefulWidget {
   final String id;
   final String kitchenID;
   final String name;
   final String imageUrl;
   final double price;
   final bool isVeg;
+  final List isInCart;
 
   const RestaurantDetailTile({
     Key key,
@@ -149,10 +152,22 @@ class RestaurantDetailTile extends StatelessWidget {
     @required this.imageUrl,
     @required this.price,
     @required this.isVeg,
+    @required this.isInCart,
   }) : super(key: key);
 
   @override
+  _RestaurantDetailTileState createState() => _RestaurantDetailTileState();
+}
+
+class _RestaurantDetailTileState extends State<RestaurantDetailTile> {
+  bool _isAdded = false;
+  String cartId;
+  var _isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
+    _isAdded = widget.isInCart[0];
+    cartId = widget.isInCart[1];
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
       child: Card(
@@ -179,7 +194,7 @@ class RestaurantDetailTile extends StatelessWidget {
                         'assets/images/place.png',
                       ),
                       image: NetworkImage(
-                        imageUrl,
+                        widget.imageUrl,
                       ),
                     ),
                     Container(
@@ -190,12 +205,12 @@ class RestaurantDetailTile extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.crop_square_sharp,
-                            color: isVeg ? Colors.green : Colors.red,
+                            color: widget.isVeg ? Colors.green : Colors.red,
                             size: 36,
                           ),
                           Icon(
                             Icons.circle,
-                            color: isVeg ? Colors.green : Colors.red,
+                            color: widget.isVeg ? Colors.green : Colors.red,
                             size: 14,
                           ),
                         ],
@@ -212,28 +227,68 @@ class RestaurantDetailTile extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 5, top: 5),
                         child: IconButton(
                           onPressed: () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
                             final cart =
                                 Provider.of<Cart>(context, listen: false);
-                            if (!await cart.checkKitchenID(kitchenID)) {
+                            if (!await cart.checkKitchenID(widget.kitchenID)) {
                               ShowError.showError(
                                 'can not add food from multiple kitchens into cart',
                                 context,
                               );
+                              setState(() {
+                                _isLoading = false;
+                              });
                               return;
                             }
 
-                            Navigator.of(context).pushNamed(
-                              '/cart',
-                              arguments: {
-                                'foodId': id,
-                                'kitchenId': kitchenID,
-                              },
-                            );
+                            if (!_isAdded) {
+                              setState(() {
+                                _isAdded = true;
+                              });
+
+                              await cart.addItem(widget.id);
+                            } else {
+                              await cart.removeItem(cartId, widget.id);
+                              setState(() {
+                                _isAdded = false;
+                              });
+                            }
+                            setState(() {
+                              _isLoading = false;
+                            });
+
+                            // Navigator.of(context).pushNamed(
+                            //   '/cart',
+                            //   arguments: {
+                            //     'foodId': id,
+                            //     'kitchenId': kitchenID,
+                            //   },
+                            // );
                           },
-                          icon: const Icon(
-                            Icons.add_shopping_cart_rounded,
-                            color: Colors.yellow,
-                          ),
+                          icon: _isLoading
+                              ? Container(
+                                  alignment: Alignment.center,
+                                  width: 10.0,
+                                  height: 10.0,
+                                  child: SizedBox(
+                                    height: 15,
+                                    width: 10,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.yellow,
+                                    ),
+                                  ),
+                                )
+                              : !_isAdded
+                                  ? Icon(
+                                      Icons.add_shopping_cart_rounded,
+                                      color: Colors.yellow,
+                                    )
+                                  : Icon(
+                                      Icons.remove_shopping_cart,
+                                      color: Colors.yellow,
+                                    ),
                         ),
                       ),
                     ),
@@ -242,7 +297,7 @@ class RestaurantDetailTile extends StatelessWidget {
                         alignment: Alignment.center,
                         padding: const EdgeInsets.only(left: 5, top: 5),
                         child: Text(
-                          name,
+                          widget.name,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -259,7 +314,7 @@ class RestaurantDetailTile extends StatelessWidget {
                         alignment: Alignment.center,
                         padding: const EdgeInsets.only(left: 5, top: 5),
                         child: Text(
-                          '\u20B9 ' + price.toString(),
+                          '\u20B9 ' + widget.price.toString(),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,

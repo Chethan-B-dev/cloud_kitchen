@@ -67,6 +67,7 @@ class Cart with ChangeNotifier {
   Cart() {
     setup();
   }
+
   void setup() async {
     prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('cart')) {
@@ -415,6 +416,14 @@ class Cart with ChangeNotifier {
       throw (message);
     } catch (error) {
       throw (error.toString());
+    }
+  }
+
+  List<dynamic> isInCart(String foodId) {
+    if (items.containsKey(foodId)) {
+      return [true, items[foodId].cartId];
+    } else {
+      return [false, null];
     }
   }
 }

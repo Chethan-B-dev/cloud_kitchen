@@ -109,7 +109,7 @@ class _BecomeSellerState extends State<BecomeSeller> {
                   title: const Text(
                     'File Upload',
                     style: const TextStyle(
-                      color: Colors.pink,
+                      color: Colors.yellow,
                     ),
                   ),
                   content: const Text(

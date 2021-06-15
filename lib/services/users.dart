@@ -145,4 +145,29 @@ class Users with ChangeNotifier {
       throw (error.toString());
     }
   }
+
+  Future<void> cancelOrder(String kitchenId) async {
+    try {
+      final doc = await _ordersCollection
+          .doc(kitchenId)
+          .collection('orders')
+          .where('userId', isEqualTo: userId)
+          .limit(1)
+          .get();
+      await doc.docs[0].reference.delete();
+
+      await _mainCollection.doc(userId).update({
+        'hasOrdered': false,
+        'orderStatus': "",
+      });
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
 }

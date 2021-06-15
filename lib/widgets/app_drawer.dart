@@ -53,7 +53,7 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.shop),
+            leading: const Icon(Icons.fastfood_rounded),
             title: const Text('Kitchen'),
             onTap: () async {
               await Kitchens().isSeller()
@@ -63,7 +63,7 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.payment),
+            leading: const Icon(Icons.shopping_cart),
             title: const Text('Cart'),
             onTap: () {
               Navigator.of(context).pushNamed('/cart');

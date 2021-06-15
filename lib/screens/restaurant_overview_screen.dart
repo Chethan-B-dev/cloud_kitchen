@@ -48,6 +48,7 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
               ),
             ),
             child: IconButton(
+              padding: const EdgeInsets.only(right: 10),
               onPressed: () {
                 Navigator.of(context).pushNamed('/cart');
               },

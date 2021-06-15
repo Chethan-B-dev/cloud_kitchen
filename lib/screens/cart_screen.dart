@@ -3,7 +3,6 @@ import 'package:cloud_kitchen/services/users.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import '../helpers/hex_color.dart';
 import '../helpers/error.dart';
 import 'package:badges/badges.dart';
 
@@ -39,7 +38,6 @@ class _CartScreenState extends State<CartScreen> {
     final cart = Provider.of<Cart>(context, listen: false);
     if (data != null) {
       String foodId = data['foodId'];
-      String kitchenId = data['kitchenId'];
 
       (BuildContext context) async {
         try {
