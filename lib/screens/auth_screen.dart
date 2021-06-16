@@ -170,10 +170,10 @@ class _AuthCardState extends State<AuthCard>
       }
     } catch (err) {
       ShowError.showError(err.toString(), context);
+      setState(() {
+        _isLoading = false;
+      });
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   void _switchAuthMode() {

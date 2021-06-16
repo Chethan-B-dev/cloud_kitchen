@@ -1,6 +1,7 @@
 import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/helpers/loading_card.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
+import 'package:cloud_kitchen/widgets/edit_kitchen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -63,15 +64,55 @@ class _AddMenuItemsState extends State<AddMenuItems> {
               color: Colors.yellow,
             ),
           ),
-          IconButton(
-            onPressed: () {
-              print("edit item");
-            },
-            icon: const Icon(
-              Icons.edit,
-              color: Colors.yellow,
-            ),
-          ),
+          _isLoading
+              ? Container(
+                  alignment: Alignment.center,
+                  width: 40.0,
+                  height: 20.0,
+                  child: SizedBox(
+                    height: 15,
+                    width: 15,
+                    child: CircularProgressIndicator(
+                      color: Colors.yellow,
+                    ),
+                  ),
+                )
+              : IconButton(
+                  onPressed: () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    try {
+                      final data = await Kitchens().kitchenDetails;
+                      final kname = data['kname'];
+                      final imageUrl = data['imageUrl'];
+                      final isVeg = data['isVeg'];
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (BuildContext context) => EditKitchen(
+                            kname: kname,
+                            imageUrl: imageUrl,
+                            isVeg: isVeg,
+                          ),
+                          fullscreenDialog: true,
+                        ),
+                      ).then((value) {
+                        setState(() {});
+                      });
+                    } catch (err) {
+                      ShowError.showError(err.toString(), context);
+                    }
+
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.edit,
+                    color: Colors.yellow,
+                  ),
+                ),
         ],
       ),
       body: SingleChildScrollView(

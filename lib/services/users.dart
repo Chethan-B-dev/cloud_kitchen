@@ -32,7 +32,11 @@ class Users with ChangeNotifier {
     if (prefs.containsKey('username')) {
       username = prefs.getString('username');
     } else {
-      username = await userName;
+      try {
+        username = await userName;
+      } catch (err) {
+        username = "";
+      }
     }
     if (prefs.containsKey('userId')) {
       uid = prefs.getString('userId');

@@ -34,6 +34,22 @@ class Kitchens with ChangeNotifier {
     }
   }
 
+  Future<Map<String, dynamic>> get kitchenDetails async {
+    try {
+      final snapshot = await _mainCollection.doc(await kitchenId).get();
+      return snapshot.data();
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
+
   Stream<DocumentSnapshot> get sellerDetailsStream {
     try {
       return _secCollection.doc(userId).snapshots();
@@ -142,6 +158,40 @@ class Kitchens with ChangeNotifier {
       nameSearchList.add(temp);
     }
     return nameSearchList;
+  }
+
+  Future editKitchen(
+    String kname,
+    bool isNonVeg,
+    File image,
+    String existingUrl,
+  ) async {
+    try {
+      String userid = userId;
+      await FirebaseStorage.instance.refFromURL(existingUrl).delete();
+
+      final ref =
+          FirebaseStorage.instance.ref().child("kitchens/$userid" + ".jpg");
+      await ref.putFile(image);
+
+      final imageUrl = await ref.getDownloadURL();
+
+      await _mainCollection.doc(await kitchenId).update({
+        'kname': kname,
+        'searchParams': setSearchParam(kname),
+        'imageUrl': imageUrl,
+        'isVeg': !isNonVeg,
+      });
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
   }
 
   Future addKitchen(String kname, bool isNonVeg, File image) async {
