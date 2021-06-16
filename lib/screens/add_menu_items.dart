@@ -1,6 +1,7 @@
 import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/helpers/loading_card.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
+import 'package:cloud_kitchen/widgets/edit_food.dart';
 import 'package:cloud_kitchen/widgets/edit_kitchen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +18,7 @@ class AddMenuItems extends StatefulWidget {
 class _AddMenuItemsState extends State<AddMenuItems> {
   bool isNonVeg = false;
   var _isLoading = false;
+  var _isWaiting = false;
   @override
   void initState() {
     super.initState();
@@ -155,9 +157,9 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.network(
-                                  'https://image.flaticon.com/icons/png/512/2007/2007606.png',
+                                padding: const EdgeInsets.all(10.0),
+                                child: Image.asset(
+                                  'assets/images/empty_menu.png',
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -228,53 +230,119 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                                   children: [
                                     CircleAvatar(
                                       radius: 32,
-                                      backgroundImage: NetworkImage(
-                                        streamSnapshot.data.docs[index]
-                                            ['imageUrl'],
-                                      ),
+                                      backgroundImage: streamSnapshot.data
+                                                  .docs[index]['imageUrl'] !=
+                                              ""
+                                          ? NetworkImage(
+                                              streamSnapshot.data.docs[index]
+                                                  ['imageUrl'],
+                                            )
+                                          : null,
                                     ),
-                                    Container(
-                                      width: deviceSize.width * 0.65,
-                                      padding: const EdgeInsets.all(5),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  streamSnapshot
-                                                      .data.docs[index]['name'],
-                                                  textAlign: TextAlign.left,
+                                    Flexible(
+                                      flex: 3,
+                                      fit: FlexFit.tight,
+                                      child: Container(
+                                        width: deviceSize.width * 0.65,
+                                        padding: const EdgeInsets.all(5),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Text(
+                                                    streamSnapshot.data
+                                                        .docs[index]['name'],
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.left,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                alignment: Alignment.centerLeft,
+                                              Expanded(
                                                 child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: [
-                                                    Text(
-                                                      '\u20B9 ' +
-                                                          streamSnapshot
-                                                              .data
-                                                              .docs[index]
-                                                                  ['price']
-                                                              .toString(),
-                                                      textAlign: TextAlign.left,
+                                                    Container(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            '\u20B9 ' +
+                                                                streamSnapshot
+                                                                    .data
+                                                                    .docs[index]
+                                                                        [
+                                                                        'price']
+                                                                    .toString(),
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    Expanded(
+                                    Flexible(
+                                      flex: 1,
+                                      fit: FlexFit.tight,
+                                      child: Container(
+                                        alignment: Alignment.centerRight,
+                                        child: IconButton(
+                                          onPressed: () async {
+                                            try {
+                                              final data = await Kitchens()
+                                                  .foodDetailsFromId(
+                                                streamSnapshot
+                                                    .data.docs[index].id,
+                                              );
+
+                                              print(data);
+
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute<void>(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          EditFood(
+                                                    name: data['name'],
+                                                    price: data['price'],
+                                                    isVeg: data['isVeg'],
+                                                    imageUrl: data['imageUrl'],
+                                                    foodId: streamSnapshot
+                                                        .data.docs[index].id,
+                                                  ),
+                                                  fullscreenDialog: true,
+                                                ),
+                                              );
+                                            } catch (err) {
+                                              ShowError.showError(
+                                                err.toString(),
+                                                context,
+                                              );
+                                            }
+                                          },
+                                          icon: Icon(Icons.edit),
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      flex: 1,
+                                      fit: FlexFit.tight,
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,

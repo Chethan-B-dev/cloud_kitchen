@@ -20,8 +20,8 @@ class AuthScreen extends StatelessWidget {
             decoration: const BoxDecoration(
               color: Colors.black,
               image: DecorationImage(
-                image: NetworkImage(
-                  'https://i.pinimg.com/originals/25/19/2f/25192f4eda302e18aece7516878ae9e5.jpg',
+                image: AssetImage(
+                  'assets/images/auth_bg.jpg',
                 ),
                 fit: BoxFit.cover,
               ),
@@ -155,6 +155,9 @@ class _AuthCardState extends State<AuthCard>
             _authData['email'], _authData['password']);
         if (user == null) {
           ShowError.showError('Failed To Authenticate', context);
+          setState(() {
+            _isLoading = false;
+          });
         }
       } else {
         user = await authService.registerWithEmailAndPassword(
@@ -166,6 +169,9 @@ class _AuthCardState extends State<AuthCard>
         );
         if (user == null) {
           ShowError.showError('Failed To Authenticate', context);
+          setState(() {
+            _isLoading = false;
+          });
         }
       }
     } catch (err) {

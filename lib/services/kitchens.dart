@@ -153,7 +153,9 @@ class Kitchens with ChangeNotifier {
   List<String> setSearchParam(String kname) {
     List<String> nameSearchList = [];
     List<String> nameWords = kname.split(' ');
-    nameWords.add(kname);
+    if (nameWords.length > 1) {
+      nameWords.add(kname);
+    }
     String temp = "";
     for (int j = 0; j < nameWords.length; j++) {
       for (int i = 0; i < nameWords[j].length; i++) {
@@ -337,7 +339,16 @@ class Kitchens with ChangeNotifier {
   Future deleteFood(String id) async {
     try {
       String kitchenid = await kitchenId;
-      await _foodCollection.doc(kitchenid).collection('items').doc(id).delete();
+      DocumentSnapshot snapshot = await _foodCollection
+          .doc(kitchenid)
+          .collection('items')
+          .doc(id)
+          .get();
+      final imageUrl = (snapshot.data() as Map<String, dynamic>)['imageUrl'];
+      await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+      snapshot.reference.delete();
+
+      //await _foodCollection.doc(kitchenid).collection('items').doc(id).delete();
     } on PlatformException catch (err) {
       var message = 'An error occurred, please try again later!';
 
@@ -394,10 +405,94 @@ class Kitchens with ChangeNotifier {
     }
   }
 
+  Future<void> editFood({
+    String fname,
+    bool isNonVeg,
+    File image,
+    double price,
+    String existingUrl,
+    String foodId,
+  }) async {
+    try {
+      await FirebaseStorage.instance.refFromURL(existingUrl).delete();
+
+      final ref =
+          FirebaseStorage.instance.ref().child("foods/$foodId" + ".jpg");
+      await ref.putFile(image);
+
+      final imageUrl = await ref.getDownloadURL();
+
+      print(imageUrl);
+      print(foodId);
+
+      await _foodCollection
+          .doc(await kitchenId)
+          .collection('items')
+          .doc(foodId)
+          .update(
+        {
+          'name': fname,
+          'price': price.abs(),
+          'imageUrl': imageUrl,
+          'isVeg': !isNonVeg,
+        },
+      );
+
+      print("came here no error in edit function");
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
+
+  Future<Map<String, dynamic>> foodDetailsFromId(String foodId) async {
+    try {
+      final doc = await _foodCollection
+          .doc(await kitchenId)
+          .collection('items')
+          .doc(foodId)
+          .get();
+      return doc.data();
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
+
   Future deleteKitchen() async {
     try {
+      DocumentSnapshot snapshot =
+          await _mainCollection.doc(await kitchenId).get();
+      final imageUrl = (snapshot.data() as Map<String, dynamic>)['imageUrl'];
+      await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+
+      QuerySnapshot docs =
+          await _foodCollection.doc(await kitchenId).collection('items').get();
+
+      docs.docs.forEach((doc) async {
+        await FirebaseStorage.instance
+            .refFromURL((doc.data() as Map<String, dynamic>)['imageUrl'])
+            .delete();
+      });
+
+      docs.docs.forEach((doc) async {
+        await doc.reference.delete();
+      });
+
       await _mainCollection.doc(await kitchenId).delete();
-      await _foodCollection.doc(await kitchenId).delete();
+      //await _foodCollection.doc(await kitchenId).delete();
       await _secCollection.doc(userId).update({
         'isSeller': false,
         'kitchenId': null,

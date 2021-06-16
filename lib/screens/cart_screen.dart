@@ -135,10 +135,10 @@ class _CartScreenState extends State<CartScreen> {
                         width: double.infinity,
                         child: FadeInImage(
                           placeholder: AssetImage(
-                            'assets/images/place.png',
+                            'assets/images/cart.png',
                           ),
-                          image: NetworkImage(
-                            'https://vastravila.com/uploads/shopping-cart.png',
+                          image: AssetImage(
+                            'assets/images/cart.png',
                           ),
                         ),
                       ),

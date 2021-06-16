@@ -152,8 +152,8 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Image.network(
-                        'https://image.flaticon.com/icons/png/512/450/450210.png',
+                      child: Image.asset(
+                        'assets/images/menu.png',
                         fit: BoxFit.cover,
                       ),
                     ),
