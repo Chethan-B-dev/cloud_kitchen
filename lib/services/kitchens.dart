@@ -152,11 +152,17 @@ class Kitchens with ChangeNotifier {
 
   List<String> setSearchParam(String kname) {
     List<String> nameSearchList = [];
+    List<String> nameWords = kname.split(' ');
+    nameWords.add(kname);
     String temp = "";
-    for (int i = 0; i < kname.length; i++) {
-      temp = temp + kname[i].toLowerCase();
-      nameSearchList.add(temp);
+    for (int j = 0; j < nameWords.length; j++) {
+      for (int i = 0; i < nameWords[j].length; i++) {
+        temp = temp + nameWords[j][i].toLowerCase();
+        nameSearchList.add(temp);
+      }
+      temp = "";
     }
+
     return nameSearchList;
   }
 
@@ -390,12 +396,12 @@ class Kitchens with ChangeNotifier {
 
   Future deleteKitchen() async {
     try {
+      await _mainCollection.doc(await kitchenId).delete();
+      await _foodCollection.doc(await kitchenId).delete();
       await _secCollection.doc(userId).update({
         'isSeller': false,
         'kitchenId': null,
       });
-      await _mainCollection.doc(await kitchenId).delete();
-      await _foodCollection.doc(await kitchenId).delete();
     } on PlatformException catch (err) {
       var message = 'An error occurred, please try again later!';
 

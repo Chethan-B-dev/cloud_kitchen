@@ -268,8 +268,11 @@ class _BecomeSellerState extends State<BecomeSeller> {
                         });
                         return;
                       }
-                      final docId = await Kitchens()
-                          .addKitchen(_controller.text, isNonVeg, _pickedImage);
+                      final docId = await Kitchens().addKitchen(
+                        _controller.text,
+                        isNonVeg,
+                        _pickedImage,
+                      );
                       Navigator.of(context).pushReplacementNamed(
                           '/add-menu-items',
                           arguments: docId);
