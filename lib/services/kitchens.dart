@@ -337,4 +337,24 @@ class Kitchens with ChangeNotifier {
       throw (error.toString());
     }
   }
+
+  Future deleteKitchen() async {
+    try {
+      await _secCollection.doc(userId).update({
+        'isSeller': false,
+        'kitchenId': null,
+      });
+      await _mainCollection.doc(await kitchenId).delete();
+      await _foodCollection.doc(await kitchenId).delete();
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
 }

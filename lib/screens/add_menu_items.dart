@@ -15,6 +15,7 @@ class AddMenuItems extends StatefulWidget {
 
 class _AddMenuItemsState extends State<AddMenuItems> {
   bool isNonVeg = false;
+  var _isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -59,6 +60,15 @@ class _AddMenuItemsState extends State<AddMenuItems> {
             },
             icon: const Icon(
               Icons.add,
+              color: Colors.yellow,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              print("edit item");
+            },
+            icon: const Icon(
+              Icons.edit,
               color: Colors.yellow,
             ),
           ),
@@ -266,6 +276,68 @@ class _AddMenuItemsState extends State<AddMenuItems> {
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: _isLoading
+          ? Container(
+              margin: const EdgeInsets.only(bottom: 15, left: 10),
+              alignment: Alignment.center,
+              width: 40.0,
+              height: 20.0,
+              child: SizedBox(
+                height: 15,
+                width: 15,
+                child: CircularProgressIndicator(
+                  color: Colors.yellow,
+                ),
+              ),
+            )
+          : Tooltip(
+              message: "Delete kitchen",
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 30, right: 10),
+                child: FloatingActionButton(
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.black,
+                  ),
+                  backgroundColor: Colors.yellow,
+                  onPressed: () => showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: const Text(
+                        'Delete Restaurant',
+                        style: const TextStyle(
+                          color: Colors.yellow,
+                        ),
+                      ),
+                      content: const Text(
+                          'Are You sure you want to Delete your kitchen?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            try {
+                              await Kitchens().deleteKitchen();
+                              Navigator.of(context)
+                                  .pushReplacementNamed('/restaurants');
+                            } catch (err) {
+                              ShowError.showError(err.toString(), context);
+                            }
+                          },
+                          child: const Text('Yes'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, 'Cancel'),
+                          child: const Text('No'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }

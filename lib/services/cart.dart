@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_kitchen/config.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -148,34 +147,6 @@ class Cart with ChangeNotifier {
 
   int get itemCount {
     return _items.length;
-  }
-
-  Future mail(String email, String msg) async {
-    String username = Config.email; //Your Email;
-    String password = Config.password; //Your Email's password;
-
-    final smtpServer = gmail(username, password);
-    // Creating the Gmail server
-
-    // Create our email message.
-    final message = Message()
-      ..from = Address(username)
-      ..recipients.add(email)
-      ..subject =
-          'New Order - Cloud Kitchen :: 😀 :: ${DateTime.now()}' //subject of the email
-      ..text = msg; //body of the email
-
-    try {
-      final sendReport = await send(message, smtpServer);
-      print('Message sent: ' +
-          sendReport.toString()); //print if the email is sent
-    } on MailerException catch (e) {
-      print('Message not sent. \n' + e.toString());
-      throw e; //print if the email is not sent
-      // e.toString() will show why the email is not sending
-    } catch (err) {
-      throw err;
-    }
   }
 
   double get totalAmount {
