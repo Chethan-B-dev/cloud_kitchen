@@ -391,7 +391,7 @@ class Kitchens with ChangeNotifier {
           'name': fname,
           'price': price.abs(),
           'imageUrl': '',
-          'createdAt': DateTime.now().toIso8601String(),
+          'createdAt': DateTime.now().millisecondsSinceEpoch,
           'isVeg': !isNonVeg,
         },
       );

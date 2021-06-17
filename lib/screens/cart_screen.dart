@@ -245,7 +245,7 @@ class _CartScreenState extends State<CartScreen> {
 
                         try {
                           final kitchenId = await cart.placeOrder();
-                          //await cart.clear();
+                          await cart.clear();
                           Navigator.of(context).pushNamed(
                             '/order-status',
                             arguments: kitchenId,

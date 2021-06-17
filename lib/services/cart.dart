@@ -2,16 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
-import 'package:cloud_kitchen/services/loading.dart';
 import 'package:cloud_kitchen/services/users.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
 import 'package:telephony/telephony.dart';
 
 class CartItem {
@@ -298,7 +294,7 @@ class Cart with ChangeNotifier {
         );
       }
     } catch (err) {
-      print(err);
+      print(err.toString());
     }
     try {
       Map<String, int> orderItemData = {};
