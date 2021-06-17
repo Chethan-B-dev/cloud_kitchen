@@ -101,9 +101,6 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
       resizeToAvoidBottomInset: false,
       appBar: appBar,
       body: Container(
-        // decoration: BoxDecoration(
-        //   color: HexColor('#ECEFF1'),
-        // ),
         child: Column(
           children: [
             Container(

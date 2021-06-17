@@ -177,21 +177,23 @@ class Users with ChangeNotifier {
 
   Future<void> editProfile(String name, String phone, String address) async {
     try {
-      await _mainCollection.doc(userId).update({
+      DocumentSnapshot doc = await _mainCollection.doc(userId).get();
+      final isSeller = (doc.data() as Map<String, dynamic>)['isSeller'];
+      await doc.reference.update({
         'username': name,
         'phone': phone,
         'address': address,
       });
 
-      final kdoc = await _kitchenCollection
-          .where('userId', isEqualTo: userId)
-          .limit(1)
-          .get();
+      if (isSeller) {
+        final kdoc =
+            await _kitchenCollection.where('userId', isEqualTo: userId).get();
 
-      await kdoc.docs[0].reference.update({
-        'address': address,
-        'phone': phone,
-      });
+        await kdoc.docs[0].reference.update({
+          'address': address,
+          'phone': phone,
+        });
+      }
 
       prefs = await SharedPreferences.getInstance();
       prefs.remove('username');

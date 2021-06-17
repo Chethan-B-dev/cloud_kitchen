@@ -113,6 +113,16 @@ class _EditKitchenState extends State<EditKitchen> {
                     setState(() {
                       _isLoading = true;
                     });
+                    if (_pickedImage == null || _controller.text.trim() == "") {
+                      ShowError.showError(
+                        'Please pick an image and fill all the details',
+                        context,
+                      );
+                      setState(() {
+                        _isLoading = false;
+                      });
+                      return;
+                    }
                     try {
                       await Kitchens().editKitchen(
                         _controller.text.trim(),

@@ -1,3 +1,5 @@
+import 'package:badges/badges.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/services/cart.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
@@ -86,7 +88,63 @@ class _AppDrawerState extends State<AppDrawer> {
               }
               if (snapshot.data) {
                 return ListTile(
-                  leading: const Icon(Icons.money_off_csred_rounded),
+                  //top: 0, end: 3
+                  leading: Badge(
+                    animationDuration: Duration(milliseconds: 300),
+                    animationType: BadgeAnimationType.slide,
+                    badgeContent: FutureBuilder(
+                      future: Kitchens().orderCount,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(
+                            '',
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          );
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Text(
+                            '',
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          );
+                        }
+
+                        return StreamBuilder<QuerySnapshot>(
+                          stream: snapshot.data,
+                          builder: (context, ssnapshot) {
+                            if (ssnapshot.hasError) {
+                              return Text(
+                                '',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              );
+                            }
+                            if (ssnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Text(
+                                '',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              );
+                            }
+                            return Text(
+                              ssnapshot.data.docs.length.toString(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    child: Icon(Icons.money),
+                  ),
                   title: const Text('Check Orders'),
                   onTap: () {
                     Navigator.of(context).pushNamed('/check-orders');

@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_kitchen/services/kitchens.dart';
+import 'package:cloud_kitchen/services/loading.dart';
+import 'package:cloud_kitchen/services/users.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
@@ -283,14 +287,20 @@ class Cart with ChangeNotifier {
       final doc = await _kitchensCollection.doc(kitchenId).get();
       final phoneNumber =
           (doc.data() as Map<String, dynamic>)['phone'] as String;
-
       final Telephony telephony = Telephony.instance;
 
-      await telephony.sendSms(
-        to: phoneNumber,
-        message: "Hey i have placed an order in your restaurant!",
-      );
+      bool permissionsGranted = await telephony.requestPhoneAndSmsPermissions;
 
+      if (permissionsGranted) {
+        await telephony.sendSms(
+          to: phoneNumber,
+          message: "Hey i have placed an order in your restaurant!",
+        );
+      }
+    } catch (err) {
+      print(err);
+    }
+    try {
       Map<String, int> orderItemData = {};
 
       items.forEach((key, value) {
@@ -308,6 +318,22 @@ class Cart with ChangeNotifier {
         'userId': userId,
         'username': await userName,
         'items': json.encode(orderItemData),
+      });
+
+      String orderedKitchenId = kitchenId;
+
+      Timer(Duration(minutes: 60), () async {
+        try {
+          final data = await _mainCollection.doc(userId).get();
+          if (json.decode((data.data() as Map<String, dynamic>)['orderStatus'])[
+                  orderedKitchenId] ==
+              "0") {
+            await Users().completeOrder(kitchenId, true, null);
+            print("order was cancelled because it took too long");
+          }
+        } catch (err) {
+          print("something went wrong");
+        }
       });
 
       return kitchenId;

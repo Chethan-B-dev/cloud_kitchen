@@ -13,6 +13,8 @@ class Kitchens with ChangeNotifier {
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _foodCollection =
       FirebaseFirestore.instance.collection('foods');
+  final CollectionReference _orderCollection =
+      FirebaseFirestore.instance.collection('orders');
 
   String get userId {
     return _auth.currentUser.uid;
@@ -349,6 +351,24 @@ class Kitchens with ChangeNotifier {
       snapshot.reference.delete();
 
       //await _foodCollection.doc(kitchenid).collection('items').doc(id).delete();
+    } on PlatformException catch (err) {
+      var message = 'An error occurred, please try again later!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      throw (message);
+    } catch (error) {
+      throw (error.toString());
+    }
+  }
+
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>> get orderCount async {
+    try {
+      return _orderCollection
+          .doc(await kitchenId)
+          .collection('orders')
+          .snapshots();
     } on PlatformException catch (err) {
       var message = 'An error occurred, please try again later!';
 

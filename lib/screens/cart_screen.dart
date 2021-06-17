@@ -1,3 +1,4 @@
+import 'package:cloud_kitchen/screens/order_status_screen.dart';
 import 'package:cloud_kitchen/services/cart.dart';
 import 'package:cloud_kitchen/services/users.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,6 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   var _isLoading = false;
-
   @override
   void initState() {
     super.initState();
@@ -206,6 +206,20 @@ class _CartScreenState extends State<CartScreen> {
             );
           }
 
+          if (snapshot.data) {
+            final snackBar = const SnackBar(
+              backgroundColor: Colors.cyan,
+              duration: const Duration(seconds: 4),
+              content: const Text(
+                'You have Already placed an order in a kitchen!',
+                style: const TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+            );
+            Future(() => ScaffoldMessenger.of(context).showSnackBar(snackBar));
+          }
+
           return Visibility(
             visible: !snapshot.data,
             child: Tooltip(
@@ -231,8 +245,8 @@ class _CartScreenState extends State<CartScreen> {
 
                         try {
                           final kitchenId = await cart.placeOrder();
-                          await cart.clear();
-                          Navigator.of(context).pushReplacementNamed(
+                          //await cart.clear();
+                          Navigator.of(context).pushNamed(
                             '/order-status',
                             arguments: kitchenId,
                           );
