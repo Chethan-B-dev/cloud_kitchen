@@ -44,8 +44,8 @@ def keystoreProperties = new Properties()
         applicationId "com.cloudkitchenmce.cloud_kitchen"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 3
+        versionName "3.0"
         multiDexEnabled true
     }
 
