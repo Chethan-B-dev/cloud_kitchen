@@ -258,9 +258,9 @@ class _BecomeSellerState extends State<BecomeSeller> {
                         _isLoading = true;
                       });
 
-                      if (_pickedImage == null) {
+                      if (_pickedImage == null || _controller.text.trim() == "") {
                         disp.ShowError.showError(
-                          'Please pick an image',
+                          'Please pick an image and fill all the details',
                           context,
                         );
                         setState(() {
@@ -269,7 +269,7 @@ class _BecomeSellerState extends State<BecomeSeller> {
                         return;
                       }
                       final docId = await Kitchens().addKitchen(
-                        _controller.text,
+                        _controller.text.trim(),
                         isNonVeg,
                         _pickedImage,
                       );

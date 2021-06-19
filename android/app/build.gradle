@@ -41,7 +41,7 @@ def keystoreProperties = new Properties()
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.cloud_kitchen"
+        applicationId "com.cloudkitchenmce.cloud_kitchen"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
