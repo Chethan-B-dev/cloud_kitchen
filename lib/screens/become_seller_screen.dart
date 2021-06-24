@@ -258,7 +258,8 @@ class _BecomeSellerState extends State<BecomeSeller> {
                         _isLoading = true;
                       });
 
-                      if (_pickedImage == null || _controller.text.trim() == "") {
+                      if (_pickedImage == null ||
+                          _controller.text.trim() == "") {
                         disp.ShowError.showError(
                           'Please pick an image and fill all the details',
                           context,

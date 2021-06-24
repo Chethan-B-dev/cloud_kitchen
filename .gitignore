@@ -32,6 +32,7 @@
 .pub/
 /build/
 
+#play store related
 /android/key.properties
 
 # Web related

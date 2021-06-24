@@ -140,21 +140,23 @@ class _AllRestaurantsTileState extends State<AllRestaurantsTile> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Container(
-                              alignment: Alignment.topLeft,
-                              padding: const EdgeInsets.only(left: 5, top: 5),
-                              child: Text(
-                                actualRating.toStringAsFixed(2),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
+                            if (actualRating != 0.0)
+                              Container(
+                                alignment: Alignment.topLeft,
+                                padding: const EdgeInsets.only(left: 5, top: 5),
+                                child: Text(
+                                  actualRating.toStringAsFixed(2),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
                               ),
-                            ),
                             Container(
                               padding: const EdgeInsets.only(top: 3, left: 5),
                               child: SmoothStarRating(
+                                borderColor: Colors.white,
                                 isReadOnly: true,
                                 color: Colors.yellow,
                                 rating: actualRating,

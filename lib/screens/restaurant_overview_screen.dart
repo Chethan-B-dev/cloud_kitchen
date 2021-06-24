@@ -1,5 +1,4 @@
 import 'package:badges/badges.dart';
-import 'package:cloud_kitchen/helpers/error.dart';
 import 'package:cloud_kitchen/services/cart.dart';
 import 'package:cloud_kitchen/widgets/all_restaurants.dart';
 import 'package:cloud_kitchen/widgets/app_drawer.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/new_restaurants.dart';
-import '../helpers/hex_color.dart';
 
 class RestaurantOverview extends StatefulWidget {
   RestaurantOverview({Key key}) : super(key: key);
@@ -146,7 +144,7 @@ class _RestaurantOverviewState extends State<RestaurantOverview> {
                       color: Color(0xFFd0cece),
                       fontSize: 18,
                     ),
-                    hintText: "Where would you like to buy?",
+                    hintText: "Where would you like to eat?",
                   ),
                 ),
               ),
